@@ -1,3 +1,10 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './components/app';
+
 document.addEventListener('DOMContentLoaded', () => {
-  // do your setup here
+  const root = (
+    <App />
+  );
+  ReactDOM.render(root, document.getElementById('app'));
 });
