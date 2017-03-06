@@ -1,5 +1,5 @@
 import React from 'react';
-import Grid from 'components/grid';
+import Grid from './grid.jsx';
 
 const App = () => (
   <div>
