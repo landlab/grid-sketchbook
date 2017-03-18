@@ -8,7 +8,8 @@ import node from '../theme/node.scss';
 import cell from '../theme/cell.scss';
 import link from '../theme/link.scss';
 import patch from '../theme/patch.scss';
-// import face from '../theme/face.scss';
+import corner from '../theme/corner.scss';
+import face from '../theme/face.scss';
 
 class Grid extends React.Component {
   constructor() {
@@ -18,8 +19,14 @@ class Grid extends React.Component {
       activeNode: null,
       cell: false,
       activeCell: null,
+      face: false,
+      activeFace: null,
+      link: false,
+      activeLink: null,
       patch: false,
       activePatch: null,
+      corner: false,
+      activeCorner: null,
     };
   }
 
@@ -57,37 +64,20 @@ class Grid extends React.Component {
     );
 
     const getRasterCell = (x, y, width) => {
-      const corner = getCorners(x, y, width);
-      const d = `M ${corner[0].x} ${corner[0].y} ${corner[1].x} ${corner[1].y} ${corner[2].x} ${corner[2].y} ${corner[3].x} ${corner[3].y} Z`;
+      const RCorner = getCorners(x, y, width);
+      const d = `M ${RCorner[0].x} ${RCorner[0].y} ${RCorner[1].x} ${RCorner[1].y} ${RCorner[2].x} ${RCorner[2].y} ${RCorner[3].x} ${RCorner[3].y} Z`;
       return d;
     };
-
-    // const getHexCell = (x, y, width) => {
-    //   const d = `M ${EX} ${EY} ${NX} ${NY} ${WX} ${WY} ${SX} ${SY} Z`;
-    //   return d;
-    // }
-
-    // const getFace = (x, y, head, tail, cellWidth) => {
-    //
-    //   const x1 = x + (width / 2);
-    //
-    //   return {
-    //     x1: x + (width / 2),
-    //     y1: y - (width / 2),
-    //     x2: x - (width / 2),
-    //     y2: y - (width / 2),
-    //   }
-    // };
 
     const nodeClassName = classNames(
       node.node,
       this.state.node && node.highlight,
     );
 
-    const cellClassName = classNames(
-      cell.cell,
-      this.state.cell && cell.highlight,
-    );
+    // const cellClassName = classNames(
+    //   cell.cell,
+    //   this.state.cell && cell.highlight,
+    // );
 
     // const faceClassName = classNames(
     //   face.face,
@@ -98,6 +88,14 @@ class Grid extends React.Component {
       <g key={`node ${d.id}`}>
         <circle className={nodeClassName} cx={d.x} cy={d.y} r={0.7} title={`node ${d.id}`} onMouseEnter={() => this.setState({ node: true, activeNode: d.id })} onMouseLeave={() => this.setState({ node: false, activeNode: null })} />
         <text className={this.state.activeNode === d.id ? grid.active : grid.title} x={d.x} dy={-2} y={d.y} textAnchor="middle" >{`node ${d.id}`}</text>
+      </g>
+      ),
+    );
+
+    const corners = data.corners.map(d => (
+      <g key={`corner ${d.id}`}>
+        <circle className={corner.corner} cx={d.x} cy={d.y} r={0.3} title={`corner ${d.id}`} onMouseEnter={() => this.setState({ corner: true, activeCorner: d.id })} onMouseLeave={() => this.setState({ corner: false, activeCorner: null })} />
+        <text className={this.state.activeCorner === d.id ? grid.active : grid.title} x={d.x} dy={-2} y={d.y} textAnchor="middle" >{`corner ${d.id}`}</text>
       </g>
       ),
     );
@@ -130,9 +128,9 @@ class Grid extends React.Component {
           onMouseLeave={() => this.setState({ patch: false, activePatch: null })}
         />
         <text
-          className={this.state.activeCell === d.id ? patch.active : patch.title}
-          x={d.x}
-          y={d.y}
+          className={this.state.activePatch === d.id ? patch.active : patch.title}
+          x={data.corners[d.id].x}
+          y={data.corners[d.id].y}
           textAnchor="middle"
         >
           {`patch ${d.id}`}
@@ -141,21 +139,49 @@ class Grid extends React.Component {
     ),
     );
 
-    // const faces = data.faces.map(d => (
-    //   <g key={`face ${d.id}`}>
-    //     <line
-          //   className={face.face}
-          //   x1={data.nodes[d.tail_node].x}
-          //   x2={data.nodes[d.head_node].x}
-          //   y1={data.nodes[d.tail_node].x}
-          //   y2={data.nodes[d.head_node].x}
-          // />
-    //   </g>
-    // ));
+    const faces = data.faces.map(d => (
+      <g key={`face ${d.id}`}>
+        <line
+          className={face.face}
+          x1={data.corners[d.tail_corner].x}
+          x2={data.corners[d.head_corner].x}
+          y1={data.corners[d.tail_corner].y}
+          y2={data.corners[d.head_corner].y}
+          onMouseEnter={() => this.setState({ face: true, activeFace: d.id })}
+          onMouseLeave={() => this.setState({ face: false, activeFace: null })}
+
+        />
+        <text
+          className={this.state.activeFace === d.id ? face.active : face.title}
+          x={d.x}
+          y={d.y}
+          textAnchor="middle"
+        >
+          {`face ${d.id}`}
+        </text>
+
+      </g>
+    ));
 
     const links = data.links.map(d => (
       <g key={`link ${d.id}`}>
-        <line className={link.link} x1={data.nodes[d.tail_node].x} x2={data.nodes[d.head_node].x} y1={data.nodes[d.tail_node].y} y2={data.nodes[d.head_node].y} stroke="hotpink" fill="none" />
+        <line
+          className={link.link}
+          x1={data.nodes[d.tail_node].x}
+          x2={data.nodes[d.head_node].x}
+          y1={data.nodes[d.tail_node].y}
+          y2={data.nodes[d.head_node].y}
+          onMouseEnter={() => this.setState({ link: true, activeLink: d.id })}
+          onMouseLeave={() => this.setState({ link: false, activeLink: null })}
+        />
+        <text
+          className={this.state.activeLink === d.id ? link.active : link.title}
+          x={d.x}
+          y={d.y}
+          textAnchor="middle"
+        >
+          {`link ${d.id}`}
+        </text>
       </g>
     ));
 
@@ -166,49 +192,13 @@ class Grid extends React.Component {
           {patches}
           {cells}
           {links}
+          {faces}
           {nodes}
+          {corners}
         </g>
       </svg>
     );
   }
 }
-
-
-// <text className={this.state.activeNode === d.id ? grid.active : grid.title } x={d.x} y={d.y} textAnchor="middle" >{`node ${d.id}`}</text>
-//
-// const Grid = ({ data }) => {
-//   const margin = { top: 10, right: 10, bottom: 10, left: 10 };
-//   const row = 3;
-//   const col = 4;
-//   const height = (row + 1) * 10;
-//   const width = (col + 1) * 10;
-//
-//   const nodeClassName = classNames(
-//     grid.node,
-//     this.state.node && grid.highlight,
-//
-//   )
-//
-//   const addHighlightClass = e => (
-//
-//   );
-//
-//
-//   const circles = data.nodes.map(d => (
-//     <circle className={nodeClassName} key={d.id} cx={d.x} cy={d.y} r={0.2} title={`node ${d.id}`} fill="teal" onMouseEnter={() => this.setState({ node: true })} onMouseLeave={() => this.setState({ node: false })} />
-//     ),
-//   );
-//   const nodes = circles.map(c => c);
-//
-//   return (
-//     <svg viewBox={`0 0 ${width} ${height}`} width="60vw" >
-//       <rect x={0} y={0} width={width} height={height} stroke="black" fill="none" strokeWidth={0.2} />
-//       <g transform={`translate(${margin.top} ${margin.left})`} >
-//         {nodes}
-//       </g>
-//     </svg>
-//   );
-// };
-
 
 export default Grid;

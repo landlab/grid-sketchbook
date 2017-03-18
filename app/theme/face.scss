@@ -1,0 +1,19 @@
+.face {
+  stroke: rgba(white, 0.4);
+  fill: none;
+  &:hover {
+    stroke: rgba(white, 1);
+  }
+}
+
+// .highlight {
+//   fill: rgba(bisque, 1);
+// }
+
+.title {
+  display: none;
+}
+
+.active {
+  display: static;
+}
