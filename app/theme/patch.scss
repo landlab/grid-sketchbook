@@ -1,0 +1,19 @@
+.patch {
+  pointer-events:fill;
+  fill: rgba(gray, 0.4);
+  &:hover {
+    fill: rgba(gray, 1);
+  }
+}
+
+.highlight {
+}
+
+.title {
+  display: none;
+}
+
+.active {
+  display: static;
+  fill: white;
+}
