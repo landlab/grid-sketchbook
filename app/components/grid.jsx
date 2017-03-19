@@ -1,7 +1,6 @@
 import React from 'react';
-// import * as d3 from 'd3';
-// import raster from '../landlab_raster_grid_example.json';
-import classNames from 'classnames';
+import * as d3 from 'd3';
+// import classNames from 'classnames';
 
 import grid from '../theme/grid.scss';
 import node from '../theme/node.scss';
@@ -38,12 +37,20 @@ class Grid extends React.Component {
     const chartHeight = (row + 1) * 10;
     const chartWidth = (col + 1) * 10;
 
+    const xScale = d3.scaleLinear()
+      .domain([0, chartWidth])
+      .range([0, chartWidth]);
+
+    const yScale = d3.scaleLinear()
+      .domain([0, chartHeight])
+      .range([chartHeight, 0]);
+
     const nodes = data.nodes.map(d => (
       <g key={`node ${d.id}`}>
         <circle
           className={node.node}
-          cx={d.x}
-          cy={d.y}
+          cx={xScale(d.x)}
+          cy={yScale(d.y)}
           r={0.7}
           title={`node ${d.id}`}
           onMouseEnter={() => this.setState({ node: true, activeNode: d.id })}
@@ -51,9 +58,9 @@ class Grid extends React.Component {
         />
         <text
           className={this.state.activeNode === d.id ? grid.active : grid.title}
-          x={d.x}
+          x={xScale(d.x)}
           dy={-2}
-          y={d.y}
+          y={yScale(d.y)}
           textAnchor="middle"
         >
           {`node ${d.id}`}
@@ -66,20 +73,21 @@ class Grid extends React.Component {
       <g key={`corner ${d.id}`}>
         <circle
           className={corner.corner}
-          cx={d.x}
-          cy={d.y}
+          cx={xScale(d.x)}
+          cy={yScale(d.y)}
           r={0.7}
           title={`corner ${d.id}`}
           onMouseEnter={() => this.setState({ corner: true, activeCorner: d.id })}
           onMouseLeave={() => this.setState({ corner: false, activeCorner: null })}
         />
-        <text className={this.state.activeCorner === d.id ? grid.active : grid.title} x={d.x} dy={-2} y={d.y} textAnchor="middle" >{`corner ${d.id}`}</text>
+        <text className={this.state.activeCorner === d.id ? grid.active : grid.title} x={xScale(d.x)} dy={yScale(-2)} y={yScale(d.y)} textAnchor="middle" >{`corner ${d.id}`}</text>
       </g>
       ),
     );
 
     const getPath = (verticies, vertex) => {
-      const allCorners = verticies.map(c => (`${data[vertex][c].x} ${data[vertex][c].y}`));
+      const allCorners = verticies.map(c => (`${xScale(data[vertex][c].x)} ${yScale(data[vertex][c].y)}`));
+      // console.log(allCorners);
       const d = `M ${allCorners} Z`;
       return d;
     };
@@ -94,8 +102,8 @@ class Grid extends React.Component {
         />
         <text
           className={this.state.activeCell === d.id ? cell.active : cell.title}
-          x={d.x}
-          y={d.y}
+          x={xScale(d.x)}
+          y={yScale(d.y)}
           textAnchor="middle"
         >
           {`cell ${d.id}`}
@@ -113,8 +121,8 @@ class Grid extends React.Component {
         />
         <text
           className={this.state.activePatch === d.id ? patch.active : patch.title}
-          x={data.corners[d.id].x}
-          y={data.corners[d.id].y}
+          x={xScale(data.corners[d.id].x)}
+          y={yScale(data.corners[d.id].y)}
           textAnchor="middle"
         >
           {`patch ${d.id}`}
@@ -126,18 +134,18 @@ class Grid extends React.Component {
       <g key={`face ${d.id}`}>
         <line
           className={face.face}
-          x1={data.corners[d.tail_corner].x}
-          x2={data.corners[d.head_corner].x}
-          y1={data.corners[d.tail_corner].y}
-          y2={data.corners[d.head_corner].y}
+          x1={xScale(data.corners[d.tail_corner].x)}
+          x2={xScale(data.corners[d.head_corner].x)}
+          y1={yScale(data.corners[d.tail_corner].y)}
+          y2={yScale(data.corners[d.head_corner].y)}
           onMouseEnter={() => this.setState({ face: true, activeFace: d.id })}
           onMouseLeave={() => this.setState({ face: false, activeFace: null })}
 
         />
         <text
           className={this.state.activeFace === d.id ? face.active : face.title}
-          x={d.x}
-          y={d.y}
+          x={xScale(d.x)}
+          y={yScale(d.y)}
           textAnchor="middle"
         >
           {`face ${d.id}`}
@@ -150,17 +158,17 @@ class Grid extends React.Component {
       <g key={`link ${d.id}`}>
         <line
           className={link.link}
-          x1={data.nodes[d.tail_node].x}
-          x2={data.nodes[d.head_node].x}
-          y1={data.nodes[d.tail_node].y}
-          y2={data.nodes[d.head_node].y}
+          x1={xScale(data.nodes[d.tail_node].x)}
+          x2={xScale(data.nodes[d.head_node].x)}
+          y1={yScale(data.nodes[d.tail_node].y)}
+          y2={yScale(data.nodes[d.head_node].y)}
           onMouseEnter={() => this.setState({ link: true, activeLink: d.id })}
           onMouseLeave={() => this.setState({ link: false, activeLink: null })}
         />
         <text
           className={this.state.activeLink === d.id ? link.active : link.title}
-          x={d.x}
-          y={d.y}
+          x={xScale(d.x)}
+          y={yScale(d.y)}
           textAnchor="middle"
         >
           {`link ${d.id}`}
@@ -171,7 +179,7 @@ class Grid extends React.Component {
     return (
       <svg className={grid.chart} viewBox={`0 0 ${chartWidth} ${chartHeight}`} width="60vw" >
         <rect x={0} y={0} width={chartWidth} height={chartHeight} stroke="black" fill="none" strokeWidth={0.2} />
-        <g transform={`translate(${margin.top} ${margin.left})`} >
+        <g transform={`translate(${margin.left} ${-margin.top})`} >
           {patches}
           {cells}
           {links}
@@ -183,5 +191,16 @@ class Grid extends React.Component {
     );
   }
 }
+
+Grid.propTypes = {
+  data: React.PropTypes.shape({
+    // cells: React.PropsTypes.array,
+    // corners: React.PropsTypes.array,
+    // faces: React.PropsTypes.array,
+    // links: React.PropsTypes.array,
+    // nodes: React.PropsTypes.array,
+    // patches: React.PropsTypes.array,
+  }).isRequired,
+};
 
 export default Grid;
