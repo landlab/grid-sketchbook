@@ -1,5 +1,8 @@
 .node {
   fill: rgba(gold, 0.4);
+  &:hover {
+    fill: rgba(gold, 1);
+  }
 }
 
 .highlight {

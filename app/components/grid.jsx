@@ -31,19 +31,22 @@ class Grid extends React.Component {
 
   render() {
     const { data } = this.props;
-    const margin = { top: 10, right: 10, bottom: 10, left: 10 };
+    const margin = { top: 20, right: 10, bottom: 10, left: 10 };
     const row = 3;
     const col = 4;
-    const chartHeight = (row + 1) * 10;
-    const chartWidth = (col + 1) * 10;
+    const cellWidth = 10;
+    const innerHeight = (row - 1) * cellWidth;
+    const innerWidth = (col - 1) * cellWidth;
+    const chartHeight = innerHeight + margin.top + margin.bottom;
+    const chartWidth = innerWidth + margin.left + margin.right;
 
     const xScale = d3.scaleLinear()
-      .domain([0, chartWidth])
-      .range([0, chartWidth]);
+      .domain([0, innerWidth])
+      .range([0, innerWidth]);
 
     const yScale = d3.scaleLinear()
-      .domain([0, chartHeight])
-      .range([chartHeight, 0]);
+      .domain([0, innerHeight])
+      .range([innerHeight, 0]);
 
     const nodes = data.nodes.map(d => (
       <g key={`node ${d.id}`}>
@@ -57,7 +60,7 @@ class Grid extends React.Component {
           onMouseLeave={() => this.setState({ node: false, activeNode: null })}
         />
         <text
-          className={this.state.activeNode === d.id ? grid.active : grid.title}
+          className={this.state.activeNode === d.id ? node.active : node.title}
           x={xScale(d.x)}
           dy={-2}
           y={yScale(d.y)}
@@ -80,7 +83,15 @@ class Grid extends React.Component {
           onMouseEnter={() => this.setState({ corner: true, activeCorner: d.id })}
           onMouseLeave={() => this.setState({ corner: false, activeCorner: null })}
         />
-        <text className={this.state.activeCorner === d.id ? grid.active : grid.title} x={xScale(d.x)} dy={yScale(-2)} y={yScale(d.y)} textAnchor="middle" >{`corner ${d.id}`}</text>
+        <text
+          className={this.state.activeCorner === d.id ? corner.active : corner.title}
+          x={xScale(d.x)}
+          dy={-2}
+          y={yScale(d.y)}
+          textAnchor="middle"
+        >
+          {`corner ${d.id}`}
+        </text>
       </g>
       ),
     );
@@ -179,7 +190,7 @@ class Grid extends React.Component {
     return (
       <svg className={grid.chart} viewBox={`0 0 ${chartWidth} ${chartHeight}`} width="60vw" >
         <rect x={0} y={0} width={chartWidth} height={chartHeight} stroke="black" fill="none" strokeWidth={0.2} />
-        <g transform={`translate(${margin.left} ${-margin.top})`} >
+        <g transform={`translate(${margin.left} ${margin.top})`} >
           {patches}
           {cells}
           {links}
