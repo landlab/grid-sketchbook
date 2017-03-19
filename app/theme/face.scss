@@ -6,15 +6,19 @@
   }
 }
 
-// .highlight {
-//   fill: rgba(bisque, 1);
-// }
-
-.title {
+.none {
   display: none;
 }
 
-.active {
+.highlight {
+  fill: rgba(bisque, 1);
+}
+
+.text {
+  display: none;
+}
+
+.activeLabel {
   display: static;
   font-size: 1px;
 

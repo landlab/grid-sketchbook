@@ -1,6 +1,6 @@
 import React from 'react';
 import * as d3 from 'd3';
-// import classNames from 'classnames';
+import classNames from 'classnames';
 
 import grid from '../theme/grid.scss';
 import node from '../theme/node.scss';
@@ -30,8 +30,9 @@ class Grid extends React.Component {
   }
 
   render() {
-    const { data } = this.props;
-    const margin = { top: 5, right: 10, bottom: 10, left: 10 };
+    const { data, show } = this.props;
+    console.log(show.nodes);
+    const margin = { top: 2, right: 10, bottom: 5, left: 10 };
     const row = 3;
     const col = 4;
     const cellWidth = 10;
@@ -39,6 +40,29 @@ class Grid extends React.Component {
     const innerWidth = (col - 1) * cellWidth;
     const chartHeight = innerHeight + margin.top + margin.bottom;
     const chartWidth = innerWidth + margin.left + margin.right;
+
+    const getClassNames = (element, isActive) => {
+      const base = {
+        cell: cell.cell,
+        patch: patch.patch,
+        link: link.link,
+        face: face.face,
+        node: node.node,
+        corner: corner.corner,
+      };
+      const active = {
+        cell: cell.highlight,
+        patch: patch.highlight,
+        link: link.highlight,
+        face: face.highlight,
+        node: node.highlight,
+        corner: corner.highlight,
+      };
+      return classNames(
+        isActive && base[element],
+        isActive && active[element],
+      );
+    };
 
     const xScale = d3.scaleLinear()
       .domain([0, innerWidth])
@@ -51,16 +75,15 @@ class Grid extends React.Component {
     const nodes = data.nodes.map(d => (
       <g key={`node ${d.id}`}>
         <circle
-          className={node.node}
+          className={show.nodes ? node.node : node.none}
           cx={xScale(d.x)}
           cy={yScale(d.y)}
           r={0.7}
-          title={`node ${d.id}`}
           onMouseEnter={() => this.setState({ node: true, activeNode: d.id })}
           onMouseLeave={() => this.setState({ node: false, activeNode: null })}
         />
         <text
-          className={this.state.activeNode === d.id ? node.active : node.title}
+          className={this.state.activeNode === d.id ? node.activeLabel : node.text}
           x={xScale(d.x)}
           dy={-1}
           y={yScale(d.y)}
@@ -75,16 +98,15 @@ class Grid extends React.Component {
     const corners = data.corners.map(d => (
       <g key={`corner ${d.id}`}>
         <circle
-          className={corner.corner}
+          className={show.corners ? corner.corner : corner.none}
           cx={xScale(d.x)}
           cy={yScale(d.y)}
           r={0.7}
-          title={`corner ${d.id}`}
           onMouseEnter={() => this.setState({ corner: true, activeCorner: d.id })}
           onMouseLeave={() => this.setState({ corner: false, activeCorner: null })}
         />
         <text
-          className={this.state.activeCorner === d.id ? corner.active : corner.title}
+          className={this.state.activeCorner === d.id ? corner.activeLabel : corner.text}
           x={xScale(d.x)}
           dy={-1}
           y={yScale(d.y)}
@@ -106,13 +128,14 @@ class Grid extends React.Component {
     const cells = data.cells.map(d => (
       <g key={`cell ${d.id}`}>
         <path
-          className={cell.cell}
+          className={show.cells ? cell.cell : cell.none}
           d={getPath(d.corners, 'corners')}
+          fill="transparent"
           onMouseEnter={() => this.setState({ cell: true, activeCell: d.id })}
           onMouseLeave={() => this.setState({ cell: false, activeCell: null })}
         />
         <text
-          className={this.state.activeCell === d.id ? cell.active : cell.title}
+          className={this.state.activeCell === d.id ? cell.activeLabel : cell.text}
           x={xScale(d.x)}
           y={yScale(d.y)}
           textAnchor="middle"
@@ -125,13 +148,14 @@ class Grid extends React.Component {
     const patches = data.patches.map(d => (
       <g key={`patch ${d.id}`}>
         <path
-          className={patch.patch}
+          className={show.patches ? patch.patch : patch.none}
           d={getPath(d.nodes, 'nodes')}
+          fill="transparent"
           onMouseEnter={() => this.setState({ patch: true, activePatch: d.id })}
           onMouseLeave={() => this.setState({ patch: false, activePatch: null })}
         />
         <text
-          className={this.state.activePatch === d.id ? patch.active : patch.title}
+          className={this.state.activePatch === d.id ? patch.activeLabel : patch.text}
           x={xScale(data.corners[d.id].x)}
           y={yScale(data.corners[d.id].y)}
           textAnchor="middle"
@@ -144,7 +168,7 @@ class Grid extends React.Component {
     const faces = data.faces.map(d => (
       <g key={`face ${d.id}`}>
         <line
-          className={face.face}
+          className={show.faces ? face.face : face.none}
           x1={xScale(data.corners[d.tail_corner].x)}
           x2={xScale(data.corners[d.head_corner].x)}
           y1={yScale(data.corners[d.tail_corner].y)}
@@ -154,7 +178,7 @@ class Grid extends React.Component {
 
         />
         <text
-          className={this.state.activeFace === d.id ? face.active : face.title}
+          className={this.state.activeFace === d.id ? face.activeLabel : face.text}
           x={xScale(d.x)}
           y={yScale(d.y)}
           textAnchor="middle"
@@ -168,7 +192,7 @@ class Grid extends React.Component {
     const links = data.links.map(d => (
       <g key={`link ${d.id}`}>
         <line
-          className={link.link}
+          className={show.links ? link.link : link.none}
           x1={xScale(data.nodes[d.tail_node].x)}
           x2={xScale(data.nodes[d.head_node].x)}
           y1={yScale(data.nodes[d.tail_node].y)}
@@ -177,7 +201,7 @@ class Grid extends React.Component {
           onMouseLeave={() => this.setState({ link: false, activeLink: null })}
         />
         <text
-          className={this.state.activeLink === d.id ? link.active : link.title}
+          className={this.state.activeLink === d.id ? link.activeLabel : link.text}
           x={xScale(d.x)}
           y={yScale(d.y)}
           textAnchor="middle"
@@ -212,6 +236,7 @@ Grid.propTypes = {
     // nodes: React.PropsTypes.array,
     // patches: React.PropsTypes.array,
   }).isRequired,
+  show: React.PropTypes.object,
 };
 
 export default Grid;

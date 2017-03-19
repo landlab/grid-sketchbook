@@ -7,12 +7,52 @@ import hex from '../landlab_hex_grid_example.json';
 import app from '../theme/app.scss';
 
 
-const App = () => (
-  <div className={app.chart}>
-    <Legend onChange={(e) => console.log('yo!', e.currentTarget)}/>
-    <Grid data={raster} />
-    <Grid data={hex} />
-  </div>
-);
+class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      showCells: true,
+      showCellLabels: false,
+      showPatches: true,
+      showPatchLabels: false,
+      showLinks: true,
+      showLinkLabels: false,
+      showFaces: true,
+      showFaceLabels: false,
+      showNodes: true,
+      showNodeLabels: false,
+      showCorners: true,
+      showCornerLabels: false,
+    };
+  }
+
+  render() {
+    console.log('state', this.state);
+    const activeLayers = {
+      cells: this.state.showCells,
+      cellLabels: this.state.showCellLabels,
+      patches: this.state.showPatches,
+      patchLabels: this.state.showPatchLabels,
+      links: this.state.showLinks,
+      linkLabels: this.state.showLinkLabels,
+      faces: this.state.showFaces,
+      faceLabels: this.state.showFaceLabels,
+      nodes: this.state.showNodes,
+      nodeLabels: this.state.showNodeLabels,
+      corners: this.state.showCorners,
+      cornerLabels: this.state.showCornerLabels,
+    };
+    console.log('show', activeLayers);
+    return (
+      <div className={app.chart}>
+        <Legend active={activeLayers} onChange={e => this.setState({ [e.target.value]: !this.state[e.target.value] })} />
+        <h2>Raster Grid</h2>
+        <Grid data={raster} show={activeLayers} />
+        <h2>Hex Grid</h2>
+        <Grid data={hex} show={activeLayers} />
+      </div>
+    );
+  }
+}
 
 export default App;

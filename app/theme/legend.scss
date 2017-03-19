@@ -18,6 +18,7 @@
   margin-bottom: 10px;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 0 4px -1px silver;
 }
 
 h2 {
@@ -28,25 +29,37 @@ h2 {
   padding: 10px;
   border: none;
   font-size: 16px;
+  background-color: transparent;
+  &:focus {
+    outline: none;
+  }
 }
 
-.cellButton {
+.button {
   @extend %button;
+}
+
+.cellButtonDown {
+  @extend %button;
+  background-color: rgba(teal, 0.4);
+  color: white;
 }
 
 .cellLabelButton {
   @extend %button;
 }
 
-.patchButton {
+.patchButtonDown {
   @extend %button;
+  background-color: rgba(gray, 0.4);
+  color: white;
 }
 
 .patchLabelButton {
   @extend %button;
 }
 
-.linkButton {
+.linkButtonDown {
   @extend %button;
 }
 
@@ -54,7 +67,7 @@ h2 {
   @extend %button;
 }
 
-.faceButton {
+.faceButtonDown {
   @extend %button;
 }
 
@@ -62,7 +75,7 @@ h2 {
   @extend %button;
 }
 
-.nodeButton {
+.nodeButtonDown {
   @extend %button;
 }
 
@@ -70,7 +83,7 @@ h2 {
   @extend %button;
 }
 
-.cornerButton {
+.cornerButtonDown {
   @extend %button;
 }
 

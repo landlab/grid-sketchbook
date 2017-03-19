@@ -9,12 +9,12 @@ const Legend = (props) => (
       <h2>Areas</h2>
       <section className={legend.section}>
         <div className={legend.column}>
-          <button className={legend.cellButton} onClick={props.onChange}>Cells</button>
-          <button className={legend.cellLabelButton}>Labels</button>
+          <button className={props.active.cells ? legend.cellButtonDown : legend.button} onClick={props.onChange} value="showCells">Cells</button>
+          <button className={props.active.cellLabels ? legend.cellButtonDown : legend.button} onClick={props.onChange} value="showCellLabels">Labels</button>
         </div>
         <div className={legend.column}>
-          <button className={legend.patchButton}>Patches</button>
-          <button className={legend.patchLabelButton}>Labels</button>
+          <button className={props.active.patches ? legend.patchButtonDown : legend.button} onClick={props.onChange} value="showPatches">Patches</button>
+          <button className={props.active.patchLabels ? legend.patchButtonDown : legend.button} onClick={props.onChange} value="showPatchLabels">Labels</button>
         </div>
       </section>
     </div>
@@ -22,12 +22,12 @@ const Legend = (props) => (
       <h2>Vectors</h2>
       <section className={legend.section}>
         <div className={legend.column}>
-          <button className={legend.linkButton}>Links</button>
-          <button className={legend.linkLabelButton}>Labels</button>
+          <button className={props.active.links ? legend.linkButtonDown : legend.button} onClick={props.onChange} value="showLinks">Links</button>
+          <button className={props.active.linkLabels ? legend.linkButtonDown : legend.button} onClick={props.onChange} value="showLinkLabels">Labels</button>
         </div>
         <div className={legend.column}>
-          <button className={legend.faceButton}>Faces</button>
-          <button className={legend.faceLabelButton}>Labels</button>
+          <button className={props.active.faces ? legend.faceButtonDown : legend.button} onClick={props.onChange} value="showFaces">Faces</button>
+          <button className={props.active.faceLabels ? legend.faceButtonDown : legend.button} onClick={props.onChange} value="showFaceLabels">Labels</button>
         </div>
       </section>
     </div>
@@ -35,12 +35,12 @@ const Legend = (props) => (
       <h2>Points</h2>
       <section className={legend.section}>
         <div className={legend.column}>
-          <button className={legend.nodeButton}>Nodes</button>
-          <button className={legend.nodeLabelButton}>Labels</button>
+          <button className={props.active.nodes ? legend.nodeButtonDown : legend.button} onClick={props.onChange} value="showNodes">Nodes</button>
+          <button className={props.active.nodeLabels ? legend.nodeButtonDown : legend.button} onClick={props.onChange} value="showNodeLabels">Labels</button>
         </div>
         <div className={legend.column}>
-          <button className={legend.cornerButton}>Corners</button>
-          <button className={legend.cornerLabelButton}>Labels</button>
+          <button className={props.active.corners ? legend.cornerButtonDown : legend.button} onClick={props.onChange} value="showCorners">Corners</button>
+          <button className={props.active.cornerLabels ? legend.cornerButtonDown : legend.button} onClick={props.onChange} value="showCornerLabels">Labels</button>
         </div>
       </section>
     </div>
@@ -48,3 +48,7 @@ const Legend = (props) => (
 );
 
 export default Legend;
+
+Legend.propTypes = {
+  onChange: React.PropTypes.any,
+}

@@ -1,20 +1,26 @@
 .patch {
   fill: rgba(gray, 0.4);
+  stroke: white;
+  stroke-width: 0.025px;
   &:hover {
     fill: rgba(gray, 1);
   }
 }
 
-.highlight {
-}
-
-.title {
+.none {
   display: none;
 }
 
-.active {
+.highlight {
+  fill: rgba(gray, 1);
+}
+
+.text {
+  display: none;
+}
+
+.activeLabel {
   display: static;
   fill: white;
   font-size: 1px;
-
 }

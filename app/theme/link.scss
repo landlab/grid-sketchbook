@@ -6,15 +6,19 @@
   }
 }
 
+.none {
+  display: none;
+}
+
 .highlight {
   fill: rgba(wheat, 1);
 }
 
-.title {
+.text {
   display: none;
 }
 
-.active {
+.activeLabel {
   display: static;
   font-size: 1px;
 

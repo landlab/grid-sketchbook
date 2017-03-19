@@ -5,15 +5,19 @@
   }
 }
 
+.none {
+  display: none;
+}
+
 .highlight {
   fill: rgba(aliceblue, 1);
 }
 
-.title {
+.text {
   display: none;
 }
 
-.active {
+.activeLabel {
   display: static;
   font-size: 1px;
 
