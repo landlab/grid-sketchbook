@@ -31,7 +31,7 @@ class Grid extends React.Component {
 
   render() {
     const { data } = this.props;
-    const margin = { top: 20, right: 10, bottom: 10, left: 10 };
+    const margin = { top: 5, right: 10, bottom: 10, left: 10 };
     const row = 3;
     const col = 4;
     const cellWidth = 10;
@@ -62,7 +62,7 @@ class Grid extends React.Component {
         <text
           className={this.state.activeNode === d.id ? node.active : node.title}
           x={xScale(d.x)}
-          dy={-2}
+          dy={-1}
           y={yScale(d.y)}
           textAnchor="middle"
         >
@@ -86,7 +86,7 @@ class Grid extends React.Component {
         <text
           className={this.state.activeCorner === d.id ? corner.active : corner.title}
           x={xScale(d.x)}
-          dy={-2}
+          dy={-1}
           y={yScale(d.y)}
           textAnchor="middle"
         >
