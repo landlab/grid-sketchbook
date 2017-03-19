@@ -38,73 +38,57 @@ class Grid extends React.Component {
     const chartHeight = (row + 1) * 10;
     const chartWidth = (col + 1) * 10;
 
-    const cellWidth = data.faces[0].length;
-
-    // const corner-top-right = data.cells[0].area;
-
-    const getCorners = (x, y, width) => (
-      [
-        {
-          x: x + (width / 2),
-          y: y - (width / 2),
-        },
-        {
-          x: x - (width / 2),
-          y: y - (width / 2),
-        },
-        {
-          x: x - (width / 2),
-          y: y + (width / 2),
-        },
-        {
-          x: x + (width / 2),
-          y: y + (width / 2),
-        },
-      ]
-    );
-
-    const getRasterCell = (x, y, width) => {
-      const RCorner = getCorners(x, y, width);
-      const d = `M ${RCorner[0].x} ${RCorner[0].y} ${RCorner[1].x} ${RCorner[1].y} ${RCorner[2].x} ${RCorner[2].y} ${RCorner[3].x} ${RCorner[3].y} Z`;
-      return d;
-    };
-
-    const nodeClassName = classNames(
-      node.node,
-      this.state.node && node.highlight,
-    );
-
-    // const cellClassName = classNames(
-    //   cell.cell,
-    //   this.state.cell && cell.highlight,
-    // );
-
-    // const faceClassName = classNames(
-    //   face.face,
-    //   this.state.face && face.highlight,
-    // );
-
     const nodes = data.nodes.map(d => (
       <g key={`node ${d.id}`}>
-        <circle className={nodeClassName} cx={d.x} cy={d.y} r={0.7} title={`node ${d.id}`} onMouseEnter={() => this.setState({ node: true, activeNode: d.id })} onMouseLeave={() => this.setState({ node: false, activeNode: null })} />
-        <text className={this.state.activeNode === d.id ? grid.active : grid.title} x={d.x} dy={-2} y={d.y} textAnchor="middle" >{`node ${d.id}`}</text>
+        <circle
+          className={node.node}
+          cx={d.x}
+          cy={d.y}
+          r={0.7}
+          title={`node ${d.id}`}
+          onMouseEnter={() => this.setState({ node: true, activeNode: d.id })}
+          onMouseLeave={() => this.setState({ node: false, activeNode: null })}
+        />
+        <text
+          className={this.state.activeNode === d.id ? grid.active : grid.title}
+          x={d.x}
+          dy={-2}
+          y={d.y}
+          textAnchor="middle"
+        >
+          {`node ${d.id}`}
+        </text>
       </g>
       ),
     );
 
     const corners = data.corners.map(d => (
       <g key={`corner ${d.id}`}>
-        <circle className={corner.corner} cx={d.x} cy={d.y} r={0.3} title={`corner ${d.id}`} onMouseEnter={() => this.setState({ corner: true, activeCorner: d.id })} onMouseLeave={() => this.setState({ corner: false, activeCorner: null })} />
+        <circle
+          className={corner.corner}
+          cx={d.x}
+          cy={d.y}
+          r={0.7}
+          title={`corner ${d.id}`}
+          onMouseEnter={() => this.setState({ corner: true, activeCorner: d.id })}
+          onMouseLeave={() => this.setState({ corner: false, activeCorner: null })}
+        />
         <text className={this.state.activeCorner === d.id ? grid.active : grid.title} x={d.x} dy={-2} y={d.y} textAnchor="middle" >{`corner ${d.id}`}</text>
       </g>
       ),
     );
 
+    const getPath = (verticies, vertex) => {
+      const allCorners = verticies.map(c => (`${data[vertex][c].x} ${data[vertex][c].y}`));
+      const d = `M ${allCorners} Z`;
+      return d;
+    };
+
     const cells = data.cells.map(d => (
       <g key={`cell ${d.id}`}>
         <path
           className={cell.cell}
-          d={getRasterCell(d.x, d.y, cellWidth)}
+          d={getPath(d.corners, 'corners')}
           onMouseEnter={() => this.setState({ cell: true, activeCell: d.id })}
           onMouseLeave={() => this.setState({ cell: false, activeCell: null })}
         />
@@ -123,7 +107,7 @@ class Grid extends React.Component {
       <g key={`patch ${d.id}`}>
         <path
           className={patch.patch}
-          d={`M ${data.nodes[d.nodes[0]].x} ${data.nodes[d.nodes[0]].y} ${data.nodes[d.nodes[1]].x} ${data.nodes[d.nodes[1]].y} ${data.nodes[d.nodes[2]].x} ${data.nodes[d.nodes[2]].y} ${data.nodes[d.nodes[3]].x} ${data.nodes[d.nodes[3]].y} Z`}
+          d={getPath(d.nodes, 'nodes')}
           onMouseEnter={() => this.setState({ patch: true, activePatch: d.id })}
           onMouseLeave={() => this.setState({ patch: false, activePatch: null })}
         />
@@ -136,8 +120,7 @@ class Grid extends React.Component {
           {`patch ${d.id}`}
         </text>
       </g>
-    ),
-    );
+  ));
 
     const faces = data.faces.map(d => (
       <g key={`face ${d.id}`}>

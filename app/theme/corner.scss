@@ -1,5 +1,8 @@
 .corner {
   fill: rgba(aliceblue, 0.4);
+  &:hover {
+    fill: rgba(aliceblue, 1);
+  }
 }
 
 .highlight {
