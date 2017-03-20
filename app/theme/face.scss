@@ -1,8 +1,10 @@
+@import 'colors';
+
 .face {
-  stroke: rgba(white, 0.4);
+  stroke: rgba($color-face, 0.4);
   fill: none;
   &:hover {
-    stroke: rgba(white, 1);
+    stroke: rgba($color-face, 1);
   }
 }
 
@@ -11,7 +13,7 @@
 }
 
 .highlight {
-  fill: rgba(bisque, 1);
+  fill: rgba($color-face, 1);
 }
 
 .text {

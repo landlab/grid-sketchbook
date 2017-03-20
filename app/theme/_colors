@@ -1,0 +1,6 @@
+$color-cell: #707335;
+$color-patch: #A89855;
+$color-face: wheat;
+$color-link: aliceblue;
+$color-node: #A9D1F2;
+$color-corner: #878EA3;

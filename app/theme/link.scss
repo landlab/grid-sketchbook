@@ -1,8 +1,10 @@
+@import 'colors';
+
 .link {
-  stroke: rgba(wheat, 0.4);
+  stroke: rgba($color-link, 0.4);
   fill: none;
   &:hover {
-    stroke: rgba(wheat, 1);
+    stroke: rgba($color-link, 1);
   }
 }
 
@@ -11,7 +13,7 @@
 }
 
 .highlight {
-  fill: rgba(wheat, 1);
+  fill: rgba($color-link, 1);
 }
 
 .text {

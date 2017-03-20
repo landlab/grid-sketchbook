@@ -1,9 +1,10 @@
+@import 'colors';
 .cell {
-  fill: rgba(teal, 0.4);
+  fill: rgba($color-cell, 0.4);
   stroke: white;
   stroke-width: 0.025px;
   &:hover {
-    fill: rgba(teal, 1);
+    fill: rgba($color-cell, 1);
   }
 }
 
@@ -12,7 +13,7 @@
 }
 
 .highlight {
-  fill: rgba(teal, 1);
+  fill: rgba($color-cell, 1);
   stroke: white;
   stroke-width: 0.1px;
 }

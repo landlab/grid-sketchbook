@@ -1,9 +1,11 @@
+@import 'colors';
+
 .patch {
-  fill: rgba(gray, 0.4);
+  fill: rgba($color-patch, 0.4);
   stroke: white;
   stroke-width: 0.025px;
   &:hover {
-    fill: rgba(gray, 1);
+    fill: rgba($color-patch, 1);
   }
 }
 
@@ -12,7 +14,7 @@
 }
 
 .highlight {
-  fill: rgba(gray, 1);
+  fill: rgba($color-patch, 1);
 }
 
 .text {
