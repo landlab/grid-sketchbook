@@ -49,6 +49,7 @@ h2 {
 
 .cellLabelButton {
   @extend %button;
+  color: $text-area;
 }
 
 .patchButtonDown {
@@ -59,6 +60,7 @@ h2 {
 
 .patchLabelButton {
   @extend %button;
+  color: $text-area;
 }
 
 .linkButtonDown {
@@ -69,6 +71,7 @@ h2 {
 
 .linkLabelButton {
   @extend %button;
+  color: $text-vector;
 }
 
 .faceButtonDown {
@@ -78,6 +81,7 @@ h2 {
 
 .faceLabelButton {
   @extend %button;
+  color: $text-vector;
 }
 
 .nodeButtonDown {
@@ -88,6 +92,7 @@ h2 {
 
 .nodeLabelButton {
   @extend %button;
+  color: $text-point;
 }
 
 .cornerButtonDown {
@@ -98,4 +103,5 @@ h2 {
 
 .cornerLabelButton {
   @extend %button;
+  color: $text-point;
 }

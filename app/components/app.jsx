@@ -12,22 +12,16 @@ class App extends React.Component {
     super();
     this.state = {
       showCells: true,
-      highlightCells: false,
       showCellLabels: false,
       showPatches: true,
-      highlightPatches: false,
       showPatchLabels: false,
       showLinks: true,
-      highlightLinks: false,
       showLinkLabels: false,
       showFaces: true,
-      highlightFaces: false,
       showFaceLabels: false,
       showNodes: true,
-      highlightNodes: false,
       showNodeLabels: false,
       showCorners: true,
-      highlightCorners: false,
       showCornerLabels: false,
     };
   }
@@ -35,22 +29,16 @@ class App extends React.Component {
   render() {
     const activeLayers = {
       cells: this.state.showCells,
-      highlightCells: this.state.highlightCells,
       cellLabels: this.state.showCellLabels,
       patches: this.state.showPatches,
-      highlightPatches: this.state.highlightPatches,
       patchLabels: this.state.showPatchLabels,
       links: this.state.showLinks,
-      highlightLinks: this.state.highlightLinks,
       linkLabels: this.state.showLinkLabels,
       faces: this.state.showFaces,
-      highlightFaces: this.state.highlightFaces,
       faceLabels: this.state.showFaceLabels,
       nodes: this.state.showNodes,
-      highlightNodes: this.state.highlightNodes,
       nodeLabels: this.state.showNodeLabels,
       corners: this.state.showCorners,
-      highlightCorners: this.state.highlightCorners,
       cornerLabels: this.state.showCornerLabels,
     };
     console.log('show', activeLayers);

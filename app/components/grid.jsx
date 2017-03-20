@@ -40,29 +40,6 @@ class Grid extends React.Component {
     const chartHeight = innerHeight + margin.top + margin.bottom;
     const chartWidth = innerWidth + margin.left + margin.right;
 
-    const getClassNames = (element, isActive) => {
-      const base = {
-        cell: cell.cell,
-        patch: patch.patch,
-        link: link.link,
-        face: face.face,
-        node: node.node,
-        corner: corner.corner,
-      };
-      const active = {
-        cell: cell.highlight,
-        patch: patch.highlight,
-        link: link.highlight,
-        face: face.highlight,
-        node: node.highlight,
-        corner: corner.highlight,
-      };
-      return classNames(
-        isActive && base[element],
-        isActive && active[element],
-      );
-    };
-
     const xScale = d3.scaleLinear()
       .domain([0, innerWidth])
       .range([0, innerWidth]);
@@ -74,7 +51,7 @@ class Grid extends React.Component {
     const nodes = data.nodes.map(d => (
       <g key={`node ${d.id}`}>
         <circle
-          className={show.nodes ? show.highlightNodes ? node.highlight : node.node : node.none}
+          className={show.nodes ? show.nodeLabels ? node.highlight : node.node : node.none}
           cx={xScale(d.x)}
           cy={yScale(d.y)}
           r={0.7}
@@ -97,7 +74,7 @@ class Grid extends React.Component {
     const corners = data.corners.map(d => (
       <g key={`corner ${d.id}`}>
         <circle
-          className={show.corners ? show.highlightCorners ? corner.highlight : corner.corner : corner.none}
+          className={show.corners ? show.cornerLabels ? corner.highlight : corner.corner : corner.none}
           cx={xScale(d.x)}
           cy={yScale(d.y)}
           r={0.7}
@@ -127,7 +104,7 @@ class Grid extends React.Component {
     const cells = data.cells.map(d => (
       <g key={`cell ${d.id}`}>
         <path
-          className={show.cells ? show.highlightCells ? cell.highlight : cell.cell : cell.none}
+          className={show.cells ? show.cellLabels ? cell.highlight : cell.cell : cell.none}
           d={getPath(d.corners, 'corners')}
           fill="transparent"
           onMouseEnter={() => this.setState({ cell: true, activeCell: d.id })}
@@ -147,7 +124,7 @@ class Grid extends React.Component {
     const patches = data.patches.map(d => (
       <g key={`patch ${d.id}`}>
         <path
-          className={show.patches ? show.highlightPatches ? patch.highlight : patch.patch : patch.none}
+          className={show.patches ? show.patchLabels ? patch.highlight : patch.patch : patch.none}
           d={getPath(d.nodes, 'nodes')}
           fill="transparent"
           onMouseEnter={() => this.setState({ patch: true, activePatch: d.id })}
@@ -167,7 +144,7 @@ class Grid extends React.Component {
     const faces = data.faces.map(d => (
       <g key={`face ${d.id}`}>
         <line
-          className={show.faces ? show.highlightFaces ? face.highlight : face.face : face.none}
+          className={show.faces ? show.faceLabels ? face.highlight : face.face : face.none}
           x1={xScale(data.corners[d.tail_corner].x)}
           x2={xScale(data.corners[d.head_corner].x)}
           y1={yScale(data.corners[d.tail_corner].y)}
@@ -192,7 +169,7 @@ class Grid extends React.Component {
     const links = data.links.map(d => (
       <g key={`link ${d.id}`}>
         <line
-          className={show.links ? show.highlightLinks ? link.highlight : link.link : link.none}
+          className={show.links ? show.linkLabels ? link.highlight : link.link : link.none}
           x1={xScale(data.nodes[d.tail_node].x)}
           x2={xScale(data.nodes[d.head_node].x)}
           y1={yScale(data.nodes[d.tail_node].y)}
