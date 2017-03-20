@@ -13,7 +13,7 @@
 }
 
 .highlight {
-  fill: rgba($color-link, 1);
+  stroke: rgba($color-link, 1);
 }
 
 .text {
@@ -23,5 +23,5 @@
 .activeLabel {
   display: static;
   font-size: 1px;
-
+  fill: $text-vector;
 }

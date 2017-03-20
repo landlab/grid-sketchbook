@@ -2,8 +2,6 @@
 
 .patch {
   fill: rgba($color-patch, 0.4);
-  stroke: white;
-  stroke-width: 0.025px;
   &:hover {
     fill: rgba($color-patch, 1);
   }
@@ -15,6 +13,8 @@
 
 .highlight {
   fill: rgba($color-patch, 1);
+  stroke: white;
+  stroke-width: 0.025px;
 }
 
 .text {
@@ -23,6 +23,6 @@
 
 .activeLabel {
   display: static;
-  fill: white;
+  fill: $text-area;
   font-size: 1px;
 }
