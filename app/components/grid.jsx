@@ -143,12 +143,18 @@ class Grid extends React.Component {
 
     const faces = data.faces.map(d => (
       <g key={`face ${d.id}`}>
+        <defs>
+          <marker className={face.arrow} id="face" orient="auto"  viewBox="-6 -6 12 12" refX={5} refY={0} markerHeight={2}>
+            <path d="M -4 -4 0 0 -4 4" />
+          </marker>
+        </defs>
         <line
           className={show.faces ? show.faceLabels ? face.highlight : face.face : face.none}
           x1={xScale(data.corners[d.tail_corner].x)}
           x2={xScale(data.corners[d.head_corner].x)}
           y1={yScale(data.corners[d.tail_corner].y)}
           y2={yScale(data.corners[d.head_corner].y)}
+          markerEnd="url(#face)"
           onMouseEnter={() => this.setState({ face: true, activeFace: d.id })}
           onMouseLeave={() => this.setState({ face: false, activeFace: null })}
 
@@ -168,12 +174,19 @@ class Grid extends React.Component {
 
     const links = data.links.map(d => (
       <g key={`link ${d.id}`}>
+        <defs>
+          <marker className={link.arrow} id="head" orient="auto"  viewBox="-6 -6 12 12" refX={5} refY={0} markerHeight={2}>
+            <path d="M -4 -4 0 0 -4 4" />
+          </marker>
+        </defs>
+
         <line
           className={show.links ? show.linkLabels ? link.highlight : link.link : link.none}
           x1={xScale(data.nodes[d.tail_node].x)}
           x2={xScale(data.nodes[d.head_node].x)}
           y1={yScale(data.nodes[d.tail_node].y)}
           y2={yScale(data.nodes[d.head_node].y)}
+          markerEnd="url(#head)"
           onMouseEnter={() => this.setState({ link: true, activeLink: d.id })}
           onMouseLeave={() => this.setState({ link: false, activeLink: null })}
         />
@@ -191,7 +204,6 @@ class Grid extends React.Component {
 
     return (
       <svg className={grid.chart} viewBox={`0 0 ${chartWidth} ${chartHeight}`} width="60vw" >
-        <rect x={0} y={0} width={chartWidth} height={chartHeight} stroke="black" fill="none" strokeWidth={0.2} />
         <g transform={`translate(${margin.left} ${margin.top})`} >
           {patches}
           {cells}

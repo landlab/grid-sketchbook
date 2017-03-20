@@ -25,3 +25,8 @@
   font-size: 1px;
   fill: $text-vector;
 }
+
+.arrow {
+  stroke: darken($color-face, 5%);
+  fill: none;
+}
