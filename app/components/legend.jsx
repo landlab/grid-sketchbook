@@ -51,4 +51,4 @@ export default Legend;
 
 Legend.propTypes = {
   onChange: React.PropTypes.any,
-}
+};

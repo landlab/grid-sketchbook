@@ -1,6 +1,5 @@
 import React from 'react';
 import * as d3 from 'd3';
-import classNames from 'classnames';
 
 import grid from '../theme/grid.scss';
 import node from '../theme/node.scss';
@@ -131,7 +130,7 @@ class Grid extends React.Component {
           onMouseLeave={() => this.setState({ patch: false, activePatch: null })}
         />
         <text
-          className={(this.state.activePatch === d.id)  || show.patchLabels ? patch.activeLabel : patch.text}
+          className={(this.state.activePatch === d.id) || show.patchLabels ? patch.activeLabel : patch.text}
           x={xScale(data.corners[d.id].x)}
           y={yScale(data.corners[d.id].y)}
           textAnchor="middle"
@@ -144,7 +143,7 @@ class Grid extends React.Component {
     const faces = data.faces.map(d => (
       <g key={`face ${d.id}`}>
         <defs>
-          <marker className={face.arrow} id="face" orient="auto"  viewBox="-6 -6 12 12" refX={5} refY={0} markerHeight={2}>
+          <marker className={face.arrow} id="face" orient="auto" viewBox="-6 -6 12 12" refX={5} refY={0} markerHeight={2}>
             <path d="M -4 -4 0 0 -4 4" />
           </marker>
         </defs>
@@ -175,7 +174,7 @@ class Grid extends React.Component {
     const links = data.links.map(d => (
       <g key={`link ${d.id}`}>
         <defs>
-          <marker className={link.arrow} id="head" orient="auto"  viewBox="-6 -6 12 12" refX={5} refY={0} markerHeight={2}>
+          <marker className={link.arrow} id="head" orient="auto" viewBox="-6 -6 12 12" refX={5} refY={0} markerHeight={2}>
             <path d="M -4 -4 0 0 -4 4" />
           </marker>
         </defs>
