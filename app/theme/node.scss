@@ -1,7 +1,7 @@
 @import 'colors';
 
 .node {
-  fill: rgba($color-node, 0.4);
+  fill: rgba($color-node, 0.6);
   &:hover {
     fill: rgba($color-node, 1);
   }

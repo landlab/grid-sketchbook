@@ -1,7 +1,7 @@
 @import 'colors';
 
 .link {
-  stroke: rgba($color-link, 0.4);
+  stroke: rgba($color-link, 0.6);
   fill: none;
   &:hover {
     stroke: rgba($color-link, 1);
@@ -17,9 +17,9 @@
   fill: rgba($color-link, 1);
 }
 
-.text {
-  display: none;
-}
+// .text {
+//   display: none;
+// }
 
 .activeLabel {
   display: static;

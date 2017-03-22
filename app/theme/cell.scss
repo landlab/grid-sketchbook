@@ -1,12 +1,12 @@
 @import 'colors';
 .cell {
-  fill: rgba($color-cell, 0.4);
+  fill: rgba($color-cell, 0.7);
   &:hover {
     fill: rgba($color-cell, 1);
   }
 }
 
-.none {
+.none{
   display: none;
 }
 

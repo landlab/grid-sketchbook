@@ -44,7 +44,7 @@ h2 {
 
 .cellButtonDown {
   @extend %button;
-  background-color: rgba($color-cell, 0.5);
+  background-color: rgba($color-cell, 0.8);
   color: white;
 }
 
@@ -55,7 +55,7 @@ h2 {
 
 .patchButtonDown {
   @extend %button;
-  background-color: rgba($color-patch, 0.5);
+  background-color: rgba($color-patch, 0.8);
   color: white;
 }
 
@@ -66,7 +66,7 @@ h2 {
 
 .linkButtonDown {
   @extend %button;
-  background-color: rgba($color-link, 0.5);
+  background-color: rgba($color-link, 0.8);
 
 }
 
@@ -77,7 +77,7 @@ h2 {
 
 .faceButtonDown {
   @extend %button;
-  background-color: rgba($color-face, 0.5);
+  background-color: rgba($color-face, 0.8);
 }
 
 .faceLabelButton {
@@ -87,7 +87,7 @@ h2 {
 
 .nodeButtonDown {
   @extend %button;
-  background-color: rgba($color-node, 0.5);
+  background-color: rgba($color-node, 0.8);
 
 }
 
@@ -98,7 +98,7 @@ h2 {
 
 .cornerButtonDown {
   @extend %button;
-  background-color: rgba($color-corner, 0.5);
+  background-color: rgba($color-corner, 0.8);
 
 }
 
