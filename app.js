@@ -361,7 +361,7 @@ var Grid = function (_React$Component) {
           data = _props.data,
           show = _props.show;
 
-      var margin = { top: 2, right: 10, bottom: 5, left: 10 };
+      var margin = { top: 2, right: 6, bottom: 5, left: 6 };
       var row = 3;
       var col = 4;
       var cellWidth = 10;
@@ -3737,7 +3737,7 @@ module.exports = {"chart":"_chart_3y0hp_1"};
 });
 
 require.register("theme/legend.scss", function(exports, require, module) {
-module.exports = {"container":"_container_uwewp_1","section":"_section_uwewp_8","column":"_column_uwewp_15","button":"_button_uwewp_24","cellButtonDown":"_cellButtonDown_uwewp_24","cellLabelButton":"_cellLabelButton_uwewp_24","patchButtonDown":"_patchButtonDown_uwewp_24","patchLabelButton":"_patchLabelButton_uwewp_24","linkButtonDown":"_linkButtonDown_uwewp_24","linkLabelButton":"_linkLabelButton_uwewp_24","faceButtonDown":"_faceButtonDown_uwewp_24","faceLabelButton":"_faceLabelButton_uwewp_24","nodeButtonDown":"_nodeButtonDown_uwewp_24","nodeLabelButton":"_nodeLabelButton_uwewp_24","cornerButtonDown":"_cornerButtonDown_uwewp_24","cornerLabelButton":"_cornerLabelButton_uwewp_24"};
+module.exports = {"container":"_container_wg80e_1","section":"_section_wg80e_8","column":"_column_wg80e_15","button":"_button_wg80e_24","cellButtonDown":"_cellButtonDown_wg80e_24","cellLabelButton":"_cellLabelButton_wg80e_24","patchButtonDown":"_patchButtonDown_wg80e_24","patchLabelButton":"_patchLabelButton_wg80e_24","linkButtonDown":"_linkButtonDown_wg80e_24","linkLabelButton":"_linkLabelButton_wg80e_24","faceButtonDown":"_faceButtonDown_wg80e_24","faceLabelButton":"_faceLabelButton_wg80e_24","nodeButtonDown":"_nodeButtonDown_wg80e_24","nodeLabelButton":"_nodeLabelButton_wg80e_24","cornerButtonDown":"_cornerButtonDown_wg80e_24","cornerLabelButton":"_cornerLabelButton_wg80e_24"};
 });
 
 require.register("theme/link.scss", function(exports, require, module) {
