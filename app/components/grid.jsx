@@ -1,5 +1,6 @@
 import React from 'react';
 import * as d3 from 'd3';
+import classNames from 'classnames';
 
 import grid from '../theme/grid.scss';
 import node from '../theme/node.scss';
@@ -75,7 +76,9 @@ class Grid extends React.Component {
     const corners = data.corners.map(d => (
       <g key={`corner ${d.id}`}>
         <circle
-          className={show.corners ? show.cornerLabels ? corner.highlight : corner.corner : corner.none}
+          className={
+            show.corners ? show.cornerLabels ? corner.highlight : corner.corner : corner.none
+          }
           cx={xScale(d.x)}
           cy={yScale(d.y)}
           r={0.7}
@@ -146,72 +149,83 @@ class Grid extends React.Component {
           {`patch ${d.id}`}
         </text>
       </g>
-  ));
-
-    const faces = data.faces.map(d => (
-      <g key={`face ${d.id}`}>
-        <defs>
-          <marker className={face.arrow} id="face" orient="auto" viewBox="-6 -6 12 12" refX={5} refY={0} markerHeight={2}>
-            <path d="M -4 -4 0 0 -4 4" />
-          </marker>
-        </defs>
-        <line
-          className={show.faces ? show.faceLabels ? face.highlight : face.face : face.none}
-          x1={xScale(data.corners[d.tail_corner].x)}
-          x2={xScale(data.corners[d.head_corner].x)}
-          y1={yScale(data.corners[d.tail_corner].y)}
-          y2={yScale(data.corners[d.head_corner].y)}
-          markerEnd="url(#face)"
-          onMouseEnter={() => this.setState({ face: true, activeFace: d.id })}
-          onMouseLeave={() => this.setState({ face: false, activeFace: null })}
-
-        />
-        <text
-          className={
-            (this.state.activeFace === d.id) || show.faceLabels ? face.activeLabel : face.none
-          }
-          x={xScale(d.x)}
-          y={yScale(d.y)}
-          dy={0.3}
-          textAnchor="middle"
-        >
-          {`face ${d.id}`}
-        </text>
-
-      </g>
     ));
 
-    const links = data.links.map(d => (
-      <g key={`link ${d.id}`}>
-        <defs>
-          <marker className={link.arrow} id="head" orient="auto" viewBox="-6 -6 12 12" refX={5} refY={0} markerHeight={2}>
-            <path d="M -4 -4 0 0 -4 4" />
-          </marker>
-        </defs>
+    const faces = data.faces.map((d) => {
+      const vertical = data.corners[d.tail_corner].x === data.corners[d.head_corner].x;
+      const textClassnames = classNames(
+        (this.state.activeFace === d.id) || show.faceLabels ? face.activeLabel : face.none,
+        vertical && face.vertical,
+      );
+      return (
+        <g key={`face ${d.id}`}>
+          <defs>
+            <marker className={face.arrow} id="face" orient="auto" viewBox="-6 -6 12 12" refX={5} refY={0} markerHeight={2}>
+              <path d="M -4 -4 0 0 -4 4" />
+            </marker>
+          </defs>
+          <line
+            className={show.faces ? show.faceLabels ? face.highlight : face.face : face.none}
+            x1={xScale(data.corners[d.tail_corner].x)}
+            x2={xScale(data.corners[d.head_corner].x)}
+            y1={yScale(data.corners[d.tail_corner].y)}
+            y2={yScale(data.corners[d.head_corner].y)}
+            markerEnd="url(#face)"
+            onMouseEnter={() => this.setState({ face: true, activeFace: d.id })}
+            onMouseLeave={() => this.setState({ face: false, activeFace: null })}
 
-        <line
-          className={show.links ? show.linkLabels ? link.highlight : link.link : link.none}
-          x1={xScale(data.nodes[d.tail_node].x)}
-          x2={xScale(data.nodes[d.head_node].x)}
-          y1={yScale(data.nodes[d.tail_node].y)}
-          y2={yScale(data.nodes[d.head_node].y)}
-          markerEnd="url(#head)"
-          onMouseEnter={() => this.setState({ link: true, activeLink: d.id })}
-          onMouseLeave={() => this.setState({ link: false, activeLink: null })}
-        />
-        <text
-          className={
-            (this.state.activeLink === d.id) || show.linkLabels ? link.activeLabel : link.none
-          }
-          x={xScale(d.x)}
-          y={yScale(d.y)}
-          dy={0.3}
-          textAnchor="middle"
-        >
-          {`link ${d.id}`}
-        </text>
-      </g>
-    ));
+          />
+          <text
+            className={textClassnames}
+            x={xScale(d.x)}
+            y={yScale(d.y)}
+            dy={0.3}
+            textAnchor="middle"
+          >
+            {`face ${d.id}`}
+          </text>
+        </g>
+      );
+    },
+  );
+
+    const links = data.links.map((d) => {
+      const vertical = data.nodes[d.tail_node].x === data.nodes[d.head_node].x;
+      const textClassnames = classNames(
+        (this.state.activeLink === d.id) || show.linkLabels ? link.activeLabel : link.none,
+        vertical && link.vertical,
+      );
+
+      return (
+        <g key={`link ${d.id}`}>
+          <defs>
+            <marker className={link.arrow} id="head" orient="auto" viewBox="-6 -6 12 12" refX={5} refY={0} markerHeight={2}>
+              <path d="M -4 -4 0 0 -4 4" />
+            </marker>
+          </defs>
+
+          <line
+            className={show.links ? show.linkLabels ? link.highlight : link.link : link.none}
+            x1={xScale(data.nodes[d.tail_node].x)}
+            x2={xScale(data.nodes[d.head_node].x)}
+            y1={yScale(data.nodes[d.tail_node].y)}
+            y2={yScale(data.nodes[d.head_node].y)}
+            markerEnd="url(#head)"
+            onMouseEnter={() => this.setState({ link: true, activeLink: d.id })}
+            onMouseLeave={() => this.setState({ link: false, activeLink: null })}
+          />
+          <text
+            className={textClassnames}
+            x={xScale(d.x)}
+            y={yScale(d.y)}
+            dy={0.3}
+            textAnchor="middle"
+          >
+            {`link ${d.id}`}
+          </text>
+        </g>
+      );
+    });
 
     return (
       <svg className={grid.chart} viewBox={`0 0 ${chartWidth} ${chartHeight}`} width="60vw" >

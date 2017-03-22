@@ -26,3 +26,8 @@
   stroke: darken($color-face, 5%);
   fill: none;
 }
+
+.vertical {
+  writing-mode: tb;
+  glyph-orientation-vertical: 0;
+}
