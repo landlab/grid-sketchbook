@@ -31,7 +31,7 @@ class Grid extends React.Component {
 
   render() {
     const { data, show } = this.props;
-    const margin = { top: 2, right: 10, bottom: 5, left: 10 };
+    const margin = { top: 2, right: 6, bottom: 5, left: 6 };
     const row = 3;
     const col = 4;
     const cellWidth = 10;
