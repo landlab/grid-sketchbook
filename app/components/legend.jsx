@@ -3,7 +3,7 @@ import React from 'react';
 import legend from '../theme/legend.scss';
 
 
-const Legend = (props) => (
+const Legend = props => (
   <div className={legend.container}>
     <div>
       <h2>Areas</h2>
@@ -50,5 +50,19 @@ const Legend = (props) => (
 export default Legend;
 
 Legend.propTypes = {
-  onChange: React.PropTypes.any,
+  onChange: React.PropTypes.func.isRequired,
+  active: React.PropTypes.shape({
+    cells: React.PropTypes.bool,
+    cellLabels: React.PropTypes.bool,
+    patches: React.PropTypes.bool,
+    patchLabels: React.PropTypes.bool,
+    links: React.PropTypes.bool,
+    linkLabels: React.PropTypes.bool,
+    faces: React.PropTypes.bool,
+    faceLabels: React.PropTypes.bool,
+    nodes: React.PropTypes.bool,
+    nodeLabels: React.PropTypes.bool,
+    corners: React.PropTypes.bool,
+    cornerLabels: React.PropTypes.bool,
+  }).isRequired,
 };

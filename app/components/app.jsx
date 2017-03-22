@@ -41,7 +41,6 @@ class App extends React.Component {
       corners: this.state.showCorners,
       cornerLabels: this.state.showCornerLabels,
     };
-    console.log('show', activeLayers);
     return (
       <div className={app.chart}>
         <Legend active={activeLayers} onChange={e => this.setState({ [e.target.value]: !this.state[e.target.value] })} />

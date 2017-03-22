@@ -190,7 +190,9 @@ class Grid extends React.Component {
           onMouseLeave={() => this.setState({ link: false, activeLink: null })}
         />
         <text
-          className={(this.state.activeLink === d.id) || show.linkLabels ? link.activeLabel : link.text}
+          className={
+            (this.state.activeLink === d.id) || show.linkLabels ? link.activeLabel : link.none
+          }
           x={xScale(d.x)}
           y={yScale(d.y)}
           dy={0.3}
@@ -218,14 +220,27 @@ class Grid extends React.Component {
 
 Grid.propTypes = {
   data: React.PropTypes.shape({
-    // cells: React.PropsTypes.array,
-    // corners: React.PropsTypes.array,
-    // faces: React.PropsTypes.array,
-    // links: React.PropsTypes.array,
-    // nodes: React.PropsTypes.array,
-    // patches: React.PropsTypes.array,
+    cells: React.PropTypes.array,
+    corners: React.PropTypes.array,
+    faces: React.PropTypes.array,
+    links: React.PropTypes.array,
+    nodes: React.PropTypes.array,
+    patches: React.PropTypes.array,
   }).isRequired,
-  show: React.PropTypes.object,
+  show: React.PropTypes.shape({
+    cells: React.PropTypes.bool,
+    cellLabels: React.PropTypes.bool,
+    patches: React.PropTypes.bool,
+    patchLabels: React.PropTypes.bool,
+    links: React.PropTypes.bool,
+    linkLabels: React.PropTypes.bool,
+    faces: React.PropTypes.bool,
+    faceLabels: React.PropTypes.bool,
+    nodes: React.PropTypes.bool,
+    nodeLabels: React.PropTypes.bool,
+    corners: React.PropTypes.bool,
+    cornerLabels: React.PropTypes.bool,
+  }).isRequired,
 };
 
 export default Grid;
