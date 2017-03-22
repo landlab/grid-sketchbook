@@ -58,7 +58,9 @@ class Grid extends React.Component {
           onMouseLeave={() => this.setState({ node: false, activeNode: null })}
         />
         <text
-          className={(this.state.activeNode === d.id) || show.nodeLabels ? node.activeLabel : node.text}
+          className={
+            (this.state.activeNode === d.id) || show.nodeLabels ? node.activeLabel : node.none
+          }
           x={xScale(d.x)}
           dy={-1}
           y={yScale(d.y)}
@@ -81,7 +83,9 @@ class Grid extends React.Component {
           onMouseLeave={() => this.setState({ corner: false, activeCorner: null })}
         />
         <text
-          className={(this.state.activeCorner === d.id) || show.cornerLabels ? corner.activeLabel : corner.text}
+          className={
+            (this.state.activeCorner === d.id) || show.cornerLabels ? corner.activeLabel : corner.none
+          }
           x={xScale(d.x)}
           dy={-1}
           y={yScale(d.y)}
@@ -110,7 +114,9 @@ class Grid extends React.Component {
           onMouseLeave={() => this.setState({ cell: false, activeCell: null })}
         />
         <text
-          className={(this.state.activeCell === d.id) || show.cellLabels ? cell.activeLabel : cell.text}
+          className={
+            (this.state.activeCell === d.id) || show.cellLabels ? cell.activeLabel : cell.none
+          }
           x={xScale(d.x)}
           y={yScale(d.y)}
           textAnchor="middle"
@@ -130,7 +136,9 @@ class Grid extends React.Component {
           onMouseLeave={() => this.setState({ patch: false, activePatch: null })}
         />
         <text
-          className={(this.state.activePatch === d.id) || show.patchLabels ? patch.activeLabel : patch.text}
+          className={
+            (this.state.activePatch === d.id) || show.patchLabels ? patch.activeLabel : patch.none
+          }
           x={xScale(data.corners[d.id].x)}
           y={yScale(data.corners[d.id].y)}
           textAnchor="middle"
@@ -159,7 +167,9 @@ class Grid extends React.Component {
 
         />
         <text
-          className={(this.state.activeFace === d.id) || show.faceLabels ? face.activeLabel : face.text}
+          className={
+            (this.state.activeFace === d.id) || show.faceLabels ? face.activeLabel : face.none
+          }
           x={xScale(d.x)}
           y={yScale(d.y)}
           dy={0.3}
