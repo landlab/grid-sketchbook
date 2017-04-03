@@ -1,6 +1,7 @@
 import React from 'react';
 import Grid from './grid.jsx';
 import Legend from './legend.jsx';
+import Inputs from './inputs.jsx';
 import raster from '../landlab_raster_grid_example.json';
 import hex from '../landlab_hex_grid_example.json';
 
@@ -43,6 +44,7 @@ class App extends React.Component {
     };
     return (
       <div className={app.chart}>
+        <Inputs />
         <Legend active={activeLayers} onChange={e => this.setState({ [e.target.value]: !this.state[e.target.value] })} />
         <h2>Raster Grid</h2>
         <Grid data={raster} show={activeLayers} />
