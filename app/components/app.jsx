@@ -1,7 +1,7 @@
 import React from 'react';
-import Grid from './grid.jsx';
-import Legend from './legend.jsx';
-import raster from '../landlab_raster_grid_example.json';
+import Grid from './grid';
+import Legend from './legend';
+import { graph } from '../landlab_raster_grid_example.json';
 import hex from '../landlab_hex_grid_example.json';
 
 import app from '../theme/app.scss';
@@ -45,9 +45,7 @@ class App extends React.Component {
       <div className={app.chart}>
         <Legend active={activeLayers} onChange={e => this.setState({ [e.target.value]: !this.state[e.target.value] })} />
         <h2>Raster Grid</h2>
-        <Grid data={raster} show={activeLayers} />
-        <h2>Hex Grid</h2>
-        <Grid data={hex} show={activeLayers} />
+        <Grid nodeX={graph.data_vars.x_of_node.data} nodeY={graph.data_vars.y_of_node.data} nodeArea={graph.data_vars.nodes_at_patch.data} linkLine={graph.data_vars.nodes_at_link.data} show={activeLayers} spacing={10} />
       </div>
     );
   }
