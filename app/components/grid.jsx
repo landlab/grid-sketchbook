@@ -30,7 +30,8 @@ class Grid extends React.Component {
   }
 
   render() {
-    const { nodeX, nodeY, nodeArea, linkLine, spacing, show } = this.props;
+    const { nodeX, nodeY, nodeArea, linkLine, spacing, show } = this.props; // START HERE: need to get this data
+    console.log('six things', nodeX, nodeY, nodeArea, linkLine, spacing, show);
     const margin = { top: 2, right: 6, bottom: 5, left: 6 };
     const row = 3;
     const col = 4;
@@ -53,8 +54,8 @@ class Grid extends React.Component {
       <g key={`node${-i}`}>
         <circle
           className={show.nodes ? show.nodeLabels ? node.highlight : node.node : node.none}
-          cx={xScale(d)}
-          cy={yScale(nodeY[i])}
+          cx={xScale(d[0])}
+          cy={yScale(nodeY[i][1])}
           r={0.7}
           onMouseEnter={() => this.setState({ node: true, activeNode: i })}
           onMouseLeave={() => this.setState({ node: false, activeNode: null })}
@@ -247,7 +248,7 @@ class Grid extends React.Component {
   }
 }
 
-// Grid.propTypes = {
+Grid.propTypes = {
 //   graph: React.PropTypes.shape({
 //     cells: React.PropTypes.array,
 //     corners: React.PropTypes.array,
@@ -256,20 +257,25 @@ class Grid extends React.Component {
 //     nodes: React.PropTypes.array,
 //     patches: React.PropTypes.array,
 //   }).isRequired,
-//   show: React.PropTypes.shape({
-//     cells: React.PropTypes.bool,
-//     cellLabels: React.PropTypes.bool,
-//     patches: React.PropTypes.bool,
-//     patchLabels: React.PropTypes.bool,
-//     links: React.PropTypes.bool,
-//     linkLabels: React.PropTypes.bool,
-//     faces: React.PropTypes.bool,
-//     faceLabels: React.PropTypes.bool,
-//     nodes: React.PropTypes.bool,
-//     nodeLabels: React.PropTypes.bool,
-//     corners: React.PropTypes.bool,
-//     cornerLabels: React.PropTypes.bool,
-//   }).isRequired,
-// };
+  nodeX: React.PropTypes.array.isRequired,
+  nodeY: React.PropTypes.array.isRequired,
+  nodeArea: React.PropTypes.array.isRequired,
+  linkLine: React.PropTypes.array.isRequired,
+  spacing: React.PropTypes.number.isRequired,
+  show: React.PropTypes.shape({
+    cells: React.PropTypes.bool,
+    cellLabels: React.PropTypes.bool,
+    patches: React.PropTypes.bool,
+    patchLabels: React.PropTypes.bool,
+    links: React.PropTypes.bool,
+    linkLabels: React.PropTypes.bool,
+    faces: React.PropTypes.bool,
+    faceLabels: React.PropTypes.bool,
+    nodes: React.PropTypes.bool,
+    nodeLabels: React.PropTypes.bool,
+    corners: React.PropTypes.bool,
+    cornerLabels: React.PropTypes.bool,
+  }).isRequired,
+};
 
 export default Grid;
