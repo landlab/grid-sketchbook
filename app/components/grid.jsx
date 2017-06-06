@@ -31,7 +31,6 @@ class Grid extends React.Component {
 
   render() {
     const { nodeX, nodeY, nodeArea, linkLine, spacing, show } = this.props; // START HERE: need to get this data
-    console.log('six things', nodeX, nodeY, nodeArea, linkLine, spacing, show);
     const margin = { top: 2, right: 6, bottom: 5, left: 6 };
     const row = 3;
     const col = 4;

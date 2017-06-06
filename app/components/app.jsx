@@ -3,11 +3,10 @@ import axios from 'axios';
 import Grid from './grid';
 import Legend from './legend';
 import Inputs from './inputs';
-import { graph } from '../landlab_raster_grid_example.json';
-import hex from '../landlab_hex_grid_example.json';
+// import { graph } from '../landlab_raster_grid_example.json';
+// import hex from '../landlab_hex_grid_example.json';
 
 import app from '../theme/app.scss';
-
 
 class App extends React.Component {
   constructor() {
@@ -25,30 +24,34 @@ class App extends React.Component {
       showNodeLabels: false,
       showCorners: true,
       showCornerLabels: false,
-      // graph: {
-        grid: 'hex',
-        rows: '2',
-        cols: '2',
-        spacing: '10',
-      // },
+      grid: 'hex',
+      rows: '5',
+      cols: '5',
+      spacing: '5',
     };
   }
 
   componentWillMount() {
-    console.log('in componentWillMount');
-    const APIurl = `http://127.0.0.1:8181/graphs/${this.state.grid}?shape=${this.state.rows},${this.state.cols}&spacing=${this.state.spacing}`;
-    console.log('url', APIurl);
+    const APIurl =
+      `http://127.0.0.1:8181/graphs/${this.state.grid}?shape=${this.state.rows},${this.state.cols}&spacing=${this.state.grid === 'hex' ? this.state.spacing : `${this.state.spacing},${this.state.spacing}`}`;
 
     axios.get(APIurl)
     .then((response) => {
-      console.log(`response for ${this.state.grid}`, response.data.graph.data_vars); // ex.: { user: 'Your User'}
-      console.log(response.status); // ex.: 200
+      this.setState({ graph: response.data.graph.data_vars });
+    });
+  }
+
+  getNewRequest(event) {
+    this.setState({ [event.target.name]: typeof event.target.value === 'number' ? event.target.value * 1 : event.target.value });
+    const NEWurl = `http://127.0.0.1:8181/graphs/${this.state.grid}?shape=${this.state.rows},${this.state.cols}&spacing=${this.state.grid === 'hex' ? this.state.spacing : `${this.state.spacing},${this.state.spacing}`}`;
+
+    axios.get(NEWurl)
+    .then((response) => {
       this.setState({ graph: response.data.graph.data_vars });
     });
   }
 
   render() {
-    console.log('state', this.state.graph);
     const activeLayers = {
       cells: this.state.showCells,
       cellLabels: this.state.showCellLabels,
@@ -64,40 +67,11 @@ class App extends React.Component {
       cornerLabels: this.state.showCornerLabels,
     };
 
-    const newRequest = (attrs) => {
-      // console.log('grid?', attrs);
-      // for (attr in attrs) {
-        // this.setState({ graph: attrs });
-      // }
-      // const newGraph = {
-      //   grid: attrs.grid,
-      //   rows: attrs.rows,
-      //   cols: attrs.cols,
-      //   spacing: attrs.spacing,
-      // };
-      // console.log('new graph', newGraph);
-      // this.setState({
-      //   graph: newGraph,
-      // });
-    };
-    // console.log('after setState', this.state.graph);
-
-    // const APIurl = `http://127.0.0.1:8181/graphs/${this.state.grid}?shape=${this.state.rows},${this.state.cols}&spacing=${this.state.spacing}`;
-    // console.log('url', APIurl);
-    //
-    // const getData = axios.get(APIurl)
-    // .then((response) => {
-    //   console.log(`response for ${this.state.grid}`, response.data.graph.data_vars); // ex.: { user: 'Your User'}
-    //   console.log(response.status); // ex.: 200
-    //   this.setState({ graph: response.data.graph.data_vars });
-    // });
-    console.log('state', this.state.graph);
-
     return this.state.graph ? (
       <div className={app.chart}>
-        <Inputs grid={this.state.grid} rows={this.state.rows} cols={this.state.cols} spacing={this.state.spacing} onChange={e => this.setState({ [e.target.name]: typeof e.target.value === 'number' ? e.target.value * 1 : e.target.value })} />
+        <Inputs grid={this.state.grid} rows={this.state.rows} cols={this.state.cols} spacing={this.state.spacing} onChange={e => this.getNewRequest(e)} />
         <Legend active={activeLayers} onChange={e => this.setState({ [e.target.value]: !this.state[e.target.value] })} />
-        <h2>Raster Grid</h2>
+        <h2>{this.state.grid} Grid</h2>
         <Grid nodeX={this.state.graph.x_of_node.data} nodeY={this.state.graph.y_of_node.data} nodeArea={this.state.graph.nodes_at_patch.data} linkLine={this.state.graph.nodes_at_link.data} show={activeLayers} spacing={10} />
       </div>
     ) : null;
@@ -105,5 +79,3 @@ class App extends React.Component {
 }
 
 export default App;
-
-// <Inputs grid={this.state.grid} rows={this.state.rows} cols={this.state.cols} spacing={this.state.spacing} onChange={e => this.setState({ [e.target.name]: e.target.value * 1 })} />
