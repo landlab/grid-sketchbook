@@ -72,7 +72,16 @@ class App extends React.Component {
         <Inputs grid={this.state.grid} rows={this.state.rows} cols={this.state.cols} spacing={this.state.spacing} onChange={e => this.getNewRequest(e)} />
         <Legend active={activeLayers} onChange={e => this.setState({ [e.target.value]: !this.state[e.target.value] })} />
         <h2>{this.state.grid} Grid</h2>
-        <Grid nodeX={this.state.graph.x_of_node.data} nodeY={this.state.graph.y_of_node.data} nodeArea={this.state.graph.nodes_at_patch.data} linkLine={this.state.graph.nodes_at_link.data} show={activeLayers} spacing={10} />
+        <Grid
+          nodeX={this.state.graph.x_of_node.data}
+          nodeY={this.state.graph.y_of_node.data}
+          nodeArea={this.state.graph.nodes_at_patch.data}
+          linkLine={this.state.graph.nodes_at_link.data}
+          show={activeLayers}
+          rows={this.state.rows}
+          cols={this.state.cols}
+          spacing={this.state.spacing * 1}
+        />
       </div>
     ) : null;
   }

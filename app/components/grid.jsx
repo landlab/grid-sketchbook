@@ -30,20 +30,20 @@ class Grid extends React.Component {
   }
 
   render() {
-    const { nodeX, nodeY, nodeArea, linkLine, spacing, show } = this.props; // START HERE: need to get this data
-    const margin = { top: 2, right: 6, bottom: 5, left: 6 };
-    const row = 3;
-    const col = 4;
-    const cellWidth = 10;
-    const innerHeight = (row - 1) * cellWidth;
-    const innerWidth = (col - 1) * cellWidth;
+    const { nodeX, nodeY, nodeArea, linkLine, spacing, show, rows, cols } = this.props;
+    const margin = { top: spacing, right: spacing, bottom: spacing, left: spacing };
+    const row = rows;
+    const col = cols;
+    const cellWidth = spacing;
+    const innerHeight = (row) * cellWidth;
+    const innerWidth = (col) * cellWidth;
     const chartHeight = innerHeight + margin.top + margin.bottom;
     const chartWidth = innerWidth + margin.left + margin.right;
     const half = spacing / 2;
 
     const xScale = d3.scaleLinear()
       .domain([0, innerWidth])
-      .range([0, innerWidth]);
+      .range([half, innerWidth + half]);
 
     const yScale = d3.scaleLinear()
       .domain([0, innerHeight])
@@ -53,8 +53,8 @@ class Grid extends React.Component {
       <g key={`node${-i}`}>
         <circle
           className={show.nodes ? show.nodeLabels ? node.highlight : node.node : node.none}
-          cx={xScale(d[0])}
-          cy={yScale(nodeY[i][1])}
+          cx={xScale(d)}
+          cy={yScale(nodeY[i])}
           r={0.7}
           onMouseEnter={() => this.setState({ node: true, activeNode: i })}
           onMouseLeave={() => this.setState({ node: false, activeNode: null })}
@@ -193,7 +193,7 @@ class Grid extends React.Component {
       const vertical = nodeX[d[0]] === nodeX[d[1]];
       const textClassnames = classNames(
         (this.state.activeLink === i) || show.linkLabels ? link.activeLabel : link.none,
-        vertical && link.vertical,
+        // vertical && link.vertical,
       );
 
       return (
@@ -218,6 +218,7 @@ class Grid extends React.Component {
             className={textClassnames}
             x={xScale(nodeX[d[0]])}
             y={yScale(nodeY[d[0]])}
+            dx={half}
             dy={0.3}
             textAnchor="middle"
           >
@@ -248,19 +249,13 @@ class Grid extends React.Component {
 }
 
 Grid.propTypes = {
-//   graph: React.PropTypes.shape({
-//     cells: React.PropTypes.array,
-//     corners: React.PropTypes.array,
-//     faces: React.PropTypes.array,
-//     links: React.PropTypes.array,
-//     nodes: React.PropTypes.array,
-//     patches: React.PropTypes.array,
-//   }).isRequired,
   nodeX: React.PropTypes.array.isRequired,
   nodeY: React.PropTypes.array.isRequired,
   nodeArea: React.PropTypes.array.isRequired,
   linkLine: React.PropTypes.array.isRequired,
   spacing: React.PropTypes.number.isRequired,
+  rows: React.PropTypes.number.isRequired,
+  cols: React.PropTypes.number.isRequired,
   show: React.PropTypes.shape({
     cells: React.PropTypes.bool,
     cellLabels: React.PropTypes.bool,
