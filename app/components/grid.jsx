@@ -31,7 +31,7 @@ class Grid extends React.Component {
 
   render() {
     const { nodeX, nodeY, nodeArea, linkLine, spacing, show, rows, cols } = this.props;
-    const margin = { top: 0, right: spacing, bottom: spacing, left: spacing };
+    const margin = { top: (-spacing / 2), right: spacing, bottom: spacing, left: spacing };
     const row = rows;
     const col = cols;
     const cellWidth = spacing;
@@ -200,7 +200,7 @@ class Grid extends React.Component {
         <g key={`link${-i}`}>
           <defs>
             <marker
-              className={(show.links || show.linkLabels) && link.arrow}
+              className={link.arrow}
               id="head"
               orient="auto"
               viewBox="-6 -6 12 12"

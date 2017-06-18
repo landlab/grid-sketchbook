@@ -1,28 +1,29 @@
 import React from 'react';
 
+import inputs from '../theme/inputs.scss';
+
 const Inputs = (props) => {
   const { grid, rows, cols, spacing, onChange } = props;
 
   return (
     <div>
-      <h2>Define your grid type and size</h2>
       <form>
-        <label htmlFor="grid">
-        grid type
-          <select name="grid" value={grid} onChange={onChange} >
+        <label className={inputs.label} htmlFor="grid">
+        Grid Type
+          <select className={inputs.select} name="grid" value={grid} onChange={onChange} >
             <option disabled value="" />
-            <option value="raster">raster</option>
-            <option value="hex">hex</option>
-            <option value="radial">radial</option>
+            <option value="raster">Raster</option>
+            <option value="hex">Hex</option>
+            <option value="radial">Radial</option>
           </select>
         </label>
-        <label htmlFor="rows">
-          rows
-          <input type="number" placeholder="rows" name="rows" value={rows} onChange={onChange} />
+        <label className={inputs.label} htmlFor="rows">
+          Rows
+          <input className={inputs.input} type="number" placeholder="rows" name="rows" value={rows} onChange={onChange} />
         </label>
-        <label htmlFor="cols">
-          cols
-          <input type="number" placeholder="cols" name="cols" value={cols} onChange={onChange} />
+        <label className={inputs.label} htmlFor="cols">
+          Columns
+          <input className={inputs.input} type="number" placeholder="cols" name="cols" value={cols} onChange={onChange} />
         </label>
       </form>
     </div>

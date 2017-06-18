@@ -1,4 +1,5 @@
 @import 'colors';
+@import 'shared';
 
 .container {
   margin: 0 auto;
@@ -26,16 +27,6 @@
 
 h2 {
   font-weight: lighter;
-}
-
-%button {
-  padding: 10px;
-  border: none;
-  font-size: 16px;
-  background-color: transparent;
-  &:focus {
-    outline: none;
-  }
 }
 
 .button {
