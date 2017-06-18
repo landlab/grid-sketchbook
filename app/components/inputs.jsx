@@ -4,32 +4,28 @@ const Inputs = (props) => {
   const { grid, rows, cols, spacing, onChange } = props;
 
   return (
-    <form >
-      <label htmlFor="grid">
-        Choose your grid type
-        <select name="grid" value={grid} onChange={onChange} >
-          <option disabled value="" />
-          <option value="raster">raster</option>
-          <option value="hex">hex</option>
-          <option value="voronoi">voronoi</option>
-        </select>
-      </label>
-      <div>{grid && grid}</div>
-      <label htmlFor="rows">
-        rows
-        <input type="number" placeholder="rows" name="rows" value={rows} onChange={onChange} />
-      </label>
-      <div>{rows && rows}</div>
-      <label htmlFor="cols">
-        <input type="number" placeholder="cols" name="cols" value={cols} onChange={onChange} />
-      </label>
-      <div>{cols && cols}</div>
-      <label htmlFor="spacing">
-        spacing
-        <input type="text" placeholder="spacing" name="spacing" value={spacing} onChange={onChange} />
-      </label>
-      <div>{spacing && spacing}</div>
-    </form>
+    <div>
+      <h2>Define your grid type and size</h2>
+      <form>
+        <label htmlFor="grid">
+        grid type
+          <select name="grid" value={grid} onChange={onChange} >
+            <option disabled value="" />
+            <option value="raster">raster</option>
+            <option value="hex">hex</option>
+            <option value="radial">radial</option>
+          </select>
+        </label>
+        <label htmlFor="rows">
+          rows
+          <input type="number" placeholder="rows" name="rows" value={rows} onChange={onChange} />
+        </label>
+        <label htmlFor="cols">
+          cols
+          <input type="number" placeholder="cols" name="cols" value={cols} onChange={onChange} />
+        </label>
+      </form>
+    </div>
   );
 };
 

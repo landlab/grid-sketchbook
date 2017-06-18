@@ -85,14 +85,13 @@ class App extends React.Component {
           grid={this.state.grid}
           rows={this.state.rows}
           cols={this.state.cols}
-          spacing={this.state.spacing}
           onChange={e => this.updateGridValues(e)}
         />
         <Legend
           active={activeLayers}
           onChange={e => this.toggleActiveLayers(e)}
         />
-        <h2>{this.state.grid} Grid</h2>
+        <h2>{this.state.grid.charAt(0).toUpperCase() + this.state.grid.slice(1)} Grid</h2>
         <Grid
           nodeX={this.state.graph.x_of_node.data}
           nodeY={this.state.graph.y_of_node.data}
