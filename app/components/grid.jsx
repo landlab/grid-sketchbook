@@ -199,7 +199,7 @@ class Grid extends React.Component {
       return (
         <g key={`link${-i}`}>
           <defs>
-            <marker className={link.arrow} id="head" orient="auto" viewBox="-6 -6 12 12" refX={5} refY={0} markerHeight={2}>
+            <marker className={(show.links || show.linkLabels) && link.arrow} id="head" orient="auto" viewBox="-6 -6 12 12" refX={5} refY={0} markerHeight={2}>
               <path d="M -4 -4 0 0 -4 4" />
             </marker>
           </defs>
