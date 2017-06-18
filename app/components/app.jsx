@@ -22,9 +22,9 @@ class App extends React.Component {
       showNodeLabels: false,
       showCorners: true,
       showCornerLabels: false,
-      grid: 'hex',
-      rows: 5,
-      cols: 5,
+      grid: 'raster',
+      rows: 4,
+      cols: 6,
       spacing: 10,
     };
   }
