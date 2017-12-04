@@ -30,7 +30,21 @@ class Grid extends React.Component {
   }
 
   render() {
-    const { nodeX, nodeY, nodeArea, linkLine, spacing, show, rows, cols } = this.props;
+    const {
+      nodeX,
+      nodeY,
+      nodeArea,
+      cornerX,
+      cornerY,
+      cornerArea,
+      linkLine,
+      faceLine,
+      spacing,
+      show,
+      rows,
+      cols,
+    } = this.props;
+
     const margin = { top: (-spacing / 2), right: spacing, bottom: spacing, left: spacing };
     const row = rows;
     const col = cols;
@@ -74,66 +88,73 @@ class Grid extends React.Component {
       ),
     );
 
-    // const corners = graph.corners.map(d => (
-    //   <g key={`corner ${d.id}`}>
-    //     <circle
-    //       className={
-    //         show.corners ? show.cornerLabels ? corner.highlight : corner.corner : corner.none
-    //       }
-    //       cx={xScale(d.x)}
-    //       cy={yScale(d.y)}
-    //       r={0.7}
-    //       onMouseEnter={() => this.setState({ corner: true, activeCorner: d.id })}
-    //       onMouseLeave={() => this.setState({ corner: false, activeCorner: null })}
-    //     />
-    //     <text
-    //       className={
-    //         (this.state.activeCorner === d.id) || show.cornerLabels ? corner.activeLabel : corner.none
-    //       }
-    //       x={xScale(d.x)}
-    //       dy={-1}
-    //       y={yScale(d.y)}
-    //       textAnchor="middle"
-    //     >
-    //       {`corner ${d.id}`}
-    //     </text>
-    //   </g>
-    //   ),
-    // );
+    const corners = cornerX.map((d, i) => (
+      <g key={`corner${-i}`}>
+        <circle
+          className={
+            show.corners ? show.cornerLabels ? corner.highlight : corner.corner : corner.none
+          }
+          cx={xScale(d)}
+          cy={yScale(cornerY[i])}
+          r={0.7}
+          onMouseEnter={() => this.setState({ corner: true, activeCorner: i })}
+          onMouseLeave={() => this.setState({ corner: false, activeCorner: null })}
+        />
+        <text
+          className={
+            (this.state.activeCorner === i) || show.cornerLabels ? corner.activeLabel : corner.none
+          }
+          x={xScale(d)}
+          dy={-1}
+          y={yScale(cornerY[i])}
+          textAnchor="middle"
+        >
+          corner {i}
+        </text>
+      </g>
+      ),
+    );
 
-    const getPath = (verticies) => {
-      const allCorners = verticies.map(c => (`${xScale(nodeX[c])} ${yScale(nodeY[c])}`));
+    const getPath = (verticies, element) => {
+      const allCorners = verticies.map((c) => {
+        if (element === 'node') {
+          return `${xScale(nodeX[c])} ${yScale(nodeY[c])}`;
+        } else if (element === 'corner') {
+          return (`${xScale(cornerX[c])} ${yScale(cornerY[c])}`);
+        }
+        return null;
+      });
       const d = `M ${allCorners} Z`;
       return d;
     };
 
-    // const cells = graph.cells.map(d => (
-    //   <g key={`cell ${d.id}`}>
-    //     <path
-    //       className={show.cells ? show.cellLabels ? cell.highlight : cell.cell : cell.none}
-    //       d={getPath(d.corners, 'corners')}
-    //       fill="transparent"
-    //       onMouseEnter={() => this.setState({ cell: true, activeCell: d.id })}
-    //       onMouseLeave={() => this.setState({ cell: false, activeCell: null })}
-    //     />
-    //     <text
-    //       className={
-    //         (this.state.activeCell === d.id) || show.cellLabels ? cell.activeLabel : cell.none
-    //       }
-    //       x={xScale(d.x)}
-    //       y={yScale(d.y)}
-    //       textAnchor="middle"
-    //     >
-    //       {`cell ${d.id}`}
-    //     </text>
-    //   </g>
-    // ));
+    const cells = cornerArea.map((d, i) => (
+      <g key={`cell${-i}`}>
+        <path
+          className={show.cells ? show.cellLabels ? cell.highlight : cell.cell : cell.none}
+          d={getPath(d, 'corner')}
+          fill="transparent"
+          onMouseEnter={() => this.setState({ cell: true, activeCell: i })}
+          onMouseLeave={() => this.setState({ cell: false, activeCell: null })}
+        />
+        <text
+          className={
+            (this.state.activeCell === i) || show.cellLabels ? cell.activeLabel : cell.none
+          }
+          x={xScale(cornerX[d[0]] - half)}
+          y={yScale(cornerY[d[0]] - half)}
+          textAnchor="middle"
+        >
+          cell {i}
+        </text>
+      </g>
+    ));
 
     const patches = nodeArea.map((d, i) => (
       <g key={`patch${-i}`}>
         <path
           className={show.patches ? show.patchLabels ? patch.highlight : patch.patch : patch.none}
-          d={getPath(d)}
+          d={getPath(d, 'node')}
           fill="transparent"
           onMouseEnter={() => this.setState({ patch: true, activePatch: i })}
           onMouseLeave={() => this.setState({ patch: false, activePatch: null })}
@@ -150,50 +171,58 @@ class Grid extends React.Component {
         </text>
       </g>
     ));
-  //
-  //   const faces = graph.faces.map((d) => {
-  //     const vertical = graph.corners[d.tail_corner].x === graph.corners[d.head_corner].x;
-  //     const textClassnames = classNames(
-  //       (this.state.activeFace === d.id) || show.faceLabels ? face.activeLabel : face.none,
-  //       vertical && face.vertical,
-  //     );
-  //     return (
-  //       <g key={`face ${d.id}`}>
-  //         <defs>
-  //           <marker className={face.arrow} id="face" orient="auto" viewBox="-6 -6 12 12" refX={5} refY={0} markerHeight={2}>
-  //             <path d="M -4 -4 0 0 -4 4" />
-  //           </marker>
-  //         </defs>
-  //         <line
-  //           className={show.faces ? show.faceLabels ? face.highlight : face.face : face.none}
-  //           x1={xScale(graph.corners[d.tail_corner].x)}
-  //           x2={xScale(graph.corners[d.head_corner].x)}
-  //           y1={yScale(graph.corners[d.tail_corner].y)}
-  //           y2={yScale(graph.corners[d.head_corner].y)}
-  //           markerEnd="url(#face)"
-  //           onMouseEnter={() => this.setState({ face: true, activeFace: d.id })}
-  //           onMouseLeave={() => this.setState({ face: false, activeFace: null })}
-  //
-  //         />
-  //         <text
-  //           className={textClassnames}
-  //           x={xScale(d.x)}
-  //           y={yScale(d.y)}
-  //           dy={0.3}
-  //           textAnchor="middle"
-  //         >
-  //           {`face ${d.id}`}
-  //         </text>
-  //       </g>
-  //     );
-  //   },
-  // );
-  //
+
+    const faces = faceLine.map((d, i) => {
+      const vertical = cornerX[d[0]] === cornerX[d[1]];
+      const textClassnames = classNames(
+        (this.state.activeFace === i) || show.faceLabels ? face.activeLabel : face.none,
+        vertical && face.vertical,
+      );
+      return (
+        <g key={`face${-i}`}>
+          <defs>
+            <marker
+              className={face.arrow}
+              id="face"
+              orient="auto"
+              viewBox="-6 -6 12 12"
+              refX={5}
+              refY={0}
+              markerHeight={2}
+            >
+              <path d="M -4 -4 0 0 -4 4" />
+            </marker>
+          </defs>
+          <line
+            className={show.faces ? show.faceLabels ? face.highlight : face.face : face.none}
+            x1={xScale(cornerX[d[0]])}
+            x2={xScale(cornerX[d[1]])}
+            y1={yScale(cornerY[d[0]])}
+            y2={yScale(cornerY[d[1]])}
+            markerEnd="url(#face)"
+            onMouseEnter={() => this.setState({ face: true, activeFace: i })}
+            onMouseLeave={() => this.setState({ face: false, activeFace: null })}
+          />
+          <text
+            className={textClassnames}
+            x={xScale(cornerX[d[0]])}
+            y={yScale(cornerY[d[0]])}
+            dx={vertical ? 0 : half}
+            dy={vertical ? -half : 0.3}
+            textAnchor="middle"
+          >
+            face {i}
+          </text>
+        </g>
+      );
+    },
+  );
+
     const links = linkLine.map((d, i) => {
       const vertical = nodeX[d[0]] === nodeX[d[1]];
       const textClassnames = classNames(
         (this.state.activeLink === i) || show.linkLabels ? link.activeLabel : link.none,
-        // vertical && link.vertical,
+        vertical && link.vertical,
       );
 
       return (
@@ -226,8 +255,8 @@ class Grid extends React.Component {
             className={textClassnames}
             x={xScale(nodeX[d[0]])}
             y={yScale(nodeY[d[0]])}
-            dx={half}
-            dy={0.3}
+            dx={vertical ? 0 : half}
+            dy={vertical ? -half : 0.3}
             textAnchor="middle"
           >
             link {i}
@@ -236,20 +265,15 @@ class Grid extends React.Component {
       );
     });
 
-  // {patches}
-  // {cells}
-  // {links}
-  // {faces}
-  // {nodes}
-  // {corners}
-
-
     return (
-      <svg className={grid.chart} viewBox={`0 0 ${chartWidth} ${chartHeight}`} width="60vw" >
+      <svg className={grid.chart} viewBox={`0 0 ${chartWidth} ${chartHeight}`} width="80vw" >
         <g transform={`translate(${margin.left} ${margin.top})`} >
           {patches}
+          {cells}
           {links}
+          {faces}
           {nodes}
+          {corners}
         </g>
       </svg>
     );
@@ -257,10 +281,14 @@ class Grid extends React.Component {
 }
 
 Grid.propTypes = {
-  nodeX: React.PropTypes.array.isRequired,
-  nodeY: React.PropTypes.array.isRequired,
-  nodeArea: React.PropTypes.array.isRequired,
-  linkLine: React.PropTypes.array.isRequired,
+  nodeX: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  nodeY: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  nodeArea: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
+  cornerX: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  cornerY: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  cornerArea: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
+  linkLine: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
+  faceLine: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
   spacing: React.PropTypes.number.isRequired,
   rows: React.PropTypes.number.isRequired,
   cols: React.PropTypes.number.isRequired,

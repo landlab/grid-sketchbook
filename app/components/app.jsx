@@ -31,7 +31,7 @@ class App extends React.Component {
 
   componentWillMount() {
     const APIurl =
-      `http://127.0.0.1:8181/graphs/${this.state.grid}?shape=${this.state.rows},${this.state.cols}&spacing=${this.state.grid === 'raster' ? `${this.state.spacing},${this.state.spacing}` : this.state.spacing}`;
+      `http://127.0.0.1:8181/graphs/${this.state.grid}?shape=${this.state.rows},${this.state.cols}&spacing=${this.state.spacing}`;
 
     axios.get(APIurl)
     .then((response) => {
@@ -96,7 +96,11 @@ class App extends React.Component {
           nodeX={this.state.graph.x_of_node.data}
           nodeY={this.state.graph.y_of_node.data}
           nodeArea={this.state.graph.nodes_at_patch.data}
+          cornerX={this.state.graph.x_of_corner.data}
+          cornerY={this.state.graph.y_of_corner.data}
+          cornerArea={this.state.graph.corners_at_cell.data}
           linkLine={this.state.graph.nodes_at_link.data}
+          faceLine={this.state.graph.corners_at_face.data}
           show={activeLayers}
           rows={this.state.rows}
           cols={this.state.cols}

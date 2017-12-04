@@ -39,20 +39,10 @@ h2 {
   color: white;
 }
 
-.cellLabelButton {
-  @extend %button;
-  color: $text-area;
-}
-
 .patchButtonDown {
   @extend %button;
   background-color: rgba($color-patch, 0.8);
   color: white;
-}
-
-.patchLabelButton {
-  @extend %button;
-  color: $text-area;
 }
 
 .linkButtonDown {
@@ -61,39 +51,19 @@ h2 {
 
 }
 
-.linkLabelButton {
-  @extend %button;
-  color: $text-vector;
-}
-
 .faceButtonDown {
   @extend %button;
   background-color: rgba($color-face, 0.8);
 }
 
-.faceLabelButton {
-  @extend %button;
-  color: $text-vector;
-}
-
 .nodeButtonDown {
   @extend %button;
   background-color: rgba($color-node, 0.8);
-
-}
-
-.nodeLabelButton {
-  @extend %button;
-  color: $text-point;
+  color: white;
 }
 
 .cornerButtonDown {
   @extend %button;
   background-color: rgba($color-corner, 0.8);
-
-}
-
-.cornerLabelButton {
-  @extend %button;
-  color: $text-point;
+  color: white;
 }

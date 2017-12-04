@@ -3,7 +3,7 @@ import React from 'react';
 import inputs from '../theme/inputs.scss';
 
 const Inputs = (props) => {
-  const { grid, rows, cols, spacing, onChange } = props;
+  const { grid, rows, cols, onChange } = props;
 
   return (
     <div>
@@ -19,11 +19,11 @@ const Inputs = (props) => {
         </label>
         <label className={inputs.label} htmlFor="rows">
           Rows
-          <input className={inputs.input} type="number" placeholder="rows" name="rows" value={rows} onChange={onChange} />
+          <input className={inputs.input} type="number" max="9" min="3" placeholder="rows" name="rows" value={rows} onChange={onChange} />
         </label>
         <label className={inputs.label} htmlFor="cols">
           Columns
-          <input className={inputs.input} type="number" placeholder="cols" name="cols" value={cols} onChange={onChange} />
+          <input className={inputs.input} type="number" max="9" min="3" placeholder="cols" name="cols" value={cols} onChange={onChange} />
         </label>
       </form>
     </div>
@@ -34,9 +34,7 @@ Inputs.propTypes = {
   grid: React.PropTypes.string,
   rows: React.PropTypes.number,
   cols: React.PropTypes.number,
-  spacing: React.PropTypes.number,
   onChange: React.PropTypes.func,
-
 };
 
 export default Inputs;
