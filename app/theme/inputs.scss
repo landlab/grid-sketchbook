@@ -12,6 +12,23 @@ h2 {
   justify-content: center;
 }
 
+.hexOptions {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  .label {
+    margin: 0;
+    font-size: 1rem;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .select {
+    margin: 2px 1rem;
+  }
+}
+
 .input {
   @extend %button;
   width: 3rem;

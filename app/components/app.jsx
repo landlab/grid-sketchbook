@@ -26,9 +26,11 @@ class App extends React.Component {
       showCornerLabels: false,
       graph: {},
       grid: 'raster',
-      rows: 4,
-      cols: 6,
+      rows: 3,
+      cols: 4,
       spacing: 10,
+      layout: 'hex',
+      orientation: 'horizontal',
     };
   }
 
@@ -46,10 +48,14 @@ class App extends React.Component {
     const newGrid = this.state.grid !== state.grid;
     const newRows = this.state.rows !== state.rows;
     const newCols = this.state.cols !== state.cols;
-    const newGraph = newGrid || newRows || newCols;
-    const spacing = this.state.grid === 'hex' ? this.state.spacing : `${this.state.spacing},${this.state.spacing}`;
+    const newLayout = this.state.layout !== state.layout;
+    const newOrientation = this.state.orientation !== state.orientation;
+    const spacing = this.state.grid === 'hex' || 'radial' ? this.state.spacing : `${this.state.spacing},${this.state.spacing}`;
+    const layoutQuery = this.state.grid === 'hex' ? `&node_layout=${this.state.layout}` : '';
+    const orientationQuery = this.state.grid === 'hex' ? `&orientation=${this.state.orientation}` : '';
+    const newGraph = newGrid || newRows || newCols || newLayout || newOrientation;
     const APIurl =
-      `${apiBase}/graphs/${this.state.grid}?shape=${this.state.rows},${this.state.cols}&spacing=${spacing}`;
+      `${apiBase}/graphs/${this.state.grid}?shape=${this.state.rows},${this.state.cols}&spacing=${spacing}${layoutQuery}${orientationQuery}`;
 
     if (newGraph) {
       axios.get(APIurl)
@@ -90,6 +96,8 @@ class App extends React.Component {
           grid={this.state.grid}
           rows={this.state.rows}
           cols={this.state.cols}
+          layout={this.state.layout}
+          orientation={this.state.orientation}
           onChange={e => this.updateGridValues(e)}
         />
         <Legend
