@@ -12,7 +12,7 @@ const Inputs = (props) => {
 
   return (
     <div>
-      <form>
+      <form className={inputs.form}>
         <label className={inputs.label} htmlFor="grid">
         Grid Type
           <select className={inputs.select} name="grid" value={grid} onChange={onChange} >
