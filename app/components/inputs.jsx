@@ -74,4 +74,3 @@ Inputs.propTypes = {
 };
 
 export default Inputs;
-// <button type="submit">submit</button>

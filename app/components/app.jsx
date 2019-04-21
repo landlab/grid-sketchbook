@@ -101,11 +101,6 @@ class App extends React.Component {
           orientation={this.state.orientation}
           onChange={e => this.updateGridValues(e)}
         />
-        <Legend
-          active={activeLayers}
-          onChange={e => this.toggleActiveLayers(e)}
-        />
-        <h2>{this.state.grid.charAt(0).toUpperCase() + this.state.grid.slice(1)} Grid</h2>
         <Grid
           nodeX={this.state.graph.data_vars.x_of_node.data}
           nodeY={this.state.graph.data_vars.y_of_node.data}
@@ -119,6 +114,10 @@ class App extends React.Component {
           rows={this.state.rows}
           cols={this.state.cols}
           spacing={this.state.spacing * 1}
+        />
+        <Legend
+          active={activeLayers}
+          onChange={e => this.toggleActiveLayers(e)}
         />
       </div>
     ) : null;
