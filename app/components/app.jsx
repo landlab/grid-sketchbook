@@ -6,6 +6,8 @@ import Inputs from './inputs';
 
 import app from '../theme/app.scss';
 
+const apiBase = 'http://0.0.0.0:8080';
+
 class App extends React.Component {
   constructor() {
     super();
@@ -22,6 +24,7 @@ class App extends React.Component {
       showNodeLabels: false,
       showCorners: true,
       showCornerLabels: false,
+      graph: {},
       grid: 'raster',
       rows: 4,
       cols: 6,
@@ -31,11 +34,11 @@ class App extends React.Component {
 
   componentWillMount() {
     const APIurl =
-      `http://127.0.0.1:8181/graphs/${this.state.grid}?shape=${this.state.rows},${this.state.cols}&spacing=${this.state.spacing}`;
+      `${apiBase}/graphs/${this.state.grid}?shape=${this.state.rows},${this.state.cols}&spacing=${this.state.spacing}`;
 
     axios.get(APIurl)
     .then((response) => {
-      this.setState({ graph: response.data.graph.data_vars });
+      this.setState({ graph: response.data.graph });
     });
   }
 
@@ -46,12 +49,14 @@ class App extends React.Component {
     const newGraph = newGrid || newRows || newCols;
     const spacing = this.state.grid === 'hex' ? this.state.spacing : `${this.state.spacing},${this.state.spacing}`;
     const APIurl =
-      `http://127.0.0.1:8181/graphs/${this.state.grid}?shape=${this.state.rows},${this.state.cols}&spacing=${spacing}`;
+      `${apiBase}/graphs/${this.state.grid}?shape=${this.state.rows},${this.state.cols}&spacing=${spacing}`;
 
-    newGraph && axios.get(APIurl)
-    .then((response) => {
-      this.setState({ graph: response.data.graph.data_vars });
-    });
+    if (newGraph) {
+      axios.get(APIurl)
+      .then((response) => {
+        this.setState({ graph: response.data.graph });
+      });
+    }
   }
 
   updateGridValues(event) {
@@ -79,7 +84,7 @@ class App extends React.Component {
       cornerLabels: this.state.showCornerLabels,
     };
 
-    return this.state.graph ? (
+    return this.state.graph.data_vars ? (
       <div className={app.chart}>
         <Inputs
           grid={this.state.grid}
@@ -93,14 +98,14 @@ class App extends React.Component {
         />
         <h2>{this.state.grid.charAt(0).toUpperCase() + this.state.grid.slice(1)} Grid</h2>
         <Grid
-          nodeX={this.state.graph.x_of_node.data}
-          nodeY={this.state.graph.y_of_node.data}
-          nodeArea={this.state.graph.nodes_at_patch.data}
-          cornerX={this.state.graph.x_of_corner.data}
-          cornerY={this.state.graph.y_of_corner.data}
-          cornerArea={this.state.graph.corners_at_cell.data}
-          linkLine={this.state.graph.nodes_at_link.data}
-          faceLine={this.state.graph.corners_at_face.data}
+          nodeX={this.state.graph.data_vars.x_of_node.data}
+          nodeY={this.state.graph.data_vars.y_of_node.data}
+          patchLinks={this.state.graph.data_vars.links_at_patch.data}
+          cornerX={this.state.graph.data_vars.x_of_corner.data}
+          cornerY={this.state.graph.data_vars.y_of_corner.data}
+          cellFaces={this.state.graph.data_vars.faces_at_cell.data}
+          linkLine={this.state.graph.data_vars.nodes_at_link.data}
+          faceLine={this.state.graph.data_vars.corners_at_face.data}
           show={activeLayers}
           rows={this.state.rows}
           cols={this.state.cols}

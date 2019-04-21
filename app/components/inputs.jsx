@@ -3,7 +3,12 @@ import React from 'react';
 import inputs from '../theme/inputs.scss';
 
 const Inputs = (props) => {
-  const { grid, rows, cols, onChange } = props;
+  const {
+    grid,
+    rows,
+    cols,
+    onChange,
+  } = props;
 
   return (
     <div>
@@ -31,10 +36,10 @@ const Inputs = (props) => {
 };
 
 Inputs.propTypes = {
-  grid: React.PropTypes.string,
-  rows: React.PropTypes.number,
-  cols: React.PropTypes.number,
-  onChange: React.PropTypes.func,
+  grid: React.PropTypes.string.isRequired,
+  rows: React.PropTypes.number.isRequired,
+  cols: React.PropTypes.number.isRequired,
+  onChange: React.PropTypes.func.isRequired,
 };
 
 export default Inputs;

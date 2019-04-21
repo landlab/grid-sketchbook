@@ -10,7 +10,7 @@ module.exports = {
   },
   server: {
     hostname: '0.0.0.0',
-    port: 8080,
+    port: 8181,
     noPushState: true,
   },
   npm: {

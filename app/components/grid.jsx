@@ -33,10 +33,10 @@ class Grid extends React.Component {
     const {
       nodeX,
       nodeY,
-      nodeArea,
+      patchLinks,
       cornerX,
       cornerY,
-      cornerArea,
+      cellFaces,
       linkLine,
       faceLine,
       spacing,
@@ -116,7 +116,7 @@ class Grid extends React.Component {
     );
 
     const getPath = (verticies, element) => {
-      const allCorners = verticies.map((c) => {
+      const coordinates = verticies.map((c) => {
         if (element === 'node') {
           return `${xScale(nodeX[c])} ${yScale(nodeY[c])}`;
         } else if (element === 'corner') {
@@ -124,11 +124,25 @@ class Grid extends React.Component {
         }
         return null;
       });
-      const d = `M ${allCorners} Z`;
+      const d = `M ${coordinates} Z`;
       return d;
     };
 
-    const cells = cornerArea.map((d, i) => (
+    const getVerticies = (vector, element) => {
+      let verticieSet;
+      if (element === 'node') {
+        verticieSet = new Set((vector.map(v => linkLine[v])).flat());
+      }
+      if (element === 'corner') {
+        verticieSet = new Set((vector.map(v => faceLine[v])).flat());
+      }
+      return [...verticieSet];
+    };
+
+    const cellCorners = cellFaces.map(cellFace => getVerticies(cellFace, 'corner'));
+    const patchNodes = patchLinks.map(patchLink => getVerticies(patchLink, 'node'));
+
+    const cells = cellCorners.map((d, i) => (
       <g key={`cell${-i}`}>
         <path
           className={show.cells ? show.cellLabels ? cell.highlight : cell.cell : cell.none}
@@ -141,8 +155,8 @@ class Grid extends React.Component {
           className={
             (this.state.activeCell === i) || show.cellLabels ? cell.activeLabel : cell.none
           }
-          x={xScale(cornerX[d[0]] - half)}
-          y={yScale(cornerY[d[0]] - half)}
+          x={xScale(cornerX[d[1]] - half)}
+          y={yScale(cornerY[d[1]] - half)}
           textAnchor="middle"
         >
           cell {i}
@@ -150,7 +164,7 @@ class Grid extends React.Component {
       </g>
     ));
 
-    const patches = nodeArea.map((d, i) => (
+    const patches = patchNodes.map((d, i) => (
       <g key={`patch${-i}`}>
         <path
           className={show.patches ? show.patchLabels ? patch.highlight : patch.patch : patch.none}
@@ -163,8 +177,8 @@ class Grid extends React.Component {
           className={
             (this.state.activePatch === i) || show.patchLabels ? patch.activeLabel : patch.none
           }
-          x={xScale(nodeX[d[0]] - half)}
-          y={yScale(nodeY[d[0]] - half)}
+          x={xScale(nodeX[d[1]] - half)}
+          y={yScale(nodeY[d[1]] - half)}
           textAnchor="middle"
         >
           patch {i}
@@ -283,10 +297,10 @@ class Grid extends React.Component {
 Grid.propTypes = {
   nodeX: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
   nodeY: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
-  nodeArea: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
+  patchLinks: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
   cornerX: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
   cornerY: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
-  cornerArea: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
+  cellFaces: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
   linkLine: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
   faceLine: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
   spacing: React.PropTypes.number.isRequired,
