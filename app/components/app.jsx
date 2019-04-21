@@ -6,6 +6,7 @@ import Inputs from './inputs';
 
 import app from '../theme/app.scss';
 
+// TODO: change this to the deployed URL!
 const apiBase = 'http://0.0.0.0:8080';
 
 class App extends React.Component {

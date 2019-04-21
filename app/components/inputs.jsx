@@ -16,34 +16,14 @@ const Inputs = (props) => {
     <div>
       <form className={inputs.form}>
         <label className={inputs.label} htmlFor="grid">
-        Grid Type
+        Grid
           <select className={inputs.select} name="grid" value={grid} onChange={onChange} >
             <option disabled value="" />
-            <option value="raster">Raster</option>
-            <option value="hex">Hex</option>
-            <option value="radial">Radial</option>
+            <option value="raster">raster</option>
+            <option value="hex">hex</option>
+            <option value="radial">radial</option>
           </select>
         </label>
-        {grid === 'hex' && (
-          <div className={inputs.hexOptions}>
-            <label className={inputs.label} htmlFor="layout">
-              Node Layout
-              <select className={inputs.select} name="layout" value={layout} onChange={onChange} >
-                <option disabled value="" />
-                <option value="rect">Rectangular</option>
-                <option value="hex">Hexagonal</option>
-              </select>
-            </label>
-            <label className={inputs.label} htmlFor="orientation">
-              Orientation
-              <select className={inputs.select} name="orientation" value={orientation} onChange={onChange} >
-                <option disabled value="" />
-                <option value="horizontal">Horizontal</option>
-                <option value="vertical">Vertical</option>
-              </select>
-            </label>
-          </div>
-        )}
         { grid === 'radial' ?
           <label className={inputs.label} htmlFor="rows">
             Number of Rings
@@ -58,6 +38,27 @@ const Inputs = (props) => {
           { grid === 'radial' ? 'Points in First Ring' : 'Columns'}
           <input className={inputs.input} type="number" max="9" min="0" placeholder="cols" name="cols" value={cols} onChange={onChange} />
         </label>
+        {grid === 'hex' && (
+          <div className={inputs.hexOptions}>
+            <label className={inputs.label} htmlFor="layout">
+              Node Layout
+              <select className={inputs.select} name="layout" value={layout} onChange={onChange} >
+                <option disabled value="" />
+                <option value="rect">rectangular</option>
+                <option value="hex">hexagonal</option>
+              </select>
+            </label>
+            <label className={inputs.label} htmlFor="orientation">
+              Orientation
+              <select className={inputs.select} name="orientation" value={orientation} onChange={onChange} >
+                <option disabled value="" />
+                <option value="horizontal">horizontal</option>
+                <option value="vertical">vertical</option>
+              </select>
+            </label>
+          </div>
+        )}
+
       </form>
     </div>
   );
