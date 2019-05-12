@@ -141,6 +141,27 @@ class Grid extends React.Component {
 
     const cellCorners = cellFaces.map(cellFace => getVerticies(cellFace, 'corner'));
     const patchNodes = patchLinks.map(patchLink => getVerticies(patchLink, 'node'));
+    const cellTextPosition = cellCorners.map((d) => {
+      const position =
+        {
+          x: xScale(cornerX[d[1]] - half),
+          y: yScale(cornerY[d[1]] - (half / 2)),
+        };
+      return position;
+    });
+
+    const patchTextPosition = patchNodes.map((d) => {
+      const position = d.length % 3 === 0 ?
+      {
+        x: xScale((nodeX[d[0]] + nodeX[d[1]] + nodeX[d[2]]) / 3),
+        y: yScale((nodeY[d[0]] + nodeY[d[1]] + nodeY[d[2]]) / 3),
+      } :
+      {
+        x: xScale(nodeX[d[1]] - half),
+        y: yScale(nodeY[d[1]] - (half / 2)),
+      };
+      return position;
+    });
 
     const cells = cellCorners.map((d, i) => (
       <g key={`cell${-i}`}>
@@ -155,8 +176,8 @@ class Grid extends React.Component {
           className={
             (this.state.activeCell === i) || show.cellLabels ? cell.activeLabel : cell.none
           }
-          x={xScale(cornerX[d[1]] - half)}
-          y={yScale(cornerY[d[1]] - half)}
+          x={cellTextPosition[i].x}
+          y={cellTextPosition[i].y}
           textAnchor="middle"
         >
           cell {i}
@@ -177,8 +198,8 @@ class Grid extends React.Component {
           className={
             (this.state.activePatch === i) || show.patchLabels ? patch.activeLabel : patch.none
           }
-          x={xScale(nodeX[d[1]] - half)}
-          y={yScale(nodeY[d[1]] - half)}
+          x={patchTextPosition[i].x}
+          y={patchTextPosition[i].y}
           textAnchor="middle"
         >
           patch {i}
@@ -219,10 +240,10 @@ class Grid extends React.Component {
           />
           <text
             className={textClassnames}
-            x={xScale(cornerX[d[0]])}
-            y={yScale(cornerY[d[0]])}
-            dx={vertical ? 0 : half}
-            dy={vertical ? -half : 0.3}
+            x={xScale((cornerX[d[0]] + cornerX[d[1]]) / 2)}
+            y={yScale((cornerY[d[0]] + cornerY[d[1]]) / 2)}
+            dx={vertical ? 0.1 : 0}
+            dy={vertical ? 0 : 0.3}
             textAnchor="middle"
           >
             face {i}
@@ -267,10 +288,10 @@ class Grid extends React.Component {
           />
           <text
             className={textClassnames}
-            x={xScale(nodeX[d[0]])}
-            y={yScale(nodeY[d[0]])}
-            dx={vertical ? 0 : half}
-            dy={vertical ? -half : 0.3}
+            x={xScale((nodeX[d[0]] + nodeX[d[1]]) / 2)}
+            y={yScale((nodeY[d[0]] + nodeY[d[1]]) / 2)}
+            dx={vertical ? 0.1 : 0}
+            dy={vertical ? 0 : 0.3}
             textAnchor="middle"
           >
             link {i}
