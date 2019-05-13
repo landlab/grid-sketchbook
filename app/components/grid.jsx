@@ -41,23 +41,19 @@ class Grid extends React.Component {
       faceLine,
       spacing,
       show,
-      rows,
-      cols,
     } = this.props;
 
-    const margin = { top: (-spacing / 2), right: spacing, bottom: spacing, left: spacing };
-    const row = rows;
-    const col = cols;
-    const cellWidth = spacing;
-    const innerHeight = (row) * cellWidth;
-    const innerWidth = (col) * cellWidth;
+    const xExtent = d3.extent(nodeX);
+    const yExtent = d3.extent(nodeY);
+
+    const margin = { top: spacing / 4, right: spacing / 4, bottom: spacing / 4, left: spacing / 4 };
+    const innerWidth = xExtent[1] - xExtent[0];
+    const innerHeight = yExtent[1] - yExtent[0];
+    const marginLeftOffset = margin.left - xExtent[0];
+    const marginTopOffset = margin.top + yExtent[0];
     const chartHeight = innerHeight + margin.top + margin.bottom;
     const chartWidth = innerWidth + margin.left + margin.right;
     const half = spacing / 2;
-
-    const xScale = d3.scaleLinear()
-      .domain([0, innerWidth])
-      .range([half, innerWidth + half]);
 
     const yScale = d3.scaleLinear()
       .domain([0, innerHeight])
@@ -67,7 +63,7 @@ class Grid extends React.Component {
       <g key={`node${-i}`}>
         <circle
           className={show.nodes ? show.nodeLabels ? node.highlight : node.node : node.none}
-          cx={xScale(d)}
+          cx={d}
           cy={yScale(nodeY[i])}
           r={0.7}
           onMouseEnter={() => this.setState({ node: true, activeNode: i })}
@@ -77,7 +73,7 @@ class Grid extends React.Component {
           className={
             (this.state.activeNode === i) || show.nodeLabels ? node.activeLabel : node.none
           }
-          x={xScale(d)}
+          x={d}
           dy={-1}
           y={yScale(nodeY[i])}
           textAnchor="middle"
@@ -94,7 +90,7 @@ class Grid extends React.Component {
           className={
             show.corners ? show.cornerLabels ? corner.highlight : corner.corner : corner.none
           }
-          cx={xScale(d)}
+          cx={d}
           cy={yScale(cornerY[i])}
           r={0.7}
           onMouseEnter={() => this.setState({ corner: true, activeCorner: i })}
@@ -104,7 +100,7 @@ class Grid extends React.Component {
           className={
             (this.state.activeCorner === i) || show.cornerLabels ? corner.activeLabel : corner.none
           }
-          x={xScale(d)}
+          x={d}
           dy={-1}
           y={yScale(cornerY[i])}
           textAnchor="middle"
@@ -118,9 +114,9 @@ class Grid extends React.Component {
     const getPath = (verticies, element) => {
       const coordinates = verticies.map((c) => {
         if (element === 'node') {
-          return `${xScale(nodeX[c])} ${yScale(nodeY[c])}`;
+          return `${nodeX[c]} ${yScale(nodeY[c])}`;
         } else if (element === 'corner') {
-          return (`${xScale(cornerX[c])} ${yScale(cornerY[c])}`);
+          return (`${cornerX[c]} ${yScale(cornerY[c])}`);
         }
         return null;
       });
@@ -141,10 +137,11 @@ class Grid extends React.Component {
 
     const cellCorners = cellFaces.map(cellFace => getVerticies(cellFace, 'corner'));
     const patchNodes = patchLinks.map(patchLink => getVerticies(patchLink, 'node'));
+
     const cellTextPosition = cellCorners.map((d) => {
       const position =
         {
-          x: xScale(cornerX[d[1]] - half),
+          x: cornerX[d[1]] - half,
           y: yScale(cornerY[d[1]] - (half / 2)),
         };
       return position;
@@ -153,11 +150,11 @@ class Grid extends React.Component {
     const patchTextPosition = patchNodes.map((d) => {
       const position = d.length % 3 === 0 ?
       {
-        x: xScale((nodeX[d[0]] + nodeX[d[1]] + nodeX[d[2]]) / 3),
+        x: (nodeX[d[0]] + nodeX[d[1]] + nodeX[d[2]]) / 3,
         y: yScale((nodeY[d[0]] + nodeY[d[1]] + nodeY[d[2]]) / 3),
       } :
       {
-        x: xScale(nodeX[d[1]] - half),
+        x: nodeX[d[1]] - half,
         y: yScale(nodeY[d[1]] - (half / 2)),
       };
       return position;
@@ -230,8 +227,8 @@ class Grid extends React.Component {
           </defs>
           <line
             className={show.faces ? show.faceLabels ? face.highlight : face.face : face.none}
-            x1={xScale(cornerX[d[0]])}
-            x2={xScale(cornerX[d[1]])}
+            x1={cornerX[d[0]]}
+            x2={cornerX[d[1]]}
             y1={yScale(cornerY[d[0]])}
             y2={yScale(cornerY[d[1]])}
             markerEnd="url(#face)"
@@ -240,7 +237,7 @@ class Grid extends React.Component {
           />
           <text
             className={textClassnames}
-            x={xScale((cornerX[d[0]] + cornerX[d[1]]) / 2)}
+            x={(cornerX[d[0]] + cornerX[d[1]]) / 2}
             y={yScale((cornerY[d[0]] + cornerY[d[1]]) / 2)}
             dx={vertical ? 0.1 : 0}
             dy={vertical ? 0 : 0.3}
@@ -278,8 +275,8 @@ class Grid extends React.Component {
 
           <line
             className={show.links ? show.linkLabels ? link.highlight : link.link : link.none}
-            x1={xScale(nodeX[d[0]])}
-            x2={xScale(nodeX[d[1]])}
+            x1={nodeX[d[0]]}
+            x2={nodeX[d[1]]}
             y1={yScale(nodeY[d[0]])}
             y2={yScale(nodeY[d[1]])}
             markerEnd="url(#head)"
@@ -288,7 +285,7 @@ class Grid extends React.Component {
           />
           <text
             className={textClassnames}
-            x={xScale((nodeX[d[0]] + nodeX[d[1]]) / 2)}
+            x={(nodeX[d[0]] + nodeX[d[1]]) / 2}
             y={yScale((nodeY[d[0]] + nodeY[d[1]]) / 2)}
             dx={vertical ? 0.1 : 0}
             dy={vertical ? 0 : 0.3}
@@ -302,7 +299,7 @@ class Grid extends React.Component {
 
     return (
       <svg className={grid.chart} viewBox={`0 0 ${chartWidth} ${chartHeight}`} width="80vw" >
-        <g transform={`translate(${margin.left} ${margin.top})`} >
+        <g transform={`translate(${marginLeftOffset} ${marginTopOffset})`} >
           {patches}
           {cells}
           {links}
@@ -325,8 +322,6 @@ Grid.propTypes = {
   linkLine: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
   faceLine: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
   spacing: React.PropTypes.number.isRequired,
-  rows: React.PropTypes.number.isRequired,
-  cols: React.PropTypes.number.isRequired,
   show: React.PropTypes.shape({
     cells: React.PropTypes.bool,
     cellLabels: React.PropTypes.bool,

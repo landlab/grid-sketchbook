@@ -111,8 +111,6 @@ class App extends React.Component {
           linkLine={this.state.graph.data_vars.nodes_at_link.data}
           faceLine={this.state.graph.data_vars.corners_at_face.data}
           show={activeLayers}
-          rows={this.state.rows}
-          cols={this.state.cols}
           spacing={this.state.spacing * 1}
         />
         <Legend
