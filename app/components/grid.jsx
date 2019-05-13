@@ -161,13 +161,14 @@ class Grid extends React.Component {
     });
 
     const cells = cellCorners.map((d, i) => (
-      <g key={`cell${-i}`}>
+      <g
+        key={`cell${-i}`}
+        className={show.cells ? show.cellLabels ? cell.highlight : cell.cell : cell.none}
+        onMouseEnter={() => this.setState({ cell: true, activeCell: i })}
+        onMouseLeave={() => this.setState({ cell: false, activeCell: null })}
+      >
         <path
-          className={show.cells ? show.cellLabels ? cell.highlight : cell.cell : cell.none}
           d={getPath(d, 'corner')}
-          fill="transparent"
-          onMouseEnter={() => this.setState({ cell: true, activeCell: i })}
-          onMouseLeave={() => this.setState({ cell: false, activeCell: null })}
         />
         <text
           className={
@@ -183,13 +184,14 @@ class Grid extends React.Component {
     ));
 
     const patches = patchNodes.map((d, i) => (
-      <g key={`patch${-i}`}>
+      <g
+        className={show.patches ? show.patchLabels ? patch.highlight : patch.patch : patch.none}
+        key={`patch${-i}`}
+        onMouseEnter={() => this.setState({ patch: true, activePatch: i })}
+        onMouseLeave={() => this.setState({ patch: false, activePatch: null })}
+      >
         <path
-          className={show.patches ? show.patchLabels ? patch.highlight : patch.patch : patch.none}
           d={getPath(d, 'node')}
-          fill="transparent"
-          onMouseEnter={() => this.setState({ patch: true, activePatch: i })}
-          onMouseLeave={() => this.setState({ patch: false, activePatch: null })}
         />
         <text
           className={
@@ -211,7 +213,11 @@ class Grid extends React.Component {
         vertical && face.vertical,
       );
       return (
-        <g key={`face${-i}`}>
+        <g
+          key={`face${-i}`}
+          onMouseEnter={() => this.setState({ face: true, activeFace: i })}
+          onMouseLeave={() => this.setState({ face: false, activeFace: null })}
+        >
           <defs>
             <marker
               className={face.arrow}
@@ -232,8 +238,6 @@ class Grid extends React.Component {
             y1={yScale(cornerY[d[0]])}
             y2={yScale(cornerY[d[1]])}
             markerEnd="url(#face)"
-            onMouseEnter={() => this.setState({ face: true, activeFace: i })}
-            onMouseLeave={() => this.setState({ face: false, activeFace: null })}
           />
           <text
             className={textClassnames}
@@ -258,7 +262,11 @@ class Grid extends React.Component {
       );
 
       return (
-        <g key={`link${-i}`}>
+        <g
+          key={`link${-i}`}
+          onMouseEnter={() => this.setState({ link: true, activeLink: i })}
+          onMouseLeave={() => this.setState({ link: false, activeLink: null })}
+        >
           <defs>
             <marker
               className={link.arrow}
@@ -280,8 +288,6 @@ class Grid extends React.Component {
             y1={yScale(nodeY[d[0]])}
             y2={yScale(nodeY[d[1]])}
             markerEnd="url(#head)"
-            onMouseEnter={() => this.setState({ link: true, activeLink: i })}
-            onMouseLeave={() => this.setState({ link: false, activeLink: null })}
           />
           <text
             className={textClassnames}
