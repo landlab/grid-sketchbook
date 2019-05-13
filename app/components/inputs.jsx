@@ -21,7 +21,7 @@ const Inputs = (props) => {
             <option disabled value="" />
             <option value="raster">raster</option>
             <option value="hex">hex</option>
-            <option value="radial">radial</option>
+            <option disabled value="radial">radial</option>
           </select>
         </label>
         { grid === 'radial' ?
