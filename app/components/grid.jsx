@@ -30,206 +30,276 @@ class Grid extends React.Component {
   }
 
   render() {
-    const { data, show } = this.props;
-    const margin = { top: 2, right: 6, bottom: 5, left: 6 };
-    const row = 3;
-    const col = 4;
-    const cellWidth = 10;
-    const innerHeight = (row - 1) * cellWidth;
-    const innerWidth = (col - 1) * cellWidth;
+    const {
+      nodeX,
+      nodeY,
+      patchLinks,
+      cornerX,
+      cornerY,
+      cellFaces,
+      linkLine,
+      faceLine,
+      spacing,
+      show,
+    } = this.props;
+
+    const xExtent = d3.extent(nodeX);
+    const yExtent = d3.extent(nodeY);
+
+    const margin = { top: spacing / 4, right: spacing / 4, bottom: spacing / 4, left: spacing / 4 };
+    const innerWidth = xExtent[1] - xExtent[0];
+    const innerHeight = yExtent[1] - yExtent[0];
+    const marginLeftOffset = margin.left - xExtent[0];
+    const marginTopOffset = margin.top + yExtent[0];
     const chartHeight = innerHeight + margin.top + margin.bottom;
     const chartWidth = innerWidth + margin.left + margin.right;
-
-    const xScale = d3.scaleLinear()
-      .domain([0, innerWidth])
-      .range([0, innerWidth]);
+    const half = spacing / 2;
 
     const yScale = d3.scaleLinear()
       .domain([0, innerHeight])
       .range([innerHeight, 0]);
 
-    const nodes = data.nodes.map(d => (
-      <g key={`node ${d.id}`}>
+    const nodes = nodeX.map((d, i) => (
+      <g key={`node${-i}`}>
         <circle
           className={show.nodes ? show.nodeLabels ? node.highlight : node.node : node.none}
-          cx={xScale(d.x)}
-          cy={yScale(d.y)}
+          cx={d}
+          cy={yScale(nodeY[i])}
           r={0.7}
-          onMouseEnter={() => this.setState({ node: true, activeNode: d.id })}
+          onMouseEnter={() => this.setState({ node: true, activeNode: i })}
           onMouseLeave={() => this.setState({ node: false, activeNode: null })}
         />
         <text
           className={
-            (this.state.activeNode === d.id) || show.nodeLabels ? node.activeLabel : node.none
+            (this.state.activeNode === i) || show.nodeLabels ? node.activeLabel : node.none
           }
-          x={xScale(d.x)}
+          x={d}
           dy={-1}
-          y={yScale(d.y)}
+          y={yScale(nodeY[i])}
           textAnchor="middle"
         >
-          {`node ${d.id}`}
+          node {i}
         </text>
       </g>
       ),
     );
 
-    const corners = data.corners.map(d => (
-      <g key={`corner ${d.id}`}>
+    const corners = cornerX.map((d, i) => (
+      <g key={`corner${-i}`}>
         <circle
           className={
             show.corners ? show.cornerLabels ? corner.highlight : corner.corner : corner.none
           }
-          cx={xScale(d.x)}
-          cy={yScale(d.y)}
+          cx={d}
+          cy={yScale(cornerY[i])}
           r={0.7}
-          onMouseEnter={() => this.setState({ corner: true, activeCorner: d.id })}
+          onMouseEnter={() => this.setState({ corner: true, activeCorner: i })}
           onMouseLeave={() => this.setState({ corner: false, activeCorner: null })}
         />
         <text
           className={
-            (this.state.activeCorner === d.id) || show.cornerLabels ? corner.activeLabel : corner.none
+            (this.state.activeCorner === i) || show.cornerLabels ? corner.activeLabel : corner.none
           }
-          x={xScale(d.x)}
+          x={d}
           dy={-1}
-          y={yScale(d.y)}
+          y={yScale(cornerY[i])}
           textAnchor="middle"
         >
-          {`corner ${d.id}`}
+          corner {i}
         </text>
       </g>
       ),
     );
 
-    const getPath = (verticies, vertex) => {
-      const allCorners = verticies.map(c => (`${xScale(data[vertex][c].x)} ${yScale(data[vertex][c].y)}`));
-      // console.log(allCorners);
-      const d = `M ${allCorners} Z`;
+    const getPath = (verticies, element) => {
+      const coordinates = verticies.map((c) => {
+        if (element === 'node') {
+          return `${nodeX[c]} ${yScale(nodeY[c])}`;
+        } else if (element === 'corner') {
+          return (`${cornerX[c]} ${yScale(cornerY[c])}`);
+        }
+        return null;
+      });
+      const d = `M ${coordinates} Z`;
       return d;
     };
 
-    const cells = data.cells.map(d => (
-      <g key={`cell ${d.id}`}>
+    const getVerticies = (vector, element) => {
+      let verticieSet;
+      if (element === 'node') {
+        verticieSet = new Set((vector.map(v => linkLine[v])).flat());
+      }
+      if (element === 'corner') {
+        verticieSet = new Set((vector.map(v => faceLine[v])).flat());
+      }
+      return [...verticieSet];
+    };
+
+    const cellCorners = cellFaces.map(cellFace => getVerticies(cellFace, 'corner'));
+    const patchNodes = patchLinks.map(patchLink => getVerticies(patchLink, 'node'));
+
+    const cellTextPosition = cellCorners.map((d) => {
+      const position =
+        {
+          x: cornerX[d[1]] - half,
+          y: yScale(cornerY[d[1]] - (half / 2)),
+        };
+      return position;
+    });
+
+    const patchTextPosition = patchNodes.map((d) => {
+      const position = d.length % 3 === 0 ?
+      {
+        x: (nodeX[d[0]] + nodeX[d[1]] + nodeX[d[2]]) / 3,
+        y: yScale((nodeY[d[0]] + nodeY[d[1]] + nodeY[d[2]]) / 3),
+      } :
+      {
+        x: nodeX[d[1]] - half,
+        y: yScale(nodeY[d[1]] - (half / 2)),
+      };
+      return position;
+    });
+
+    const cells = cellCorners.map((d, i) => (
+      <g key={`cell${-i}`}>
         <path
           className={show.cells ? show.cellLabels ? cell.highlight : cell.cell : cell.none}
-          d={getPath(d.corners, 'corners')}
+          d={getPath(d, 'corner')}
           fill="transparent"
-          onMouseEnter={() => this.setState({ cell: true, activeCell: d.id })}
+          onMouseEnter={() => this.setState({ cell: true, activeCell: i })}
           onMouseLeave={() => this.setState({ cell: false, activeCell: null })}
         />
         <text
           className={
-            (this.state.activeCell === d.id) || show.cellLabels ? cell.activeLabel : cell.none
+            (this.state.activeCell === i) || show.cellLabels ? cell.activeLabel : cell.none
           }
-          x={xScale(d.x)}
-          y={yScale(d.y)}
+          x={cellTextPosition[i].x}
+          y={cellTextPosition[i].y}
           textAnchor="middle"
         >
-          {`cell ${d.id}`}
+          cell {i}
         </text>
       </g>
     ));
 
-    const patches = data.patches.map(d => (
-      <g key={`patch ${d.id}`}>
+    const patches = patchNodes.map((d, i) => (
+      <g key={`patch${-i}`}>
         <path
           className={show.patches ? show.patchLabels ? patch.highlight : patch.patch : patch.none}
-          d={getPath(d.nodes, 'nodes')}
+          d={getPath(d, 'node')}
           fill="transparent"
-          onMouseEnter={() => this.setState({ patch: true, activePatch: d.id })}
+          onMouseEnter={() => this.setState({ patch: true, activePatch: i })}
           onMouseLeave={() => this.setState({ patch: false, activePatch: null })}
         />
         <text
           className={
-            (this.state.activePatch === d.id) || show.patchLabels ? patch.activeLabel : patch.none
+            (this.state.activePatch === i) || show.patchLabels ? patch.activeLabel : patch.none
           }
-          x={xScale(data.corners[d.id].x)}
-          y={yScale(data.corners[d.id].y)}
+          x={patchTextPosition[i].x}
+          y={patchTextPosition[i].y}
           textAnchor="middle"
         >
-          {`patch ${d.id}`}
+          patch {i}
         </text>
       </g>
     ));
 
-    const faces = data.faces.map((d) => {
-      const vertical = data.corners[d.tail_corner].x === data.corners[d.head_corner].x;
+    const faces = faceLine.map((d, i) => {
+      const vertical = cornerX[d[0]] === cornerX[d[1]];
       const textClassnames = classNames(
-        (this.state.activeFace === d.id) || show.faceLabels ? face.activeLabel : face.none,
+        (this.state.activeFace === i) || show.faceLabels ? face.activeLabel : face.none,
         vertical && face.vertical,
       );
       return (
-        <g key={`face ${d.id}`}>
+        <g key={`face${-i}`}>
           <defs>
-            <marker className={face.arrow} id="face" orient="auto" viewBox="-6 -6 12 12" refX={5} refY={0} markerHeight={2}>
+            <marker
+              className={face.arrow}
+              id="face"
+              orient="auto"
+              viewBox="-6 -6 12 12"
+              refX={5}
+              refY={0}
+              markerHeight={2}
+            >
               <path d="M -4 -4 0 0 -4 4" />
             </marker>
           </defs>
           <line
             className={show.faces ? show.faceLabels ? face.highlight : face.face : face.none}
-            x1={xScale(data.corners[d.tail_corner].x)}
-            x2={xScale(data.corners[d.head_corner].x)}
-            y1={yScale(data.corners[d.tail_corner].y)}
-            y2={yScale(data.corners[d.head_corner].y)}
+            x1={cornerX[d[0]]}
+            x2={cornerX[d[1]]}
+            y1={yScale(cornerY[d[0]])}
+            y2={yScale(cornerY[d[1]])}
             markerEnd="url(#face)"
-            onMouseEnter={() => this.setState({ face: true, activeFace: d.id })}
+            onMouseEnter={() => this.setState({ face: true, activeFace: i })}
             onMouseLeave={() => this.setState({ face: false, activeFace: null })}
-
           />
           <text
             className={textClassnames}
-            x={xScale(d.x)}
-            y={yScale(d.y)}
-            dy={0.3}
+            x={(cornerX[d[0]] + cornerX[d[1]]) / 2}
+            y={yScale((cornerY[d[0]] + cornerY[d[1]]) / 2)}
+            dx={vertical ? 0.1 : 0}
+            dy={vertical ? 0 : 0.3}
             textAnchor="middle"
           >
-            {`face ${d.id}`}
+            face {i}
           </text>
         </g>
       );
     },
   );
 
-    const links = data.links.map((d) => {
-      const vertical = data.nodes[d.tail_node].x === data.nodes[d.head_node].x;
+    const links = linkLine.map((d, i) => {
+      const vertical = nodeX[d[0]] === nodeX[d[1]];
       const textClassnames = classNames(
-        (this.state.activeLink === d.id) || show.linkLabels ? link.activeLabel : link.none,
+        (this.state.activeLink === i) || show.linkLabels ? link.activeLabel : link.none,
         vertical && link.vertical,
       );
 
       return (
-        <g key={`link ${d.id}`}>
+        <g key={`link${-i}`}>
           <defs>
-            <marker className={link.arrow} id="head" orient="auto" viewBox="-6 -6 12 12" refX={5} refY={0} markerHeight={2}>
+            <marker
+              className={link.arrow}
+              id="head"
+              orient="auto"
+              viewBox="-6 -6 12 12"
+              refX={5}
+              refY={0}
+              markerHeight={2}
+            >
               <path d="M -4 -4 0 0 -4 4" />
             </marker>
           </defs>
 
           <line
             className={show.links ? show.linkLabels ? link.highlight : link.link : link.none}
-            x1={xScale(data.nodes[d.tail_node].x)}
-            x2={xScale(data.nodes[d.head_node].x)}
-            y1={yScale(data.nodes[d.tail_node].y)}
-            y2={yScale(data.nodes[d.head_node].y)}
+            x1={nodeX[d[0]]}
+            x2={nodeX[d[1]]}
+            y1={yScale(nodeY[d[0]])}
+            y2={yScale(nodeY[d[1]])}
             markerEnd="url(#head)"
-            onMouseEnter={() => this.setState({ link: true, activeLink: d.id })}
+            onMouseEnter={() => this.setState({ link: true, activeLink: i })}
             onMouseLeave={() => this.setState({ link: false, activeLink: null })}
           />
           <text
             className={textClassnames}
-            x={xScale(d.x)}
-            y={yScale(d.y)}
-            dy={0.3}
+            x={(nodeX[d[0]] + nodeX[d[1]]) / 2}
+            y={yScale((nodeY[d[0]] + nodeY[d[1]]) / 2)}
+            dx={vertical ? 0.1 : 0}
+            dy={vertical ? 0 : 0.3}
             textAnchor="middle"
           >
-            {`link ${d.id}`}
+            link {i}
           </text>
         </g>
       );
     });
 
     return (
-      <svg className={grid.chart} viewBox={`0 0 ${chartWidth} ${chartHeight}`} width="60vw" >
-        <g transform={`translate(${margin.left} ${margin.top})`} >
+      <svg className={grid.chart} viewBox={`0 0 ${chartWidth} ${chartHeight}`} width="80vw" >
+        <g transform={`translate(${marginLeftOffset} ${marginTopOffset})`} >
           {patches}
           {cells}
           {links}
@@ -243,14 +313,15 @@ class Grid extends React.Component {
 }
 
 Grid.propTypes = {
-  data: React.PropTypes.shape({
-    cells: React.PropTypes.array,
-    corners: React.PropTypes.array,
-    faces: React.PropTypes.array,
-    links: React.PropTypes.array,
-    nodes: React.PropTypes.array,
-    patches: React.PropTypes.array,
-  }).isRequired,
+  nodeX: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  nodeY: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  patchLinks: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
+  cornerX: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  cornerY: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+  cellFaces: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
+  linkLine: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
+  faceLine: React.PropTypes.arrayOf(React.PropTypes.array).isRequired,
+  spacing: React.PropTypes.number.isRequired,
   show: React.PropTypes.shape({
     cells: React.PropTypes.bool,
     cellLabels: React.PropTypes.bool,

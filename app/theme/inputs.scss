@@ -1,0 +1,57 @@
+@import 'colors';
+@import 'shared';
+
+h2 {
+  font-weight: lighter;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hexOptions {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  .label {
+    margin: 0;
+    font-size: 1rem;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .select {
+    margin: 2px 1rem;
+  }
+}
+
+.input {
+  @extend %button;
+  width: 3rem;
+  text-align: center;
+  box-shadow: 0 0 5px -2px rgba($color-cell, 0.3);
+  margin: 1rem;
+  background-color: white;
+}
+
+.select {
+  text-align: center;
+  box-shadow: 0 0 5px -2px rgba($color-cell, 0.3);
+  margin: 1rem;
+  padding: 10px;
+  height: 2rem;
+  background-color: transparent;
+  border: none;
+  width: 6rem;
+  background-color: white;
+}
+
+.label {
+  font-weight: 100;
+  font-size: 20px;
+  margin: 1rem;
+}
