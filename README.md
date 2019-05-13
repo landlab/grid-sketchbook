@@ -1,5 +1,7 @@
 # an app for designing landlab grids
 
-to run locally, install brunch `npm install -g brunch` (you will need node to npm install)
+To run locally, install brunch `npm install -g brunch` (you will need node to npm install).
 
-then `brunch watch --server` to develop or `brunch build` to build
+Use `brunch watch --server` to develop or `brunch build` to build.
+
+To deploy to gh-pages, run `npm run deploy`.
