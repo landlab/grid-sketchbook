@@ -115,7 +115,12 @@
 })();
 
 (function() {
-var global = typeof window === 'undefined' ? this : window;
+var global = typeof window === 'undefined' ? this : window;require.register("child_process", function(exports, require, module) {
+  module.exports = {};
+});
+require.register("fs", function(exports, require, module) {
+  module.exports = {};
+});
 var process;
 var __makeRelativeRequire = function(require, mappings, pref) {
   var none = {};
@@ -165,21 +170,21 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _grid = require('./grid.jsx');
+var _axios = require('axios');
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _grid = require('./grid');
 
 var _grid2 = _interopRequireDefault(_grid);
 
-var _legend = require('./legend.jsx');
+var _legend = require('./legend');
 
 var _legend2 = _interopRequireDefault(_legend);
 
-var _landlab_raster_grid_example = require('../landlab_raster_grid_example.json');
+var _inputs = require('./inputs');
 
-var _landlab_raster_grid_example2 = _interopRequireDefault(_landlab_raster_grid_example);
-
-var _landlab_hex_grid_example = require('../landlab_hex_grid_example.json');
-
-var _landlab_hex_grid_example2 = _interopRequireDefault(_landlab_hex_grid_example);
+var _inputs2 = _interopRequireDefault(_inputs);
 
 var _app = require('../theme/app.scss');
 
@@ -194,6 +199,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// TODO: change this to the deployed URL!
+var apiBase = 'http://siwenna.colorado.edu:8000';
 
 var App = function (_React$Component) {
   _inherits(App, _React$Component);
@@ -215,15 +223,66 @@ var App = function (_React$Component) {
       showNodes: true,
       showNodeLabels: false,
       showCorners: true,
-      showCornerLabels: false
+      showCornerLabels: false,
+      graph: {},
+      grid: 'raster',
+      rows: 3,
+      cols: 4,
+      spacing: 10,
+      layout: 'hex',
+      orientation: 'horizontal'
     };
     return _this;
   }
 
   _createClass(App, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      var _this2 = this;
+
+      var APIurl = apiBase + '/graphs/' + this.state.grid + '?shape=' + this.state.rows + ',' + this.state.cols + '&spacing=' + this.state.spacing;
+
+      _axios2.default.get(APIurl).then(function (response) {
+        _this2.setState({ graph: response.data.graph });
+      });
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate(props, state) {
+      var _this3 = this;
+
+      var newGrid = this.state.grid !== state.grid;
+      var newRows = this.state.rows !== state.rows;
+      var newCols = this.state.cols !== state.cols;
+      var newLayout = this.state.layout !== state.layout;
+      var newOrientation = this.state.orientation !== state.orientation;
+      var spacing = this.state.grid === 'hex' || 'radial' ? this.state.spacing : this.state.spacing + ',' + this.state.spacing;
+      var layoutQuery = this.state.grid === 'hex' ? '&node_layout=' + this.state.layout : '';
+      var orientationQuery = this.state.grid === 'hex' ? '&orientation=' + this.state.orientation : '';
+      var newGraph = newGrid || newRows || newCols || newLayout || newOrientation;
+      var APIurl = apiBase + '/graphs/' + this.state.grid + '?shape=' + this.state.rows + ',' + this.state.cols + '&spacing=' + spacing + layoutQuery + orientationQuery;
+
+      if (newGraph) {
+        _axios2.default.get(APIurl).then(function (response) {
+          _this3.setState({ graph: response.data.graph });
+        });
+      }
+    }
+  }, {
+    key: 'updateGridValues',
+    value: function updateGridValues(event) {
+      var isString = isNaN(+event.target.value);
+      this.setState(_defineProperty({}, event.target.name, isString ? event.target.value : +event.target.value));
+    }
+  }, {
+    key: 'toggleActiveLayers',
+    value: function toggleActiveLayers(event) {
+      this.setState(_defineProperty({}, event.target.value, !this.state[event.target.value]));
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this4 = this;
 
       var activeLayers = {
         cells: this.state.showCells,
@@ -239,25 +298,39 @@ var App = function (_React$Component) {
         corners: this.state.showCorners,
         cornerLabels: this.state.showCornerLabels
       };
-      return _react2.default.createElement(
+
+      return this.state.graph.data_vars ? _react2.default.createElement(
         'div',
         { className: _app2.default.chart },
-        _react2.default.createElement(_legend2.default, { active: activeLayers, onChange: function onChange(e) {
-            return _this2.setState(_defineProperty({}, e.target.value, !_this2.state[e.target.value]));
-          } }),
-        _react2.default.createElement(
-          'h2',
-          null,
-          'Raster Grid'
-        ),
-        _react2.default.createElement(_grid2.default, { data: _landlab_raster_grid_example2.default, show: activeLayers }),
-        _react2.default.createElement(
-          'h2',
-          null,
-          'Hex Grid'
-        ),
-        _react2.default.createElement(_grid2.default, { data: _landlab_hex_grid_example2.default, show: activeLayers })
-      );
+        _react2.default.createElement(_inputs2.default, {
+          grid: this.state.grid,
+          rows: this.state.rows,
+          cols: this.state.cols,
+          layout: this.state.layout,
+          orientation: this.state.orientation,
+          onChange: function onChange(e) {
+            return _this4.updateGridValues(e);
+          }
+        }),
+        _react2.default.createElement(_grid2.default, {
+          nodeX: this.state.graph.data_vars.x_of_node.data,
+          nodeY: this.state.graph.data_vars.y_of_node.data,
+          patchLinks: this.state.graph.data_vars.links_at_patch.data,
+          cornerX: this.state.graph.data_vars.x_of_corner.data,
+          cornerY: this.state.graph.data_vars.y_of_corner.data,
+          cellFaces: this.state.graph.data_vars.faces_at_cell.data,
+          linkLine: this.state.graph.data_vars.nodes_at_link.data,
+          faceLine: this.state.graph.data_vars.corners_at_face.data,
+          show: activeLayers,
+          spacing: this.state.spacing * 1
+        }),
+        _react2.default.createElement(_legend2.default, {
+          active: activeLayers,
+          onChange: function onChange(e) {
+            return _this4.toggleActiveLayers(e);
+          }
+        })
+      ) : null;
     }
   }]);
 
@@ -265,7 +338,6 @@ var App = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = App;
-
 });
 
 require.register("components/grid.jsx", function(exports, require, module) {
@@ -321,6 +393,8 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -358,33 +432,43 @@ var Grid = function (_React$Component) {
       var _this2 = this;
 
       var _props = this.props,
-          data = _props.data,
+          nodeX = _props.nodeX,
+          nodeY = _props.nodeY,
+          patchLinks = _props.patchLinks,
+          cornerX = _props.cornerX,
+          cornerY = _props.cornerY,
+          cellFaces = _props.cellFaces,
+          linkLine = _props.linkLine,
+          faceLine = _props.faceLine,
+          spacing = _props.spacing,
           show = _props.show;
 
-      var margin = { top: 2, right: 6, bottom: 5, left: 6 };
-      var row = 3;
-      var col = 4;
-      var cellWidth = 10;
-      var innerHeight = (row - 1) * cellWidth;
-      var innerWidth = (col - 1) * cellWidth;
+
+      var xExtent = d3.extent(nodeX);
+      var yExtent = d3.extent(nodeY);
+
+      var margin = { top: spacing / 4, right: spacing / 4, bottom: spacing / 4, left: spacing / 4 };
+      var innerWidth = xExtent[1] - xExtent[0];
+      var innerHeight = yExtent[1] - yExtent[0];
+      var marginLeftOffset = margin.left - xExtent[0];
+      var marginTopOffset = margin.top + yExtent[0];
       var chartHeight = innerHeight + margin.top + margin.bottom;
       var chartWidth = innerWidth + margin.left + margin.right;
-
-      var xScale = d3.scaleLinear().domain([0, innerWidth]).range([0, innerWidth]);
+      var half = spacing / 2;
 
       var yScale = d3.scaleLinear().domain([0, innerHeight]).range([innerHeight, 0]);
 
-      var nodes = data.nodes.map(function (d) {
+      var nodes = nodeX.map(function (d, i) {
         return _react2.default.createElement(
           'g',
-          { key: 'node ' + d.id },
+          { key: 'node' + -i },
           _react2.default.createElement('circle', {
             className: show.nodes ? show.nodeLabels ? _node2.default.highlight : _node2.default.node : _node2.default.none,
-            cx: xScale(d.x),
-            cy: yScale(d.y),
+            cx: d,
+            cy: yScale(nodeY[i]),
             r: 0.7,
             onMouseEnter: function onMouseEnter() {
-              return _this2.setState({ node: true, activeNode: d.id });
+              return _this2.setState({ node: true, activeNode: i });
             },
             onMouseLeave: function onMouseLeave() {
               return _this2.setState({ node: false, activeNode: null });
@@ -393,28 +477,29 @@ var Grid = function (_React$Component) {
           _react2.default.createElement(
             'text',
             {
-              className: _this2.state.activeNode === d.id || show.nodeLabels ? _node2.default.activeLabel : _node2.default.none,
-              x: xScale(d.x),
+              className: _this2.state.activeNode === i || show.nodeLabels ? _node2.default.activeLabel : _node2.default.none,
+              x: d,
               dy: -1,
-              y: yScale(d.y),
+              y: yScale(nodeY[i]),
               textAnchor: 'middle'
             },
-            'node ' + d.id
+            'node ',
+            i
           )
         );
       });
 
-      var corners = data.corners.map(function (d) {
+      var corners = cornerX.map(function (d, i) {
         return _react2.default.createElement(
           'g',
-          { key: 'corner ' + d.id },
+          { key: 'corner' + -i },
           _react2.default.createElement('circle', {
             className: show.corners ? show.cornerLabels ? _corner2.default.highlight : _corner2.default.corner : _corner2.default.none,
-            cx: xScale(d.x),
-            cy: yScale(d.y),
+            cx: d,
+            cy: yScale(cornerY[i]),
             r: 0.7,
             onMouseEnter: function onMouseEnter() {
-              return _this2.setState({ corner: true, activeCorner: d.id });
+              return _this2.setState({ corner: true, activeCorner: i });
             },
             onMouseLeave: function onMouseLeave() {
               return _this2.setState({ corner: false, activeCorner: null });
@@ -423,36 +508,82 @@ var Grid = function (_React$Component) {
           _react2.default.createElement(
             'text',
             {
-              className: _this2.state.activeCorner === d.id || show.cornerLabels ? _corner2.default.activeLabel : _corner2.default.none,
-              x: xScale(d.x),
+              className: _this2.state.activeCorner === i || show.cornerLabels ? _corner2.default.activeLabel : _corner2.default.none,
+              x: d,
               dy: -1,
-              y: yScale(d.y),
+              y: yScale(cornerY[i]),
               textAnchor: 'middle'
             },
-            'corner ' + d.id
+            'corner ',
+            i
           )
         );
       });
 
-      var getPath = function getPath(verticies, vertex) {
-        var allCorners = verticies.map(function (c) {
-          return xScale(data[vertex][c].x) + ' ' + yScale(data[vertex][c].y);
+      var getPath = function getPath(verticies, element) {
+        var coordinates = verticies.map(function (c) {
+          if (element === 'node') {
+            return nodeX[c] + ' ' + yScale(nodeY[c]);
+          } else if (element === 'corner') {
+            return cornerX[c] + ' ' + yScale(cornerY[c]);
+          }
+          return null;
         });
-        // console.log(allCorners);
-        var d = 'M ' + allCorners + ' Z';
+        var d = 'M ' + coordinates + ' Z';
         return d;
       };
 
-      var cells = data.cells.map(function (d) {
+      var getVerticies = function getVerticies(vector, element) {
+        var verticieSet = void 0;
+        if (element === 'node') {
+          verticieSet = new Set(vector.map(function (v) {
+            return linkLine[v];
+          }).flat());
+        }
+        if (element === 'corner') {
+          verticieSet = new Set(vector.map(function (v) {
+            return faceLine[v];
+          }).flat());
+        }
+        return [].concat(_toConsumableArray(verticieSet));
+      };
+
+      var cellCorners = cellFaces.map(function (cellFace) {
+        return getVerticies(cellFace, 'corner');
+      });
+      var patchNodes = patchLinks.map(function (patchLink) {
+        return getVerticies(patchLink, 'node');
+      });
+
+      var cellTextPosition = cellCorners.map(function (d) {
+        var position = {
+          x: cornerX[d[1]] - half,
+          y: yScale(cornerY[d[1]] - half / 2)
+        };
+        return position;
+      });
+
+      var patchTextPosition = patchNodes.map(function (d) {
+        var position = d.length % 3 === 0 ? {
+          x: (nodeX[d[0]] + nodeX[d[1]] + nodeX[d[2]]) / 3,
+          y: yScale((nodeY[d[0]] + nodeY[d[1]] + nodeY[d[2]]) / 3)
+        } : {
+          x: nodeX[d[1]] - half,
+          y: yScale(nodeY[d[1]] - half / 2)
+        };
+        return position;
+      });
+
+      var cells = cellCorners.map(function (d, i) {
         return _react2.default.createElement(
           'g',
-          { key: 'cell ' + d.id },
+          { key: 'cell' + -i },
           _react2.default.createElement('path', {
             className: show.cells ? show.cellLabels ? _cell2.default.highlight : _cell2.default.cell : _cell2.default.none,
-            d: getPath(d.corners, 'corners'),
+            d: getPath(d, 'corner'),
             fill: 'transparent',
             onMouseEnter: function onMouseEnter() {
-              return _this2.setState({ cell: true, activeCell: d.id });
+              return _this2.setState({ cell: true, activeCell: i });
             },
             onMouseLeave: function onMouseLeave() {
               return _this2.setState({ cell: false, activeCell: null });
@@ -461,26 +592,27 @@ var Grid = function (_React$Component) {
           _react2.default.createElement(
             'text',
             {
-              className: _this2.state.activeCell === d.id || show.cellLabels ? _cell2.default.activeLabel : _cell2.default.none,
-              x: xScale(d.x),
-              y: yScale(d.y),
+              className: _this2.state.activeCell === i || show.cellLabels ? _cell2.default.activeLabel : _cell2.default.none,
+              x: cellTextPosition[i].x,
+              y: cellTextPosition[i].y,
               textAnchor: 'middle'
             },
-            'cell ' + d.id
+            'cell ',
+            i
           )
         );
       });
 
-      var patches = data.patches.map(function (d) {
+      var patches = patchNodes.map(function (d, i) {
         return _react2.default.createElement(
           'g',
-          { key: 'patch ' + d.id },
+          { key: 'patch' + -i },
           _react2.default.createElement('path', {
             className: show.patches ? show.patchLabels ? _patch2.default.highlight : _patch2.default.patch : _patch2.default.none,
-            d: getPath(d.nodes, 'nodes'),
+            d: getPath(d, 'node'),
             fill: 'transparent',
             onMouseEnter: function onMouseEnter() {
-              return _this2.setState({ patch: true, activePatch: d.id });
+              return _this2.setState({ patch: true, activePatch: i });
             },
             onMouseLeave: function onMouseLeave() {
               return _this2.setState({ patch: false, activePatch: null });
@@ -489,85 +621,103 @@ var Grid = function (_React$Component) {
           _react2.default.createElement(
             'text',
             {
-              className: _this2.state.activePatch === d.id || show.patchLabels ? _patch2.default.activeLabel : _patch2.default.none,
-              x: xScale(data.corners[d.id].x),
-              y: yScale(data.corners[d.id].y),
+              className: _this2.state.activePatch === i || show.patchLabels ? _patch2.default.activeLabel : _patch2.default.none,
+              x: patchTextPosition[i].x,
+              y: patchTextPosition[i].y,
               textAnchor: 'middle'
             },
-            'patch ' + d.id
+            'patch ',
+            i
           )
         );
       });
 
-      var faces = data.faces.map(function (d) {
-        var vertical = data.corners[d.tail_corner].x === data.corners[d.head_corner].x;
-        var textClassnames = (0, _classnames2.default)(_this2.state.activeFace === d.id || show.faceLabels ? _face2.default.activeLabel : _face2.default.none, vertical && _face2.default.vertical);
+      var faces = faceLine.map(function (d, i) {
+        var vertical = cornerX[d[0]] === cornerX[d[1]];
+        var textClassnames = (0, _classnames2.default)(_this2.state.activeFace === i || show.faceLabels ? _face2.default.activeLabel : _face2.default.none, vertical && _face2.default.vertical);
         return _react2.default.createElement(
           'g',
-          { key: 'face ' + d.id },
+          { key: 'face' + -i },
           _react2.default.createElement(
             'defs',
             null,
             _react2.default.createElement(
               'marker',
-              { className: _face2.default.arrow, id: 'face', orient: 'auto', viewBox: '-6 -6 12 12', refX: 5, refY: 0, markerHeight: 2 },
+              {
+                className: _face2.default.arrow,
+                id: 'face',
+                orient: 'auto',
+                viewBox: '-6 -6 12 12',
+                refX: 5,
+                refY: 0,
+                markerHeight: 2
+              },
               _react2.default.createElement('path', { d: 'M -4 -4 0 0 -4 4' })
             )
           ),
           _react2.default.createElement('line', {
             className: show.faces ? show.faceLabels ? _face2.default.highlight : _face2.default.face : _face2.default.none,
-            x1: xScale(data.corners[d.tail_corner].x),
-            x2: xScale(data.corners[d.head_corner].x),
-            y1: yScale(data.corners[d.tail_corner].y),
-            y2: yScale(data.corners[d.head_corner].y),
+            x1: cornerX[d[0]],
+            x2: cornerX[d[1]],
+            y1: yScale(cornerY[d[0]]),
+            y2: yScale(cornerY[d[1]]),
             markerEnd: 'url(#face)',
             onMouseEnter: function onMouseEnter() {
-              return _this2.setState({ face: true, activeFace: d.id });
+              return _this2.setState({ face: true, activeFace: i });
             },
             onMouseLeave: function onMouseLeave() {
               return _this2.setState({ face: false, activeFace: null });
             }
-
           }),
           _react2.default.createElement(
             'text',
             {
               className: textClassnames,
-              x: xScale(d.x),
-              y: yScale(d.y),
-              dy: 0.3,
+              x: (cornerX[d[0]] + cornerX[d[1]]) / 2,
+              y: yScale((cornerY[d[0]] + cornerY[d[1]]) / 2),
+              dx: vertical ? 0.1 : 0,
+              dy: vertical ? 0 : 0.3,
               textAnchor: 'middle'
             },
-            'face ' + d.id
+            'face ',
+            i
           )
         );
       });
 
-      var links = data.links.map(function (d) {
-        var vertical = data.nodes[d.tail_node].x === data.nodes[d.head_node].x;
-        var textClassnames = (0, _classnames2.default)(_this2.state.activeLink === d.id || show.linkLabels ? _link2.default.activeLabel : _link2.default.none, vertical && _link2.default.vertical);
+      var links = linkLine.map(function (d, i) {
+        var vertical = nodeX[d[0]] === nodeX[d[1]];
+        var textClassnames = (0, _classnames2.default)(_this2.state.activeLink === i || show.linkLabels ? _link2.default.activeLabel : _link2.default.none, vertical && _link2.default.vertical);
 
         return _react2.default.createElement(
           'g',
-          { key: 'link ' + d.id },
+          { key: 'link' + -i },
           _react2.default.createElement(
             'defs',
             null,
             _react2.default.createElement(
               'marker',
-              { className: _link2.default.arrow, id: 'head', orient: 'auto', viewBox: '-6 -6 12 12', refX: 5, refY: 0, markerHeight: 2 },
+              {
+                className: _link2.default.arrow,
+                id: 'head',
+                orient: 'auto',
+                viewBox: '-6 -6 12 12',
+                refX: 5,
+                refY: 0,
+                markerHeight: 2
+              },
               _react2.default.createElement('path', { d: 'M -4 -4 0 0 -4 4' })
             )
           ),
           _react2.default.createElement('line', {
             className: show.links ? show.linkLabels ? _link2.default.highlight : _link2.default.link : _link2.default.none,
-            x1: xScale(data.nodes[d.tail_node].x),
-            x2: xScale(data.nodes[d.head_node].x),
-            y1: yScale(data.nodes[d.tail_node].y),
-            y2: yScale(data.nodes[d.head_node].y),
+            x1: nodeX[d[0]],
+            x2: nodeX[d[1]],
+            y1: yScale(nodeY[d[0]]),
+            y2: yScale(nodeY[d[1]]),
             markerEnd: 'url(#head)',
             onMouseEnter: function onMouseEnter() {
-              return _this2.setState({ link: true, activeLink: d.id });
+              return _this2.setState({ link: true, activeLink: i });
             },
             onMouseLeave: function onMouseLeave() {
               return _this2.setState({ link: false, activeLink: null });
@@ -577,22 +727,24 @@ var Grid = function (_React$Component) {
             'text',
             {
               className: textClassnames,
-              x: xScale(d.x),
-              y: yScale(d.y),
-              dy: 0.3,
+              x: (nodeX[d[0]] + nodeX[d[1]]) / 2,
+              y: yScale((nodeY[d[0]] + nodeY[d[1]]) / 2),
+              dx: vertical ? 0.1 : 0,
+              dy: vertical ? 0 : 0.3,
               textAnchor: 'middle'
             },
-            'link ' + d.id
+            'link ',
+            i
           )
         );
       });
 
       return _react2.default.createElement(
         'svg',
-        { className: _grid2.default.chart, viewBox: '0 0 ' + chartWidth + ' ' + chartHeight, width: '60vw' },
+        { className: _grid2.default.chart, viewBox: '0 0 ' + chartWidth + ' ' + chartHeight, width: '80vw' },
         _react2.default.createElement(
           'g',
-          { transform: 'translate(' + margin.left + ' ' + margin.top + ')' },
+          { transform: 'translate(' + marginLeftOffset + ' ' + marginTopOffset + ')' },
           patches,
           cells,
           links,
@@ -608,14 +760,15 @@ var Grid = function (_React$Component) {
 }(_react2.default.Component);
 
 Grid.propTypes = {
-  data: _react2.default.PropTypes.shape({
-    cells: _react2.default.PropTypes.array,
-    corners: _react2.default.PropTypes.array,
-    faces: _react2.default.PropTypes.array,
-    links: _react2.default.PropTypes.array,
-    nodes: _react2.default.PropTypes.array,
-    patches: _react2.default.PropTypes.array
-  }).isRequired,
+  nodeX: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.number).isRequired,
+  nodeY: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.number).isRequired,
+  patchLinks: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.array).isRequired,
+  cornerX: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.number).isRequired,
+  cornerY: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.number).isRequired,
+  cellFaces: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.array).isRequired,
+  linkLine: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.array).isRequired,
+  faceLine: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.array).isRequired,
+  spacing: _react2.default.PropTypes.number.isRequired,
   show: _react2.default.PropTypes.shape({
     cells: _react2.default.PropTypes.bool,
     cellLabels: _react2.default.PropTypes.bool,
@@ -633,7 +786,140 @@ Grid.propTypes = {
 };
 
 exports.default = Grid;
+});
 
+require.register("components/inputs.jsx", function(exports, require, module) {
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _inputs = require('../theme/inputs.scss');
+
+var _inputs2 = _interopRequireDefault(_inputs);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Inputs = function Inputs(props) {
+  var grid = props.grid,
+      rows = props.rows,
+      cols = props.cols,
+      layout = props.layout,
+      orientation = props.orientation,
+      onChange = props.onChange;
+
+
+  return _react2.default.createElement(
+    'div',
+    null,
+    _react2.default.createElement(
+      'form',
+      { className: _inputs2.default.form },
+      _react2.default.createElement(
+        'label',
+        { className: _inputs2.default.label, htmlFor: 'grid' },
+        'Grid',
+        _react2.default.createElement(
+          'select',
+          { className: _inputs2.default.select, name: 'grid', value: grid, onChange: onChange },
+          _react2.default.createElement('option', { disabled: true, value: '' }),
+          _react2.default.createElement(
+            'option',
+            { value: 'raster' },
+            'raster'
+          ),
+          _react2.default.createElement(
+            'option',
+            { value: 'hex' },
+            'hex'
+          ),
+          _react2.default.createElement(
+            'option',
+            { disabled: true, value: 'radial' },
+            'radial'
+          )
+        )
+      ),
+      grid === 'radial' ? _react2.default.createElement(
+        'label',
+        { className: _inputs2.default.label, htmlFor: 'rows' },
+        'Number of Rings',
+        _react2.default.createElement('input', { className: _inputs2.default.input, type: 'number', max: '5', min: '1', placeholder: 'rows', name: 'rows', value: rows, onChange: onChange })
+      ) : _react2.default.createElement(
+        'label',
+        { className: _inputs2.default.label, htmlFor: 'rows' },
+        'Rows',
+        _react2.default.createElement('input', { className: _inputs2.default.input, type: 'number', max: '9', min: '3', placeholder: 'rows', name: 'rows', value: rows, onChange: onChange })
+      ),
+      _react2.default.createElement(
+        'label',
+        { className: _inputs2.default.label, htmlFor: 'cols' },
+        grid === 'radial' ? 'Points in First Ring' : 'Columns',
+        _react2.default.createElement('input', { className: _inputs2.default.input, type: 'number', max: '9', min: '0', placeholder: 'cols', name: 'cols', value: cols, onChange: onChange })
+      ),
+      grid === 'hex' && _react2.default.createElement(
+        'div',
+        { className: _inputs2.default.hexOptions },
+        _react2.default.createElement(
+          'label',
+          { className: _inputs2.default.label, htmlFor: 'layout' },
+          'Node Layout',
+          _react2.default.createElement(
+            'select',
+            { className: _inputs2.default.select, name: 'layout', value: layout, onChange: onChange },
+            _react2.default.createElement('option', { disabled: true, value: '' }),
+            _react2.default.createElement(
+              'option',
+              { value: 'rect' },
+              'rectangular'
+            ),
+            _react2.default.createElement(
+              'option',
+              { value: 'hex' },
+              'hexagonal'
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'label',
+          { className: _inputs2.default.label, htmlFor: 'orientation' },
+          'Orientation',
+          _react2.default.createElement(
+            'select',
+            { className: _inputs2.default.select, name: 'orientation', value: orientation, onChange: onChange },
+            _react2.default.createElement('option', { disabled: true, value: '' }),
+            _react2.default.createElement(
+              'option',
+              { value: 'horizontal' },
+              'horizontal'
+            ),
+            _react2.default.createElement(
+              'option',
+              { value: 'vertical' },
+              'vertical'
+            )
+          )
+        )
+      )
+    )
+  );
+};
+
+Inputs.propTypes = {
+  grid: _react2.default.PropTypes.string.isRequired,
+  rows: _react2.default.PropTypes.number.isRequired,
+  cols: _react2.default.PropTypes.number.isRequired,
+  layout: _react2.default.PropTypes.string.isRequired,
+  orientation: _react2.default.PropTypes.string.isRequired,
+  onChange: _react2.default.PropTypes.func.isRequired
+};
+
+exports.default = Inputs;
 });
 
 require.register("components/legend.jsx", function(exports, require, module) {
@@ -714,12 +1000,12 @@ var Legend = function Legend(props) {
           { className: _legend2.default.column },
           _react2.default.createElement(
             'button',
-            { className: props.active.links ? _legend2.default.linkButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showLinks' },
-            'Links'
+            { className: props.active.faces ? _legend2.default.faceButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showFaces' },
+            'Faces'
           ),
           _react2.default.createElement(
             'button',
-            { className: props.active.linkLabels ? _legend2.default.linkButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showLinkLabels' },
+            { className: props.active.faceLabels ? _legend2.default.faceButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showFaceLabels' },
             'Show IDs'
           )
         ),
@@ -728,12 +1014,12 @@ var Legend = function Legend(props) {
           { className: _legend2.default.column },
           _react2.default.createElement(
             'button',
-            { className: props.active.faces ? _legend2.default.faceButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showFaces' },
-            'Faces'
+            { className: props.active.links ? _legend2.default.linkButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showLinks' },
+            'Links'
           ),
           _react2.default.createElement(
             'button',
-            { className: props.active.faceLabels ? _legend2.default.faceButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showFaceLabels' },
+            { className: props.active.linkLabels ? _legend2.default.linkButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showLinkLabels' },
             'Show IDs'
           )
         )
@@ -755,12 +1041,12 @@ var Legend = function Legend(props) {
           { className: _legend2.default.column },
           _react2.default.createElement(
             'button',
-            { className: props.active.nodes ? _legend2.default.nodeButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showNodes' },
-            'Nodes'
+            { className: props.active.corners ? _legend2.default.cornerButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showCorners' },
+            'Corners'
           ),
           _react2.default.createElement(
             'button',
-            { className: props.active.nodeLabels ? _legend2.default.nodeButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showNodeLabels' },
+            { className: props.active.cornerLabels ? _legend2.default.cornerButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showCornerLabels' },
             'Show IDs'
           )
         ),
@@ -769,12 +1055,12 @@ var Legend = function Legend(props) {
           { className: _legend2.default.column },
           _react2.default.createElement(
             'button',
-            { className: props.active.corners ? _legend2.default.cornerButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showCorners' },
-            'Corners'
+            { className: props.active.nodes ? _legend2.default.nodeButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showNodes' },
+            'Nodes'
           ),
           _react2.default.createElement(
             'button',
-            { className: props.active.cornerLabels ? _legend2.default.cornerButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showCornerLabels' },
+            { className: props.active.nodeLabels ? _legend2.default.nodeButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showNodeLabels' },
             'Show IDs'
           )
         )
@@ -803,7 +1089,6 @@ Legend.propTypes = {
     cornerLabels: _react2.default.PropTypes.bool
   }).isRequired
 };
-
 });
 
 require.register("initialize.jsx", function(exports, require, module) {
@@ -827,7 +1112,6 @@ document.addEventListener('DOMContentLoaded', function () {
   var root = _react2.default.createElement(_app2.default, null);
   _reactDom2.default.render(root, document.getElementById('app'));
 });
-
 });
 
 require.register("landlab_hex_grid_example.json", function(exports, require, module) {
@@ -2628,1131 +2912,245 @@ module.exports = {
 
 require.register("landlab_raster_grid_example.json", function(exports, require, module) {
 module.exports = {
-    "cells": [
-        {
-            "area": 100.0,
-            "corners": [
-                4,
-                3,
-                0,
-                1
-            ],
-            "faces": [
-                3,
-                5,
-                2,
-                0
-            ],
-            "id": 0,
-            "node": 5,
-            "x": 10.0,
-            "y": 10.0
-        },
-        {
-            "area": 100.0,
-            "corners": [
-                5,
-                4,
-                1,
-                2
-            ],
-            "faces": [
-                4,
-                6,
-                3,
-                1
-            ],
-            "id": 1,
-            "node": 6,
-            "x": 20.0,
-            "y": 10.0
-        }
-    ],
-    "corners": [
-        {
-            "cells": [
-                0,
-                -1,
-                -1,
-                -1
-            ],
-            "face_dirs": [
-                -1,
-                -1,
-                0,
-                0
-            ],
-            "faces": [
-                0,
-                2,
-                -1,
-                -1
-            ],
-            "id": 0,
-            "x": 5.0,
-            "y": 5.0
-        },
-        {
-            "cells": [
-                1,
-                0,
-                -1,
-                -1
-            ],
-            "face_dirs": [
-                -1,
-                -1,
-                1,
-                0
-            ],
-            "faces": [
-                1,
-                3,
-                0,
-                -1
-            ],
-            "id": 1,
-            "x": 15.0,
-            "y": 5.0
-        },
-        {
-            "cells": [
-                -1,
-                1,
-                -1,
-                -1
-            ],
-            "face_dirs": [
-                0,
-                -1,
-                1,
-                0
-            ],
-            "faces": [
-                -1,
-                4,
-                1,
-                -1
-            ],
-            "id": 2,
-            "x": 25.0,
-            "y": 5.0
-        },
-        {
-            "cells": [
-                -1,
-                -1,
-                -1,
-                0
-            ],
-            "face_dirs": [
-                -1,
-                0,
-                0,
-                1
-            ],
-            "faces": [
-                5,
-                -1,
-                -1,
-                2
-            ],
-            "id": 3,
-            "x": 5.0,
-            "y": 15.0
-        },
-        {
-            "cells": [
-                -1,
-                -1,
-                0,
-                1
-            ],
-            "face_dirs": [
-                -1,
-                0,
-                1,
-                1
-            ],
-            "faces": [
-                6,
-                -1,
-                5,
-                3
-            ],
-            "id": 4,
-            "x": 15.0,
-            "y": 15.0
-        },
-        {
-            "cells": [
-                -1,
-                -1,
-                1,
-                -1
-            ],
-            "face_dirs": [
-                0,
-                0,
-                1,
-                1
-            ],
-            "faces": [
-                -1,
-                -1,
-                6,
-                4
-            ],
-            "id": 5,
-            "x": 25.0,
-            "y": 15.0
-        }
-    ],
-    "faces": [
-        {
-            "cells": [
-                -1,
-                0
-            ],
-            "corners": [
-                0,
-                1
-            ],
-            "head_corner": 1,
-            "id": 0,
-            "length": 10.0,
-            "link": 4,
-            "tail_corner": 0,
-            "x": 10.0,
-            "y": 5.0
-        },
-        {
-            "cells": [
-                -1,
-                1
-            ],
-            "corners": [
-                1,
-                2
-            ],
-            "head_corner": 2,
-            "id": 1,
-            "length": 10.0,
-            "link": 5,
-            "tail_corner": 1,
-            "x": 20.0,
-            "y": 5.0
-        },
-        {
-            "cells": [
-                0,
-                -1
-            ],
-            "corners": [
-                0,
-                3
-            ],
-            "head_corner": 3,
-            "id": 2,
-            "length": 10.0,
-            "link": 7,
-            "tail_corner": 0,
-            "x": 5.0,
-            "y": 10.0
-        },
-        {
-            "cells": [
-                1,
-                0
-            ],
-            "corners": [
-                1,
-                4
-            ],
-            "head_corner": 4,
-            "id": 3,
-            "length": 10.0,
-            "link": 8,
-            "tail_corner": 1,
-            "x": 15.0,
-            "y": 10.0
-        },
-        {
-            "cells": [
-                -1,
-                1
-            ],
-            "corners": [
-                2,
-                5
-            ],
-            "head_corner": 5,
-            "id": 4,
-            "length": 10.0,
-            "link": 9,
-            "tail_corner": 2,
-            "x": 25.0,
-            "y": 10.0
-        },
-        {
-            "cells": [
-                0,
-                -1
-            ],
-            "corners": [
-                3,
-                4
-            ],
-            "head_corner": 4,
-            "id": 5,
-            "length": 10.0,
-            "link": 11,
-            "tail_corner": 3,
-            "x": 10.0,
-            "y": 15.0
-        },
-        {
-            "cells": [
-                1,
-                -1
-            ],
-            "corners": [
-                4,
-                5
-            ],
-            "head_corner": 5,
-            "id": 6,
-            "length": 10.0,
-            "link": 12,
-            "tail_corner": 4,
-            "x": 20.0,
-            "y": 15.0
-        }
-    ],
-    "links": [
-        {
-            "face_id": -1,
-            "head_node": 1,
-            "id": 0,
-            "length": 10.0,
-            "nodes": [
-                0,
-                1
-            ],
-            "patches": [
-                0,
-                -1
-            ],
-            "status": 4,
-            "tail_node": 0,
-            "x": 5.0,
-            "y": 0.0
-        },
-        {
-            "face_id": -1,
-            "head_node": 2,
-            "id": 1,
-            "length": 10.0,
-            "nodes": [
-                1,
-                2
-            ],
-            "patches": [
-                1,
-                -1
-            ],
-            "status": 4,
-            "tail_node": 1,
-            "x": 15.0,
-            "y": 0.0
-        },
-        {
-            "face_id": -1,
-            "head_node": 3,
-            "id": 2,
-            "length": 10.0,
-            "nodes": [
-                2,
-                3
-            ],
-            "patches": [
-                2,
-                -1
-            ],
-            "status": 4,
-            "tail_node": 2,
-            "x": 25.0,
-            "y": 0.0
-        },
-        {
-            "face_id": -1,
-            "head_node": 4,
-            "id": 3,
-            "length": 10.0,
-            "nodes": [
-                0,
-                4
-            ],
-            "patches": [
-                0,
-                -1
-            ],
-            "status": 4,
-            "tail_node": 0,
-            "x": 0.0,
-            "y": 5.0
-        },
-        {
-            "face_id": 0,
-            "head_node": 5,
-            "id": 4,
-            "length": 10.0,
-            "nodes": [
-                1,
-                5
-            ],
-            "patches": [
-                0,
-                1
-            ],
-            "status": 0,
-            "tail_node": 1,
-            "x": 10.0,
-            "y": 5.0
-        },
-        {
-            "face_id": 1,
-            "head_node": 6,
-            "id": 5,
-            "length": 10.0,
-            "nodes": [
-                2,
-                6
-            ],
-            "patches": [
-                1,
-                2
-            ],
-            "status": 0,
-            "tail_node": 2,
-            "x": 20.0,
-            "y": 5.0
-        },
-        {
-            "face_id": -1,
-            "head_node": 7,
-            "id": 6,
-            "length": 10.0,
-            "nodes": [
-                3,
-                7
-            ],
-            "patches": [
-                2,
-                -1
-            ],
-            "status": 4,
-            "tail_node": 3,
-            "x": 30.0,
-            "y": 5.0
-        },
-        {
-            "face_id": 2,
-            "head_node": 5,
-            "id": 7,
-            "length": 10.0,
-            "nodes": [
-                4,
-                5
-            ],
-            "patches": [
-                0,
-                3
-            ],
-            "status": 0,
-            "tail_node": 4,
-            "x": 5.0,
-            "y": 10.0
-        },
-        {
-            "face_id": 3,
-            "head_node": 6,
-            "id": 8,
-            "length": 10.0,
-            "nodes": [
-                5,
-                6
-            ],
-            "patches": [
-                1,
-                4
-            ],
-            "status": 0,
-            "tail_node": 5,
-            "x": 15.0,
-            "y": 10.0
-        },
-        {
-            "face_id": 4,
-            "head_node": 7,
-            "id": 9,
-            "length": 10.0,
-            "nodes": [
-                6,
-                7
-            ],
-            "patches": [
-                2,
-                5
-            ],
-            "status": 0,
-            "tail_node": 6,
-            "x": 25.0,
-            "y": 10.0
-        },
-        {
-            "face_id": -1,
-            "head_node": 8,
-            "id": 10,
-            "length": 10.0,
-            "nodes": [
-                4,
-                8
-            ],
-            "patches": [
-                3,
-                -1
-            ],
-            "status": 4,
-            "tail_node": 4,
-            "x": 0.0,
-            "y": 15.0
-        },
-        {
-            "face_id": 5,
-            "head_node": 9,
-            "id": 11,
-            "length": 10.0,
-            "nodes": [
-                5,
-                9
-            ],
-            "patches": [
-                3,
-                4
-            ],
-            "status": 0,
-            "tail_node": 5,
-            "x": 10.0,
-            "y": 15.0
-        },
-        {
-            "face_id": 6,
-            "head_node": 10,
-            "id": 12,
-            "length": 10.0,
-            "nodes": [
-                6,
-                10
-            ],
-            "patches": [
-                4,
-                5
-            ],
-            "status": 0,
-            "tail_node": 6,
-            "x": 20.0,
-            "y": 15.0
-        },
-        {
-            "face_id": -1,
-            "head_node": 11,
-            "id": 13,
-            "length": 10.0,
-            "nodes": [
-                7,
-                11
-            ],
-            "patches": [
-                5,
-                -1
-            ],
-            "status": 4,
-            "tail_node": 7,
-            "x": 30.0,
-            "y": 15.0
-        },
-        {
-            "face_id": -1,
-            "head_node": 9,
-            "id": 14,
-            "length": 10.0,
-            "nodes": [
-                8,
-                9
-            ],
-            "patches": [
-                3,
-                -1
-            ],
-            "status": 4,
-            "tail_node": 8,
-            "x": 5.0,
-            "y": 20.0
-        },
-        {
-            "face_id": -1,
-            "head_node": 10,
-            "id": 15,
-            "length": 10.0,
-            "nodes": [
-                9,
-                10
-            ],
-            "patches": [
-                4,
-                -1
-            ],
-            "status": 4,
-            "tail_node": 9,
-            "x": 15.0,
-            "y": 20.0
-        },
-        {
-            "face_id": -1,
-            "head_node": 11,
-            "id": 16,
-            "length": 10.0,
-            "nodes": [
-                10,
-                11
-            ],
-            "patches": [
-                5,
-                -1
-            ],
-            "status": 4,
-            "tail_node": 10,
-            "x": 25.0,
-            "y": 20.0
-        }
-    ],
-    "nodes": [
-        {
-            "cell": -1,
-            "id": 0,
-            "link_dirs": [
-                -1,
-                -1,
-                0,
-                0
-            ],
-            "links": [
-                0,
-                3,
-                -1,
-                -1
-            ],
-            "neighbor_nodes": [
-                1,
-                4,
-                -1,
-                -1
-            ],
-            "patches": [
-                0,
-                -1,
-                -1,
-                -1
-            ],
-            "status": 1,
-            "x": 0.0,
-            "y": 0.0
-        },
-        {
-            "cell": -1,
-            "id": 1,
-            "link_dirs": [
-                -1,
-                -1,
-                1,
-                0
-            ],
-            "links": [
-                1,
-                4,
-                0,
-                -1
-            ],
-            "neighbor_nodes": [
-                2,
-                5,
-                0,
-                -1
-            ],
-            "patches": [
-                1,
-                0,
-                -1,
-                -1
-            ],
-            "status": 1,
-            "x": 10.0,
-            "y": 0.0
-        },
-        {
-            "cell": -1,
-            "id": 2,
-            "link_dirs": [
-                -1,
-                -1,
-                1,
-                0
-            ],
-            "links": [
-                2,
-                5,
-                1,
-                -1
-            ],
-            "neighbor_nodes": [
-                3,
-                6,
-                1,
-                -1
-            ],
-            "patches": [
-                2,
-                1,
-                -1,
-                -1
-            ],
-            "status": 1,
-            "x": 20.0,
-            "y": 0.0
-        },
-        {
-            "cell": -1,
-            "id": 3,
-            "link_dirs": [
-                0,
-                -1,
-                1,
-                0
-            ],
-            "links": [
-                -1,
-                6,
-                2,
-                -1
-            ],
-            "neighbor_nodes": [
-                -1,
-                7,
-                2,
-                -1
-            ],
-            "patches": [
-                -1,
-                2,
-                -1,
-                -1
-            ],
-            "status": 1,
-            "x": 30.0,
-            "y": 0.0
-        },
-        {
-            "cell": -1,
-            "id": 4,
-            "link_dirs": [
-                -1,
-                -1,
-                0,
-                1
-            ],
-            "links": [
-                7,
-                10,
-                -1,
-                3
-            ],
-            "neighbor_nodes": [
-                5,
-                8,
-                -1,
-                0
-            ],
-            "patches": [
-                3,
-                -1,
-                -1,
-                0
-            ],
-            "status": 1,
-            "x": 0.0,
-            "y": 10.0
-        },
-        {
-            "cell": 0,
-            "id": 5,
-            "link_dirs": [
-                -1,
-                -1,
-                1,
-                1
-            ],
-            "links": [
-                8,
-                11,
-                7,
-                4
-            ],
-            "neighbor_nodes": [
-                6,
-                9,
-                4,
-                1
-            ],
-            "patches": [
-                4,
-                3,
-                0,
-                1
-            ],
-            "status": 0,
-            "x": 10.0,
-            "y": 10.0
-        },
-        {
-            "cell": 1,
-            "id": 6,
-            "link_dirs": [
-                -1,
-                -1,
-                1,
-                1
-            ],
-            "links": [
-                9,
-                12,
-                8,
-                5
-            ],
-            "neighbor_nodes": [
-                7,
-                10,
-                5,
-                2
-            ],
-            "patches": [
-                5,
-                4,
-                1,
-                2
-            ],
-            "status": 0,
-            "x": 20.0,
-            "y": 10.0
-        },
-        {
-            "cell": -1,
-            "id": 7,
-            "link_dirs": [
-                0,
-                -1,
-                1,
-                1
-            ],
-            "links": [
-                -1,
-                13,
-                9,
-                6
-            ],
-            "neighbor_nodes": [
-                -1,
-                11,
-                6,
-                3
-            ],
-            "patches": [
-                -1,
-                5,
-                2,
-                -1
-            ],
-            "status": 1,
-            "x": 30.0,
-            "y": 10.0
-        },
-        {
-            "cell": -1,
-            "id": 8,
-            "link_dirs": [
-                -1,
-                0,
-                0,
-                1
-            ],
-            "links": [
-                14,
-                -1,
-                -1,
-                10
-            ],
-            "neighbor_nodes": [
-                9,
-                -1,
-                -1,
-                4
-            ],
-            "patches": [
-                -1,
-                -1,
-                -1,
-                3
-            ],
-            "status": 1,
-            "x": 0.0,
-            "y": 20.0
-        },
-        {
-            "cell": -1,
-            "id": 9,
-            "link_dirs": [
-                -1,
-                0,
-                1,
-                1
-            ],
-            "links": [
-                15,
-                -1,
-                14,
-                11
-            ],
-            "neighbor_nodes": [
-                10,
-                -1,
-                8,
-                5
-            ],
-            "patches": [
-                -1,
-                -1,
-                3,
-                4
-            ],
-            "status": 1,
-            "x": 10.0,
-            "y": 20.0
-        },
-        {
-            "cell": -1,
-            "id": 10,
-            "link_dirs": [
-                -1,
-                0,
-                1,
-                1
-            ],
-            "links": [
-                16,
-                -1,
-                15,
-                12
-            ],
-            "neighbor_nodes": [
-                11,
-                -1,
-                9,
-                6
-            ],
-            "patches": [
-                -1,
-                -1,
-                4,
-                5
-            ],
-            "status": 1,
-            "x": 20.0,
-            "y": 20.0
-        },
-        {
-            "cell": -1,
-            "id": 11,
-            "link_dirs": [
-                0,
-                0,
-                1,
-                1
-            ],
-            "links": [
-                -1,
-                -1,
-                16,
-                13
-            ],
-            "neighbor_nodes": [
-                -1,
-                -1,
-                10,
-                7
-            ],
-            "patches": [
-                -1,
-                -1,
-                5,
-                -1
-            ],
-            "status": 1,
-            "x": 30.0,
-            "y": 20.0
-        }
-    ],
-    "patches": [
-        {
-            "area": 100.0,
-            "id": 0,
-            "links": [
-                4,
-                7,
-                3,
-                0
-            ],
-            "nodes": [
-                5,
-                4,
-                0,
-                1
-            ]
-        },
-        {
-            "area": 100.0,
-            "id": 1,
-            "links": [
-                5,
-                8,
-                4,
-                1
-            ],
-            "nodes": [
-                6,
-                5,
-                1,
-                2
-            ]
-        },
-        {
-            "area": 100.0,
-            "id": 2,
-            "links": [
-                6,
-                9,
-                5,
-                2
-            ],
-            "nodes": [
-                7,
-                6,
-                2,
-                3
-            ]
-        },
-        {
-            "area": 100.0,
-            "id": 3,
-            "links": [
-                11,
-                14,
-                10,
-                7
-            ],
-            "nodes": [
-                9,
-                8,
-                4,
-                5
-            ]
-        },
-        {
-            "area": 100.0,
-            "id": 4,
-            "links": [
-                12,
-                15,
-                11,
-                8
-            ],
-            "nodes": [
-                10,
-                9,
-                5,
-                6
-            ]
-        },
-        {
-            "area": 100.0,
-            "id": 5,
-            "links": [
-                13,
-                16,
-                12,
-                9
-            ],
-            "nodes": [
-                11,
-                10,
-                6,
-                7
-            ]
-        }
-    ]
-};
-});
-
-require.register("scss/grid.scss", function(exports, require, module) {
-module.exports = {"node":"_node_1tg1m_1"};
+  "_type": "graph",
+  "graph": {
+    "attrs": {},
+    "coords": {},
+    "data_vars": {
+      "nodes_at_link": {
+      "attrs": {},
+      "data": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          7
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          5,
+          9
+        ],
+        [
+          6,
+          10
+        ],
+        [
+          7,
+          11
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          10,
+          11
+        ]
+      ],
+      "dims": [
+        "link",
+        "nodes_per_link"
+      ]
+    },
+    "nodes_at_patch": {
+      "attrs": {},
+      "data": [
+        [
+          5,
+          4,
+          0,
+          1
+        ],
+        [
+          6,
+          5,
+          1,
+          2
+        ],
+        [
+          7,
+          6,
+          2,
+          3
+        ],
+        [
+          9,
+          8,
+          4,
+          5
+        ],
+        [
+          10,
+          9,
+          5,
+          6
+        ],
+        [
+          11,
+          10,
+          6,
+          7
+        ]
+      ],
+      "dims": [
+        "patch",
+        "nodes_per_patch"
+      ]
+    },
+      "x_of_node": {
+        "attrs": {},
+        "data": [
+          0,
+          10,
+          20,
+          30,
+          0,
+          10,
+          20,
+          30,
+          0,
+          10,
+          20,
+          30
+        ],
+        "dims": [
+          "node"
+        ]
+      },
+      "y_of_node": {
+        "attrs": {},
+        "data": [
+          0,
+          0,
+          0,
+          0,
+          10,
+          10,
+          10,
+          10,
+          20,
+          20,
+          20,
+          20
+        ],
+        "dims": [
+          "node"
+        ]
+      }
+    },
+    "dims": {
+      "link": 17,
+      "node": 12,
+      "nodes_per_link": 2,
+      "nodes_per_patch": 4,
+      "patch": 6
+    }
+  },
+  "href": "/graph/raster?shape=3%2C4&spacing=10.%2C10."
+}
+;
 });
 
 require.register("theme/app.scss", function(exports, require, module) {
-module.exports = {"chart":"_chart_mg0q5_1"};
+module.exports = {"chart":"_chart_5lvh9_8"};
 });
 
 require.register("theme/cell.scss", function(exports, require, module) {
 module.exports = {"cell":"_cell_1w11x_1","none":"_none_1w11x_6","highlight":"_highlight_1w11x_9","activeLabel":"_activeLabel_1w11x_14"};
 });
 
+require.register("theme/colors.scss", function(exports, require, module) {
+module.exports = {};
+});
+
 require.register("theme/corner.scss", function(exports, require, module) {
-module.exports = {"corner":"_corner_6no14_1","none":"_none_6no14_6","highlight":"_highlight_6no14_9","activeLabel":"_activeLabel_6no14_12"};
+module.exports = {"corner":"_corner_1r834_1","none":"_none_1r834_6","highlight":"_highlight_1r834_9","activeLabel":"_activeLabel_1r834_12"};
 });
 
 require.register("theme/face.scss", function(exports, require, module) {
-module.exports = {"face":"_face_1vguu_1","none":"_none_1vguu_7","highlight":"_highlight_1vguu_10","activeLabel":"_activeLabel_1vguu_13","arrow":"_arrow_1vguu_18","vertical":"_vertical_1vguu_22"};
+module.exports = {"face":"_face_1oscw_1","none":"_none_1oscw_7","highlight":"_highlight_1oscw_10","activeLabel":"_activeLabel_1oscw_13","arrow":"_arrow_1oscw_18","vertical":"_vertical_1oscw_22"};
 });
 
 require.register("theme/grid.scss", function(exports, require, module) {
 module.exports = {"chart":"_chart_3y0hp_1"};
 });
 
+require.register("theme/inputs.scss", function(exports, require, module) {
+module.exports = {"input":"_input_1mckk_1","form":"_form_1mckk_15","hexOptions":"_hexOptions_1mckk_21","label":"_label_1mckk_25","select":"_select_1mckk_32"};
+});
+
 require.register("theme/legend.scss", function(exports, require, module) {
-module.exports = {"container":"_container_wg80e_1","section":"_section_wg80e_8","column":"_column_wg80e_15","button":"_button_wg80e_24","cellButtonDown":"_cellButtonDown_wg80e_24","cellLabelButton":"_cellLabelButton_wg80e_24","patchButtonDown":"_patchButtonDown_wg80e_24","patchLabelButton":"_patchLabelButton_wg80e_24","linkButtonDown":"_linkButtonDown_wg80e_24","linkLabelButton":"_linkLabelButton_wg80e_24","faceButtonDown":"_faceButtonDown_wg80e_24","faceLabelButton":"_faceLabelButton_wg80e_24","nodeButtonDown":"_nodeButtonDown_wg80e_24","nodeLabelButton":"_nodeLabelButton_wg80e_24","cornerButtonDown":"_cornerButtonDown_wg80e_24","cornerLabelButton":"_cornerLabelButton_wg80e_24"};
+module.exports = {"button":"_button_vnpo2_1","cellButtonDown":"_cellButtonDown_vnpo2_1","patchButtonDown":"_patchButtonDown_vnpo2_1","linkButtonDown":"_linkButtonDown_vnpo2_1","faceButtonDown":"_faceButtonDown_vnpo2_1","nodeButtonDown":"_nodeButtonDown_vnpo2_1","cornerButtonDown":"_cornerButtonDown_vnpo2_1","container":"_container_vnpo2_12","section":"_section_vnpo2_21","column":"_column_vnpo2_28"};
 });
 
 require.register("theme/link.scss", function(exports, require, module) {
-module.exports = {"link":"_link_1svmy_1","none":"_none_1svmy_7","highlight":"_highlight_1svmy_10","activeLabel":"_activeLabel_1svmy_14","arrow":"_arrow_1svmy_19","vertical":"_vertical_1svmy_23"};
+module.exports = {"link":"_link_11tkv_1","none":"_none_11tkv_7","highlight":"_highlight_11tkv_10","activeLabel":"_activeLabel_11tkv_14","arrow":"_arrow_11tkv_19","vertical":"_vertical_11tkv_23"};
 });
 
 require.register("theme/node.scss", function(exports, require, module) {
-module.exports = {"node":"_node_2aagp_1","none":"_none_2aagp_6","highlight":"_highlight_2aagp_9","activeLabel":"_activeLabel_2aagp_12"};
+module.exports = {"node":"_node_1krq3_1","none":"_none_1krq3_6","highlight":"_highlight_1krq3_9","activeLabel":"_activeLabel_1krq3_12"};
 });
 
 require.register("theme/patch.scss", function(exports, require, module) {
 module.exports = {"patch":"_patch_1mb2f_1","none":"_none_1mb2f_6","highlight":"_highlight_1mb2f_9","activeLabel":"_activeLabel_1mb2f_14"};
 });
 
-require.alias("process/browser.js", "process");process = require('process');require.register("___globals___", function(exports, require, module) {
+require.register("theme/shared.scss", function(exports, require, module) {
+module.exports = {};
+});
+
+require.alias("buffer/index.js", "buffer");
+require.alias("events/events.js", "events");
+require.alias("stream-http/index.js", "http");
+require.alias("https-browserify/index.js", "https");
+require.alias("process/browser.js", "process");
+require.alias("punycode/punycode.js", "punycode");
+require.alias("querystring-es3/index.js", "querystring");
+require.alias("stream-browserify/index.js", "stream");
+require.alias("string_decoder/index.js", "string_decoder");
+require.alias("url/url.js", "url");process = require('process');require.register("___globals___", function(exports, require, module) {
   
 
 // Auto-loaded modules from config.npm.globals.
