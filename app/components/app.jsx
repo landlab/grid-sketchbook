@@ -7,7 +7,7 @@ import Inputs from './inputs';
 import app from '../theme/app.scss';
 
 // TODO: change this to the deployed URL!
-const apiBase = 'http://siwenna.colorado.edu:8000';
+const apiBase = 'https://siwenna.colorado.edu:8000';
 
 class App extends React.Component {
   constructor() {
