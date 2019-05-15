@@ -201,7 +201,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 // TODO: change this to the deployed URL!
-var apiBase = 'http://siwenna.colorado.edu:8000';
+var apiBase = 'https://siwenna.colorado.edu:8000';
 
 var App = function (_React$Component) {
   _inherits(App, _React$Component);
@@ -577,17 +577,18 @@ var Grid = function (_React$Component) {
       var cells = cellCorners.map(function (d, i) {
         return _react2.default.createElement(
           'g',
-          { key: 'cell' + -i },
-          _react2.default.createElement('path', {
+          {
+            key: 'cell' + -i,
             className: show.cells ? show.cellLabels ? _cell2.default.highlight : _cell2.default.cell : _cell2.default.none,
-            d: getPath(d, 'corner'),
-            fill: 'transparent',
             onMouseEnter: function onMouseEnter() {
               return _this2.setState({ cell: true, activeCell: i });
             },
             onMouseLeave: function onMouseLeave() {
               return _this2.setState({ cell: false, activeCell: null });
             }
+          },
+          _react2.default.createElement('path', {
+            d: getPath(d, 'corner')
           }),
           _react2.default.createElement(
             'text',
@@ -606,17 +607,18 @@ var Grid = function (_React$Component) {
       var patches = patchNodes.map(function (d, i) {
         return _react2.default.createElement(
           'g',
-          { key: 'patch' + -i },
-          _react2.default.createElement('path', {
+          {
             className: show.patches ? show.patchLabels ? _patch2.default.highlight : _patch2.default.patch : _patch2.default.none,
-            d: getPath(d, 'node'),
-            fill: 'transparent',
+            key: 'patch' + -i,
             onMouseEnter: function onMouseEnter() {
               return _this2.setState({ patch: true, activePatch: i });
             },
             onMouseLeave: function onMouseLeave() {
               return _this2.setState({ patch: false, activePatch: null });
             }
+          },
+          _react2.default.createElement('path', {
+            d: getPath(d, 'node')
           }),
           _react2.default.createElement(
             'text',
@@ -637,7 +639,15 @@ var Grid = function (_React$Component) {
         var textClassnames = (0, _classnames2.default)(_this2.state.activeFace === i || show.faceLabels ? _face2.default.activeLabel : _face2.default.none, vertical && _face2.default.vertical);
         return _react2.default.createElement(
           'g',
-          { key: 'face' + -i },
+          {
+            key: 'face' + -i,
+            onMouseEnter: function onMouseEnter() {
+              return _this2.setState({ face: true, activeFace: i });
+            },
+            onMouseLeave: function onMouseLeave() {
+              return _this2.setState({ face: false, activeFace: null });
+            }
+          },
           _react2.default.createElement(
             'defs',
             null,
@@ -661,13 +671,7 @@ var Grid = function (_React$Component) {
             x2: cornerX[d[1]],
             y1: yScale(cornerY[d[0]]),
             y2: yScale(cornerY[d[1]]),
-            markerEnd: 'url(#face)',
-            onMouseEnter: function onMouseEnter() {
-              return _this2.setState({ face: true, activeFace: i });
-            },
-            onMouseLeave: function onMouseLeave() {
-              return _this2.setState({ face: false, activeFace: null });
-            }
+            markerEnd: 'url(#face)'
           }),
           _react2.default.createElement(
             'text',
@@ -691,7 +695,15 @@ var Grid = function (_React$Component) {
 
         return _react2.default.createElement(
           'g',
-          { key: 'link' + -i },
+          {
+            key: 'link' + -i,
+            onMouseEnter: function onMouseEnter() {
+              return _this2.setState({ link: true, activeLink: i });
+            },
+            onMouseLeave: function onMouseLeave() {
+              return _this2.setState({ link: false, activeLink: null });
+            }
+          },
           _react2.default.createElement(
             'defs',
             null,
@@ -715,13 +727,7 @@ var Grid = function (_React$Component) {
             x2: nodeX[d[1]],
             y1: yScale(nodeY[d[0]]),
             y2: yScale(nodeY[d[1]]),
-            markerEnd: 'url(#head)',
-            onMouseEnter: function onMouseEnter() {
-              return _this2.setState({ link: true, activeLink: i });
-            },
-            onMouseLeave: function onMouseLeave() {
-              return _this2.setState({ link: false, activeLink: null });
-            }
+            markerEnd: 'url(#head)'
           }),
           _react2.default.createElement(
             'text',
