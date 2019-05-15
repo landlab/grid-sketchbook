@@ -906,7 +906,7 @@ var Inputs = function Inputs(props) {
             ),
             _react2.default.createElement(
               'option',
-              { value: 'vertical' },
+              { disabled: true, value: 'vertical' },
               'vertical'
             )
           )
