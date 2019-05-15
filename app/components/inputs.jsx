@@ -53,7 +53,7 @@ const Inputs = (props) => {
               <select className={inputs.select} name="orientation" value={orientation} onChange={onChange} >
                 <option disabled value="" />
                 <option value="horizontal">horizontal</option>
-                <option value="vertical">vertical</option>
+                <option disabled value="vertical">vertical</option>
               </select>
             </label>
           </div>
