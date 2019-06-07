@@ -115,12 +115,7 @@
 })();
 
 (function() {
-var global = typeof window === 'undefined' ? this : window;require.register("child_process", function(exports, require, module) {
-  module.exports = {};
-});
-require.register("fs", function(exports, require, module) {
-  module.exports = {};
-});
+var global = typeof window === 'undefined' ? this : window;
 var process;
 var __makeRelativeRequire = function(require, mappings, pref) {
   var none = {};
@@ -158,59 +153,61 @@ module.exports = {};
 });
 
 require.register("components/app.jsx", function(exports, require, module) {
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports["default"] = void 0;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _react = _interopRequireDefault(require("react"));
 
-var _react = require('react');
+var _axios = _interopRequireDefault(require("axios"));
 
-var _react2 = _interopRequireDefault(_react);
+var _grid = _interopRequireDefault(require("./grid"));
 
-var _axios = require('axios');
+var _legend = _interopRequireDefault(require("./legend"));
 
-var _axios2 = _interopRequireDefault(_axios);
+var _inputs = _interopRequireDefault(require("./inputs"));
 
-var _grid = require('./grid');
+var _app = _interopRequireDefault(require("../theme/app.scss"));
 
-var _grid2 = _interopRequireDefault(_grid);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var _legend = require('./legend');
-
-var _legend2 = _interopRequireDefault(_legend);
-
-var _inputs = require('./inputs');
-
-var _inputs2 = _interopRequireDefault(_inputs);
-
-var _app = require('../theme/app.scss');
-
-var _app2 = _interopRequireDefault(_app);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 // TODO: change this to the deployed URL!
 var apiBase = 'https://siwenna.colorado.edu:8000';
 
-var App = function (_React$Component) {
+var App =
+/*#__PURE__*/
+function (_React$Component) {
   _inherits(App, _React$Component);
 
   function App() {
+    var _this;
+
     _classCallCheck(this, App);
 
-    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this));
-
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(App).call(this));
     _this.state = {
       showCells: true,
       showCellLabels: false,
@@ -236,18 +233,20 @@ var App = function (_React$Component) {
   }
 
   _createClass(App, [{
-    key: 'componentWillMount',
+    key: "componentWillMount",
     value: function componentWillMount() {
       var _this2 = this;
 
-      var APIurl = apiBase + '/graphs/' + this.state.grid + '?shape=' + this.state.rows + ',' + this.state.cols + '&spacing=' + this.state.spacing;
+      var APIurl = "".concat(apiBase, "/graphs/").concat(this.state.grid, "?shape=").concat(this.state.rows, ",").concat(this.state.cols, "&spacing=").concat(this.state.spacing);
 
-      _axios2.default.get(APIurl).then(function (response) {
-        _this2.setState({ graph: response.data.graph });
+      _axios["default"].get(APIurl).then(function (response) {
+        _this2.setState({
+          graph: response.data.graph
+        });
       });
     }
   }, {
-    key: 'componentDidUpdate',
+    key: "componentDidUpdate",
     value: function componentDidUpdate(props, state) {
       var _this3 = this;
 
@@ -256,31 +255,33 @@ var App = function (_React$Component) {
       var newCols = this.state.cols !== state.cols;
       var newLayout = this.state.layout !== state.layout;
       var newOrientation = this.state.orientation !== state.orientation;
-      var spacing = this.state.grid === 'hex' || 'radial' ? this.state.spacing : this.state.spacing + ',' + this.state.spacing;
-      var layoutQuery = this.state.grid === 'hex' ? '&node_layout=' + this.state.layout : '';
-      var orientationQuery = this.state.grid === 'hex' ? '&orientation=' + this.state.orientation : '';
+      var spacing = this.state.grid === 'hex' || 'radial' ? this.state.spacing : "".concat(this.state.spacing, ",").concat(this.state.spacing);
+      var layoutQuery = this.state.grid === 'hex' ? "&node_layout=".concat(this.state.layout) : '';
+      var orientationQuery = this.state.grid === 'hex' ? "&orientation=".concat(this.state.orientation) : '';
       var newGraph = newGrid || newRows || newCols || newLayout || newOrientation;
-      var APIurl = apiBase + '/graphs/' + this.state.grid + '?shape=' + this.state.rows + ',' + this.state.cols + '&spacing=' + spacing + layoutQuery + orientationQuery;
+      var APIurl = "".concat(apiBase, "/graphs/").concat(this.state.grid, "?shape=").concat(this.state.rows, ",").concat(this.state.cols, "&spacing=").concat(spacing).concat(layoutQuery).concat(orientationQuery);
 
       if (newGraph) {
-        _axios2.default.get(APIurl).then(function (response) {
-          _this3.setState({ graph: response.data.graph });
+        _axios["default"].get(APIurl).then(function (response) {
+          _this3.setState({
+            graph: response.data.graph
+          });
         });
       }
     }
   }, {
-    key: 'updateGridValues',
+    key: "updateGridValues",
     value: function updateGridValues(event) {
       var isString = isNaN(+event.target.value);
       this.setState(_defineProperty({}, event.target.name, isString ? event.target.value : +event.target.value));
     }
   }, {
-    key: 'toggleActiveLayers',
+    key: "toggleActiveLayers",
     value: function toggleActiveLayers(event) {
       this.setState(_defineProperty({}, event.target.value, !this.state[event.target.value]));
     }
   }, {
-    key: 'render',
+    key: "render",
     value: function render() {
       var _this4 = this;
 
@@ -298,117 +299,113 @@ var App = function (_React$Component) {
         corners: this.state.showCorners,
         cornerLabels: this.state.showCornerLabels
       };
-
-      return this.state.graph.data_vars ? _react2.default.createElement(
-        'div',
-        { className: _app2.default.chart },
-        _react2.default.createElement(_inputs2.default, {
-          grid: this.state.grid,
-          rows: this.state.rows,
-          cols: this.state.cols,
-          layout: this.state.layout,
-          orientation: this.state.orientation,
-          onChange: function onChange(e) {
-            return _this4.updateGridValues(e);
-          }
-        }),
-        _react2.default.createElement(_grid2.default, {
-          nodeX: this.state.graph.data_vars.x_of_node.data,
-          nodeY: this.state.graph.data_vars.y_of_node.data,
-          patchLinks: this.state.graph.data_vars.links_at_patch.data,
-          cornerX: this.state.graph.data_vars.x_of_corner.data,
-          cornerY: this.state.graph.data_vars.y_of_corner.data,
-          cellFaces: this.state.graph.data_vars.faces_at_cell.data,
-          linkLine: this.state.graph.data_vars.nodes_at_link.data,
-          faceLine: this.state.graph.data_vars.corners_at_face.data,
-          show: activeLayers,
-          spacing: this.state.spacing * 1
-        }),
-        _react2.default.createElement(_legend2.default, {
-          active: activeLayers,
-          onChange: function onChange(e) {
-            return _this4.toggleActiveLayers(e);
-          }
-        })
-      ) : null;
+      return this.state.graph.data_vars ? _react["default"].createElement("div", {
+        className: _app["default"].chart
+      }, _react["default"].createElement(_inputs["default"], {
+        grid: this.state.grid,
+        rows: this.state.rows,
+        cols: this.state.cols,
+        layout: this.state.layout,
+        orientation: this.state.orientation,
+        onChange: function onChange(e) {
+          return _this4.updateGridValues(e);
+        }
+      }), _react["default"].createElement(_grid["default"], {
+        nodeX: this.state.graph.data_vars.x_of_node.data,
+        nodeY: this.state.graph.data_vars.y_of_node.data,
+        patchLinks: this.state.graph.data_vars.links_at_patch.data,
+        cornerX: this.state.graph.data_vars.x_of_corner.data,
+        cornerY: this.state.graph.data_vars.y_of_corner.data,
+        cellFaces: this.state.graph.data_vars.faces_at_cell.data,
+        linkLine: this.state.graph.data_vars.nodes_at_link.data,
+        faceLine: this.state.graph.data_vars.corners_at_face.data,
+        show: activeLayers,
+        spacing: this.state.spacing * 1
+      }), _react["default"].createElement(_legend["default"], {
+        active: activeLayers,
+        onChange: function onChange(e) {
+          return _this4.toggleActiveLayers(e);
+        }
+      })) : null;
     }
   }]);
 
   return App;
-}(_react2.default.Component);
+}(_react["default"].Component);
 
-exports.default = App;
+var _default = App;
+exports["default"] = _default;
 });
 
 require.register("components/grid.jsx", function(exports, require, module) {
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports["default"] = void 0;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _react = _interopRequireDefault(require("react"));
 
-var _react = require('react');
+var d3 = _interopRequireWildcard(require("d3"));
 
-var _react2 = _interopRequireDefault(_react);
+var _classnames = _interopRequireDefault(require("classnames"));
 
-var _d = require('d3');
+var _grid = _interopRequireDefault(require("../theme/grid.scss"));
 
-var d3 = _interopRequireWildcard(_d);
+var _node = _interopRequireDefault(require("../theme/node.scss"));
 
-var _classnames = require('classnames');
+var _cell = _interopRequireDefault(require("../theme/cell.scss"));
 
-var _classnames2 = _interopRequireDefault(_classnames);
+var _link = _interopRequireDefault(require("../theme/link.scss"));
 
-var _grid = require('../theme/grid.scss');
+var _patch = _interopRequireDefault(require("../theme/patch.scss"));
 
-var _grid2 = _interopRequireDefault(_grid);
+var _corner = _interopRequireDefault(require("../theme/corner.scss"));
 
-var _node = require('../theme/node.scss');
+var _face = _interopRequireDefault(require("../theme/face.scss"));
 
-var _node2 = _interopRequireDefault(_node);
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj["default"] = obj; return newObj; } }
 
-var _cell = require('../theme/cell.scss');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var _cell2 = _interopRequireDefault(_cell);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-var _link = require('../theme/link.scss');
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
-var _link2 = _interopRequireDefault(_link);
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
 
-var _patch = require('../theme/patch.scss');
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
 
-var _patch2 = _interopRequireDefault(_patch);
-
-var _corner = require('../theme/corner.scss');
-
-var _corner2 = _interopRequireDefault(_corner);
-
-var _face = require('../theme/face.scss');
-
-var _face2 = _interopRequireDefault(_face);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var Grid = function (_React$Component) {
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var Grid =
+/*#__PURE__*/
+function (_React$Component) {
   _inherits(Grid, _React$Component);
 
   function Grid() {
+    var _this;
+
     _classCallCheck(this, Grid);
 
-    var _this = _possibleConstructorReturn(this, (Grid.__proto__ || Object.getPrototypeOf(Grid)).call(this));
-
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Grid).call(this));
     _this.state = {
       node: false,
       activeNode: null,
@@ -427,27 +424,29 @@ var Grid = function (_React$Component) {
   }
 
   _createClass(Grid, [{
-    key: 'render',
+    key: "render",
     value: function render() {
       var _this2 = this;
 
-      var _props = this.props,
-          nodeX = _props.nodeX,
-          nodeY = _props.nodeY,
-          patchLinks = _props.patchLinks,
-          cornerX = _props.cornerX,
-          cornerY = _props.cornerY,
-          cellFaces = _props.cellFaces,
-          linkLine = _props.linkLine,
-          faceLine = _props.faceLine,
-          spacing = _props.spacing,
-          show = _props.show;
-
-
+      var _this$props = this.props,
+          nodeX = _this$props.nodeX,
+          nodeY = _this$props.nodeY,
+          patchLinks = _this$props.patchLinks,
+          cornerX = _this$props.cornerX,
+          cornerY = _this$props.cornerY,
+          cellFaces = _this$props.cellFaces,
+          linkLine = _this$props.linkLine,
+          faceLine = _this$props.faceLine,
+          spacing = _this$props.spacing,
+          show = _this$props.show;
       var xExtent = d3.extent(nodeX);
       var yExtent = d3.extent(nodeY);
-
-      var margin = { top: spacing / 4, right: spacing / 4, bottom: spacing / 4, left: spacing / 4 };
+      var margin = {
+        top: spacing / 4,
+        right: spacing / 4,
+        bottom: spacing / 4,
+        left: spacing / 4
+      };
       var innerWidth = xExtent[1] - xExtent[0];
       var innerHeight = yExtent[1] - yExtent[0];
       var marginLeftOffset = margin.left - xExtent[0];
@@ -455,97 +454,94 @@ var Grid = function (_React$Component) {
       var chartHeight = innerHeight + margin.top + margin.bottom;
       var chartWidth = innerWidth + margin.left + margin.right;
       var half = spacing / 2;
-
       var yScale = d3.scaleLinear().domain([0, innerHeight]).range([innerHeight, 0]);
-
       var nodes = nodeX.map(function (d, i) {
-        return _react2.default.createElement(
-          'g',
-          { key: 'node' + -i },
-          _react2.default.createElement('circle', {
-            className: show.nodes ? show.nodeLabels ? _node2.default.highlight : _node2.default.node : _node2.default.none,
-            cx: d,
-            cy: yScale(nodeY[i]),
-            r: 0.7,
-            onMouseEnter: function onMouseEnter() {
-              return _this2.setState({ node: true, activeNode: i });
-            },
-            onMouseLeave: function onMouseLeave() {
-              return _this2.setState({ node: false, activeNode: null });
-            }
-          }),
-          _react2.default.createElement(
-            'text',
-            {
-              className: _this2.state.activeNode === i || show.nodeLabels ? _node2.default.activeLabel : _node2.default.none,
-              x: d,
-              dy: -1,
-              y: yScale(nodeY[i]),
-              textAnchor: 'middle'
-            },
-            'node ',
-            i
-          )
-        );
+        return _react["default"].createElement("g", {
+          key: "node".concat(-i)
+        }, _react["default"].createElement("circle", {
+          className: show.nodes ? show.nodeLabels ? _node["default"].highlight : _node["default"].node : _node["default"].none,
+          cx: d,
+          cy: yScale(nodeY[i]),
+          r: 0.7,
+          onMouseEnter: function onMouseEnter() {
+            return _this2.setState({
+              node: true,
+              activeNode: i
+            });
+          },
+          onMouseLeave: function onMouseLeave() {
+            return _this2.setState({
+              node: false,
+              activeNode: null
+            });
+          }
+        }), _react["default"].createElement("text", {
+          className: _this2.state.activeNode === i || show.nodeLabels ? _node["default"].activeLabel : _node["default"].none,
+          x: d,
+          dy: -1,
+          y: yScale(nodeY[i]),
+          textAnchor: "middle"
+        }, "node ", i));
       });
-
       var corners = cornerX.map(function (d, i) {
-        return _react2.default.createElement(
-          'g',
-          { key: 'corner' + -i },
-          _react2.default.createElement('circle', {
-            className: show.corners ? show.cornerLabels ? _corner2.default.highlight : _corner2.default.corner : _corner2.default.none,
-            cx: d,
-            cy: yScale(cornerY[i]),
-            r: 0.7,
-            onMouseEnter: function onMouseEnter() {
-              return _this2.setState({ corner: true, activeCorner: i });
-            },
-            onMouseLeave: function onMouseLeave() {
-              return _this2.setState({ corner: false, activeCorner: null });
-            }
-          }),
-          _react2.default.createElement(
-            'text',
-            {
-              className: _this2.state.activeCorner === i || show.cornerLabels ? _corner2.default.activeLabel : _corner2.default.none,
-              x: d,
-              dy: -1,
-              y: yScale(cornerY[i]),
-              textAnchor: 'middle'
-            },
-            'corner ',
-            i
-          )
-        );
+        return _react["default"].createElement("g", {
+          key: "corner".concat(-i)
+        }, _react["default"].createElement("circle", {
+          className: show.corners ? show.cornerLabels ? _corner["default"].highlight : _corner["default"].corner : _corner["default"].none,
+          cx: d,
+          cy: yScale(cornerY[i]),
+          r: 0.7,
+          onMouseEnter: function onMouseEnter() {
+            return _this2.setState({
+              corner: true,
+              activeCorner: i
+            });
+          },
+          onMouseLeave: function onMouseLeave() {
+            return _this2.setState({
+              corner: false,
+              activeCorner: null
+            });
+          }
+        }), _react["default"].createElement("text", {
+          className: _this2.state.activeCorner === i || show.cornerLabels ? _corner["default"].activeLabel : _corner["default"].none,
+          x: d,
+          dy: -1,
+          y: yScale(cornerY[i]),
+          textAnchor: "middle"
+        }, "corner ", i));
       });
 
       var getPath = function getPath(verticies, element) {
         var coordinates = verticies.map(function (c) {
           if (element === 'node') {
-            return nodeX[c] + ' ' + yScale(nodeY[c]);
+            return "".concat(nodeX[c], " ").concat(yScale(nodeY[c]));
           } else if (element === 'corner') {
-            return cornerX[c] + ' ' + yScale(cornerY[c]);
+            return "".concat(cornerX[c], " ").concat(yScale(cornerY[c]));
           }
+
           return null;
         });
-        var d = 'M ' + coordinates + ' Z';
+        var d = "M ".concat(coordinates, " Z");
         return d;
       };
 
       var getVerticies = function getVerticies(vector, element) {
-        var verticieSet = void 0;
+        var verticieSet;
+
         if (element === 'node') {
           verticieSet = new Set(vector.map(function (v) {
             return linkLine[v];
           }).flat());
         }
+
         if (element === 'corner') {
           verticieSet = new Set(vector.map(function (v) {
             return faceLine[v];
           }).flat());
         }
-        return [].concat(_toConsumableArray(verticieSet));
+
+        return _toConsumableArray(verticieSet);
       };
 
       var cellCorners = cellFaces.map(function (cellFace) {
@@ -554,7 +550,6 @@ var Grid = function (_React$Component) {
       var patchNodes = patchLinks.map(function (patchLink) {
         return getVerticies(patchLink, 'node');
       });
-
       var cellTextPosition = cellCorners.map(function (d) {
         var position = {
           x: cornerX[d[1]] - half,
@@ -562,7 +557,6 @@ var Grid = function (_React$Component) {
         };
         return position;
       });
-
       var patchTextPosition = patchNodes.map(function (d) {
         var position = d.length % 3 === 0 ? {
           x: (nodeX[d[0]] + nodeX[d[1]] + nodeX[d[2]]) / 3,
@@ -573,243 +567,197 @@ var Grid = function (_React$Component) {
         };
         return position;
       });
-
       var cells = cellCorners.map(function (d, i) {
-        return _react2.default.createElement(
-          'g',
-          {
-            key: 'cell' + -i,
-            className: show.cells ? show.cellLabels ? _cell2.default.highlight : _cell2.default.cell : _cell2.default.none,
-            onMouseEnter: function onMouseEnter() {
-              return _this2.setState({ cell: true, activeCell: i });
-            },
-            onMouseLeave: function onMouseLeave() {
-              return _this2.setState({ cell: false, activeCell: null });
-            }
+        return _react["default"].createElement("g", {
+          key: "cell".concat(-i),
+          className: show.cells ? show.cellLabels ? _cell["default"].highlight : _cell["default"].cell : _cell["default"].none,
+          onMouseEnter: function onMouseEnter() {
+            return _this2.setState({
+              cell: true,
+              activeCell: i
+            });
           },
-          _react2.default.createElement('path', {
-            d: getPath(d, 'corner')
-          }),
-          _react2.default.createElement(
-            'text',
-            {
-              className: _this2.state.activeCell === i || show.cellLabels ? _cell2.default.activeLabel : _cell2.default.none,
-              x: cellTextPosition[i].x,
-              y: cellTextPosition[i].y,
-              textAnchor: 'middle'
-            },
-            'cell ',
-            i
-          )
-        );
+          onMouseLeave: function onMouseLeave() {
+            return _this2.setState({
+              cell: false,
+              activeCell: null
+            });
+          }
+        }, _react["default"].createElement("path", {
+          d: getPath(d, 'corner')
+        }), _react["default"].createElement("text", {
+          className: _this2.state.activeCell === i || show.cellLabels ? _cell["default"].activeLabel : _cell["default"].none,
+          x: cellTextPosition[i].x,
+          y: cellTextPosition[i].y,
+          textAnchor: "middle"
+        }, "cell ", i));
       });
-
       var patches = patchNodes.map(function (d, i) {
-        return _react2.default.createElement(
-          'g',
-          {
-            className: show.patches ? show.patchLabels ? _patch2.default.highlight : _patch2.default.patch : _patch2.default.none,
-            key: 'patch' + -i,
-            onMouseEnter: function onMouseEnter() {
-              return _this2.setState({ patch: true, activePatch: i });
-            },
-            onMouseLeave: function onMouseLeave() {
-              return _this2.setState({ patch: false, activePatch: null });
-            }
+        return _react["default"].createElement("g", {
+          className: show.patches ? show.patchLabels ? _patch["default"].highlight : _patch["default"].patch : _patch["default"].none,
+          key: "patch".concat(-i),
+          onMouseEnter: function onMouseEnter() {
+            return _this2.setState({
+              patch: true,
+              activePatch: i
+            });
           },
-          _react2.default.createElement('path', {
-            d: getPath(d, 'node')
-          }),
-          _react2.default.createElement(
-            'text',
-            {
-              className: _this2.state.activePatch === i || show.patchLabels ? _patch2.default.activeLabel : _patch2.default.none,
-              x: patchTextPosition[i].x,
-              y: patchTextPosition[i].y,
-              textAnchor: 'middle'
-            },
-            'patch ',
-            i
-          )
-        );
+          onMouseLeave: function onMouseLeave() {
+            return _this2.setState({
+              patch: false,
+              activePatch: null
+            });
+          }
+        }, _react["default"].createElement("path", {
+          d: getPath(d, 'node')
+        }), _react["default"].createElement("text", {
+          className: _this2.state.activePatch === i || show.patchLabels ? _patch["default"].activeLabel : _patch["default"].none,
+          x: patchTextPosition[i].x,
+          y: patchTextPosition[i].y,
+          textAnchor: "middle"
+        }, "patch ", i));
       });
-
       var faces = faceLine.map(function (d, i) {
         var vertical = cornerX[d[0]] === cornerX[d[1]];
-        var textClassnames = (0, _classnames2.default)(_this2.state.activeFace === i || show.faceLabels ? _face2.default.activeLabel : _face2.default.none, vertical && _face2.default.vertical);
-        return _react2.default.createElement(
-          'g',
-          {
-            key: 'face' + -i,
-            onMouseEnter: function onMouseEnter() {
-              return _this2.setState({ face: true, activeFace: i });
-            },
-            onMouseLeave: function onMouseLeave() {
-              return _this2.setState({ face: false, activeFace: null });
-            }
+        var textClassnames = (0, _classnames["default"])(_this2.state.activeFace === i || show.faceLabels ? _face["default"].activeLabel : _face["default"].none, vertical && _face["default"].vertical);
+        return _react["default"].createElement("g", {
+          key: "face".concat(-i),
+          onMouseEnter: function onMouseEnter() {
+            return _this2.setState({
+              face: true,
+              activeFace: i
+            });
           },
-          _react2.default.createElement(
-            'defs',
-            null,
-            _react2.default.createElement(
-              'marker',
-              {
-                className: _face2.default.arrow,
-                id: 'face',
-                orient: 'auto',
-                viewBox: '-6 -6 12 12',
-                refX: 5,
-                refY: 0,
-                markerHeight: 2
-              },
-              _react2.default.createElement('path', { d: 'M -4 -4 0 0 -4 4' })
-            )
-          ),
-          _react2.default.createElement('line', {
-            className: show.faces ? show.faceLabels ? _face2.default.highlight : _face2.default.face : _face2.default.none,
-            x1: cornerX[d[0]],
-            x2: cornerX[d[1]],
-            y1: yScale(cornerY[d[0]]),
-            y2: yScale(cornerY[d[1]]),
-            markerEnd: 'url(#face)'
-          }),
-          _react2.default.createElement(
-            'text',
-            {
-              className: textClassnames,
-              x: (cornerX[d[0]] + cornerX[d[1]]) / 2,
-              y: yScale((cornerY[d[0]] + cornerY[d[1]]) / 2),
-              dx: vertical ? 0.1 : 0,
-              dy: vertical ? 0 : 0.3,
-              textAnchor: 'middle'
-            },
-            'face ',
-            i
-          )
-        );
+          onMouseLeave: function onMouseLeave() {
+            return _this2.setState({
+              face: false,
+              activeFace: null
+            });
+          }
+        }, _react["default"].createElement("defs", null, _react["default"].createElement("marker", {
+          className: _face["default"].arrow,
+          id: "face",
+          orient: "auto",
+          viewBox: "-6 -6 12 12",
+          refX: 5,
+          refY: 0,
+          markerHeight: 2
+        }, _react["default"].createElement("path", {
+          d: "M -4 -4 0 0 -4 4"
+        }))), _react["default"].createElement("line", {
+          className: show.faces ? show.faceLabels ? _face["default"].highlight : _face["default"].face : _face["default"].none,
+          x1: cornerX[d[0]],
+          x2: cornerX[d[1]],
+          y1: yScale(cornerY[d[0]]),
+          y2: yScale(cornerY[d[1]]),
+          markerEnd: "url(#face)"
+        }), _react["default"].createElement("text", {
+          className: textClassnames,
+          x: (cornerX[d[0]] + cornerX[d[1]]) / 2,
+          y: yScale((cornerY[d[0]] + cornerY[d[1]]) / 2),
+          dx: vertical ? 0.1 : 0,
+          dy: vertical ? 0 : 0.3,
+          textAnchor: "middle"
+        }, "face ", i));
       });
-
       var links = linkLine.map(function (d, i) {
         var vertical = nodeX[d[0]] === nodeX[d[1]];
-        var textClassnames = (0, _classnames2.default)(_this2.state.activeLink === i || show.linkLabels ? _link2.default.activeLabel : _link2.default.none, vertical && _link2.default.vertical);
-
-        return _react2.default.createElement(
-          'g',
-          {
-            key: 'link' + -i,
-            onMouseEnter: function onMouseEnter() {
-              return _this2.setState({ link: true, activeLink: i });
-            },
-            onMouseLeave: function onMouseLeave() {
-              return _this2.setState({ link: false, activeLink: null });
-            }
+        var textClassnames = (0, _classnames["default"])(_this2.state.activeLink === i || show.linkLabels ? _link["default"].activeLabel : _link["default"].none, vertical && _link["default"].vertical);
+        return _react["default"].createElement("g", {
+          key: "link".concat(-i),
+          onMouseEnter: function onMouseEnter() {
+            return _this2.setState({
+              link: true,
+              activeLink: i
+            });
           },
-          _react2.default.createElement(
-            'defs',
-            null,
-            _react2.default.createElement(
-              'marker',
-              {
-                className: _link2.default.arrow,
-                id: 'head',
-                orient: 'auto',
-                viewBox: '-6 -6 12 12',
-                refX: 5,
-                refY: 0,
-                markerHeight: 2
-              },
-              _react2.default.createElement('path', { d: 'M -4 -4 0 0 -4 4' })
-            )
-          ),
-          _react2.default.createElement('line', {
-            className: show.links ? show.linkLabels ? _link2.default.highlight : _link2.default.link : _link2.default.none,
-            x1: nodeX[d[0]],
-            x2: nodeX[d[1]],
-            y1: yScale(nodeY[d[0]]),
-            y2: yScale(nodeY[d[1]]),
-            markerEnd: 'url(#head)'
-          }),
-          _react2.default.createElement(
-            'text',
-            {
-              className: textClassnames,
-              x: (nodeX[d[0]] + nodeX[d[1]]) / 2,
-              y: yScale((nodeY[d[0]] + nodeY[d[1]]) / 2),
-              dx: vertical ? 0.1 : 0,
-              dy: vertical ? 0 : 0.3,
-              textAnchor: 'middle'
-            },
-            'link ',
-            i
-          )
-        );
+          onMouseLeave: function onMouseLeave() {
+            return _this2.setState({
+              link: false,
+              activeLink: null
+            });
+          }
+        }, _react["default"].createElement("defs", null, _react["default"].createElement("marker", {
+          className: _link["default"].arrow,
+          id: "head",
+          orient: "auto",
+          viewBox: "-6 -6 12 12",
+          refX: 5,
+          refY: 0,
+          markerHeight: 2
+        }, _react["default"].createElement("path", {
+          d: "M -4 -4 0 0 -4 4"
+        }))), _react["default"].createElement("line", {
+          className: show.links ? show.linkLabels ? _link["default"].highlight : _link["default"].link : _link["default"].none,
+          x1: nodeX[d[0]],
+          x2: nodeX[d[1]],
+          y1: yScale(nodeY[d[0]]),
+          y2: yScale(nodeY[d[1]]),
+          markerEnd: "url(#head)"
+        }), _react["default"].createElement("text", {
+          className: textClassnames,
+          x: (nodeX[d[0]] + nodeX[d[1]]) / 2,
+          y: yScale((nodeY[d[0]] + nodeY[d[1]]) / 2),
+          dx: vertical ? 0.1 : 0,
+          dy: vertical ? 0 : 0.3,
+          textAnchor: "middle"
+        }, "link ", i));
       });
-
-      return _react2.default.createElement(
-        'svg',
-        { className: _grid2.default.chart, viewBox: '0 0 ' + chartWidth + ' ' + chartHeight, width: '80vw' },
-        _react2.default.createElement(
-          'g',
-          { transform: 'translate(' + marginLeftOffset + ' ' + marginTopOffset + ')' },
-          patches,
-          cells,
-          links,
-          faces,
-          nodes,
-          corners
-        )
-      );
+      return _react["default"].createElement("svg", {
+        className: _grid["default"].chart,
+        viewBox: "0 0 ".concat(chartWidth, " ").concat(chartHeight),
+        width: "80vw"
+      }, _react["default"].createElement("g", {
+        transform: "translate(".concat(marginLeftOffset, " ").concat(marginTopOffset, ")")
+      }, patches, cells, links, faces, nodes, corners));
     }
   }]);
 
   return Grid;
-}(_react2.default.Component);
+}(_react["default"].Component);
 
 Grid.propTypes = {
-  nodeX: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.number).isRequired,
-  nodeY: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.number).isRequired,
-  patchLinks: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.array).isRequired,
-  cornerX: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.number).isRequired,
-  cornerY: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.number).isRequired,
-  cellFaces: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.array).isRequired,
-  linkLine: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.array).isRequired,
-  faceLine: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.array).isRequired,
-  spacing: _react2.default.PropTypes.number.isRequired,
-  show: _react2.default.PropTypes.shape({
-    cells: _react2.default.PropTypes.bool,
-    cellLabels: _react2.default.PropTypes.bool,
-    patches: _react2.default.PropTypes.bool,
-    patchLabels: _react2.default.PropTypes.bool,
-    links: _react2.default.PropTypes.bool,
-    linkLabels: _react2.default.PropTypes.bool,
-    faces: _react2.default.PropTypes.bool,
-    faceLabels: _react2.default.PropTypes.bool,
-    nodes: _react2.default.PropTypes.bool,
-    nodeLabels: _react2.default.PropTypes.bool,
-    corners: _react2.default.PropTypes.bool,
-    cornerLabels: _react2.default.PropTypes.bool
+  nodeX: _react["default"].PropTypes.arrayOf(_react["default"].PropTypes.number).isRequired,
+  nodeY: _react["default"].PropTypes.arrayOf(_react["default"].PropTypes.number).isRequired,
+  patchLinks: _react["default"].PropTypes.arrayOf(_react["default"].PropTypes.array).isRequired,
+  cornerX: _react["default"].PropTypes.arrayOf(_react["default"].PropTypes.number).isRequired,
+  cornerY: _react["default"].PropTypes.arrayOf(_react["default"].PropTypes.number).isRequired,
+  cellFaces: _react["default"].PropTypes.arrayOf(_react["default"].PropTypes.array).isRequired,
+  linkLine: _react["default"].PropTypes.arrayOf(_react["default"].PropTypes.array).isRequired,
+  faceLine: _react["default"].PropTypes.arrayOf(_react["default"].PropTypes.array).isRequired,
+  spacing: _react["default"].PropTypes.number.isRequired,
+  show: _react["default"].PropTypes.shape({
+    cells: _react["default"].PropTypes.bool,
+    cellLabels: _react["default"].PropTypes.bool,
+    patches: _react["default"].PropTypes.bool,
+    patchLabels: _react["default"].PropTypes.bool,
+    links: _react["default"].PropTypes.bool,
+    linkLabels: _react["default"].PropTypes.bool,
+    faces: _react["default"].PropTypes.bool,
+    faceLabels: _react["default"].PropTypes.bool,
+    nodes: _react["default"].PropTypes.bool,
+    nodeLabels: _react["default"].PropTypes.bool,
+    corners: _react["default"].PropTypes.bool,
+    cornerLabels: _react["default"].PropTypes.bool
   }).isRequired
 };
-
-exports.default = Grid;
+var _default = Grid;
+exports["default"] = _default;
 });
 
 require.register("components/inputs.jsx", function(exports, require, module) {
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports["default"] = void 0;
 
-var _react = require('react');
+var _react = _interopRequireDefault(require("react"));
 
-var _react2 = _interopRequireDefault(_react);
+var _inputs = _interopRequireDefault(require("../theme/inputs.scss"));
 
-var _inputs = require('../theme/inputs.scss');
-
-var _inputs2 = _interopRequireDefault(_inputs);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var Inputs = function Inputs(props) {
   var grid = props.grid,
@@ -818,305 +766,232 @@ var Inputs = function Inputs(props) {
       layout = props.layout,
       orientation = props.orientation,
       onChange = props.onChange;
-
-
-  return _react2.default.createElement(
-    'div',
-    null,
-    _react2.default.createElement(
-      'form',
-      { className: _inputs2.default.form },
-      _react2.default.createElement(
-        'label',
-        { className: _inputs2.default.label, htmlFor: 'grid' },
-        'Grid',
-        _react2.default.createElement(
-          'select',
-          { className: _inputs2.default.select, name: 'grid', value: grid, onChange: onChange },
-          _react2.default.createElement('option', { disabled: true, value: '' }),
-          _react2.default.createElement(
-            'option',
-            { value: 'raster' },
-            'raster'
-          ),
-          _react2.default.createElement(
-            'option',
-            { value: 'hex' },
-            'hex'
-          ),
-          _react2.default.createElement(
-            'option',
-            { disabled: true, value: 'radial' },
-            'radial'
-          )
-        )
-      ),
-      grid === 'radial' ? _react2.default.createElement(
-        'label',
-        { className: _inputs2.default.label, htmlFor: 'rows' },
-        'Number of Rings',
-        _react2.default.createElement('input', { className: _inputs2.default.input, type: 'number', max: '5', min: '1', placeholder: 'rows', name: 'rows', value: rows, onChange: onChange })
-      ) : _react2.default.createElement(
-        'label',
-        { className: _inputs2.default.label, htmlFor: 'rows' },
-        'Rows',
-        _react2.default.createElement('input', { className: _inputs2.default.input, type: 'number', max: '9', min: '3', placeholder: 'rows', name: 'rows', value: rows, onChange: onChange })
-      ),
-      _react2.default.createElement(
-        'label',
-        { className: _inputs2.default.label, htmlFor: 'cols' },
-        grid === 'radial' ? 'Points in First Ring' : 'Columns',
-        _react2.default.createElement('input', { className: _inputs2.default.input, type: 'number', max: '9', min: '0', placeholder: 'cols', name: 'cols', value: cols, onChange: onChange })
-      ),
-      grid === 'hex' && _react2.default.createElement(
-        'div',
-        { className: _inputs2.default.hexOptions },
-        _react2.default.createElement(
-          'label',
-          { className: _inputs2.default.label, htmlFor: 'layout' },
-          'Node Layout',
-          _react2.default.createElement(
-            'select',
-            { className: _inputs2.default.select, name: 'layout', value: layout, onChange: onChange },
-            _react2.default.createElement('option', { disabled: true, value: '' }),
-            _react2.default.createElement(
-              'option',
-              { value: 'rect' },
-              'rectangular'
-            ),
-            _react2.default.createElement(
-              'option',
-              { value: 'hex' },
-              'hexagonal'
-            )
-          )
-        ),
-        _react2.default.createElement(
-          'label',
-          { className: _inputs2.default.label, htmlFor: 'orientation' },
-          'Orientation',
-          _react2.default.createElement(
-            'select',
-            { className: _inputs2.default.select, name: 'orientation', value: orientation, onChange: onChange },
-            _react2.default.createElement('option', { disabled: true, value: '' }),
-            _react2.default.createElement(
-              'option',
-              { value: 'horizontal' },
-              'horizontal'
-            ),
-            _react2.default.createElement(
-              'option',
-              { disabled: true, value: 'vertical' },
-              'vertical'
-            )
-          )
-        )
-      )
-    )
-  );
+  return _react["default"].createElement("div", null, _react["default"].createElement("form", {
+    className: _inputs["default"].form
+  }, _react["default"].createElement("label", {
+    className: _inputs["default"].label,
+    htmlFor: "grid"
+  }, "Grid", _react["default"].createElement("select", {
+    className: _inputs["default"].select,
+    name: "grid",
+    value: grid,
+    onChange: onChange
+  }, _react["default"].createElement("option", {
+    disabled: true,
+    value: ""
+  }), _react["default"].createElement("option", {
+    value: "raster"
+  }, "raster"), _react["default"].createElement("option", {
+    value: "hex"
+  }, "hex"), _react["default"].createElement("option", {
+    disabled: true,
+    value: "radial"
+  }, "radial"))), grid === 'radial' ? _react["default"].createElement("label", {
+    className: _inputs["default"].label,
+    htmlFor: "rows"
+  }, "Number of Rings", _react["default"].createElement("input", {
+    className: _inputs["default"].input,
+    type: "number",
+    max: "5",
+    min: "1",
+    placeholder: "rows",
+    name: "rows",
+    value: rows,
+    onChange: onChange
+  })) : _react["default"].createElement("label", {
+    className: _inputs["default"].label,
+    htmlFor: "rows"
+  }, "Rows", _react["default"].createElement("input", {
+    className: _inputs["default"].input,
+    type: "number",
+    max: "9",
+    min: "3",
+    placeholder: "rows",
+    name: "rows",
+    value: rows,
+    onChange: onChange
+  })), _react["default"].createElement("label", {
+    className: _inputs["default"].label,
+    htmlFor: "cols"
+  }, grid === 'radial' ? 'Points in First Ring' : 'Columns', _react["default"].createElement("input", {
+    className: _inputs["default"].input,
+    type: "number",
+    max: "9",
+    min: "0",
+    placeholder: "cols",
+    name: "cols",
+    value: cols,
+    onChange: onChange
+  })), grid === 'hex' && _react["default"].createElement("div", {
+    className: _inputs["default"].hexOptions
+  }, _react["default"].createElement("label", {
+    className: _inputs["default"].label,
+    htmlFor: "layout"
+  }, "Node Layout", _react["default"].createElement("select", {
+    className: _inputs["default"].select,
+    name: "layout",
+    value: layout,
+    onChange: onChange
+  }, _react["default"].createElement("option", {
+    disabled: true,
+    value: ""
+  }), _react["default"].createElement("option", {
+    value: "rect"
+  }, "rectangular"), _react["default"].createElement("option", {
+    value: "hex"
+  }, "hexagonal"))), _react["default"].createElement("label", {
+    className: _inputs["default"].label,
+    htmlFor: "orientation"
+  }, "Orientation", _react["default"].createElement("select", {
+    className: _inputs["default"].select,
+    name: "orientation",
+    value: orientation,
+    onChange: onChange
+  }, _react["default"].createElement("option", {
+    disabled: true,
+    value: ""
+  }), _react["default"].createElement("option", {
+    value: "horizontal"
+  }, "horizontal"), _react["default"].createElement("option", {
+    disabled: true,
+    value: "vertical"
+  }, "vertical"))))));
 };
 
 Inputs.propTypes = {
-  grid: _react2.default.PropTypes.string.isRequired,
-  rows: _react2.default.PropTypes.number.isRequired,
-  cols: _react2.default.PropTypes.number.isRequired,
-  layout: _react2.default.PropTypes.string.isRequired,
-  orientation: _react2.default.PropTypes.string.isRequired,
-  onChange: _react2.default.PropTypes.func.isRequired
+  grid: _react["default"].PropTypes.string.isRequired,
+  rows: _react["default"].PropTypes.number.isRequired,
+  cols: _react["default"].PropTypes.number.isRequired,
+  layout: _react["default"].PropTypes.string.isRequired,
+  orientation: _react["default"].PropTypes.string.isRequired,
+  onChange: _react["default"].PropTypes.func.isRequired
 };
-
-exports.default = Inputs;
+var _default = Inputs;
+exports["default"] = _default;
 });
 
 require.register("components/legend.jsx", function(exports, require, module) {
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports["default"] = void 0;
 
-var _react = require('react');
+var _react = _interopRequireDefault(require("react"));
 
-var _react2 = _interopRequireDefault(_react);
+var _legend = _interopRequireDefault(require("../theme/legend.scss"));
 
-var _legend = require('../theme/legend.scss');
-
-var _legend2 = _interopRequireDefault(_legend);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var Legend = function Legend(props) {
-  return _react2.default.createElement(
-    'div',
-    { className: _legend2.default.container },
-    _react2.default.createElement(
-      'div',
-      null,
-      _react2.default.createElement(
-        'h2',
-        null,
-        'Areas'
-      ),
-      _react2.default.createElement(
-        'section',
-        { className: _legend2.default.section },
-        _react2.default.createElement(
-          'div',
-          { className: _legend2.default.column },
-          _react2.default.createElement(
-            'button',
-            { className: props.active.cells ? _legend2.default.cellButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showCells' },
-            'Cells'
-          ),
-          _react2.default.createElement(
-            'button',
-            { className: props.active.cellLabels ? _legend2.default.cellButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showCellLabels' },
-            'Show IDs'
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: _legend2.default.column },
-          _react2.default.createElement(
-            'button',
-            { className: props.active.patches ? _legend2.default.patchButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showPatches' },
-            'Patches'
-          ),
-          _react2.default.createElement(
-            'button',
-            { className: props.active.patchLabels ? _legend2.default.patchButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showPatchLabels' },
-            'Show IDs'
-          )
-        )
-      )
-    ),
-    _react2.default.createElement(
-      'div',
-      null,
-      _react2.default.createElement(
-        'h2',
-        null,
-        'Vectors'
-      ),
-      _react2.default.createElement(
-        'section',
-        { className: _legend2.default.section },
-        _react2.default.createElement(
-          'div',
-          { className: _legend2.default.column },
-          _react2.default.createElement(
-            'button',
-            { className: props.active.faces ? _legend2.default.faceButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showFaces' },
-            'Faces'
-          ),
-          _react2.default.createElement(
-            'button',
-            { className: props.active.faceLabels ? _legend2.default.faceButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showFaceLabels' },
-            'Show IDs'
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: _legend2.default.column },
-          _react2.default.createElement(
-            'button',
-            { className: props.active.links ? _legend2.default.linkButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showLinks' },
-            'Links'
-          ),
-          _react2.default.createElement(
-            'button',
-            { className: props.active.linkLabels ? _legend2.default.linkButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showLinkLabels' },
-            'Show IDs'
-          )
-        )
-      )
-    ),
-    _react2.default.createElement(
-      'div',
-      null,
-      _react2.default.createElement(
-        'h2',
-        null,
-        'Points'
-      ),
-      _react2.default.createElement(
-        'section',
-        { className: _legend2.default.section },
-        _react2.default.createElement(
-          'div',
-          { className: _legend2.default.column },
-          _react2.default.createElement(
-            'button',
-            { className: props.active.corners ? _legend2.default.cornerButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showCorners' },
-            'Corners'
-          ),
-          _react2.default.createElement(
-            'button',
-            { className: props.active.cornerLabels ? _legend2.default.cornerButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showCornerLabels' },
-            'Show IDs'
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: _legend2.default.column },
-          _react2.default.createElement(
-            'button',
-            { className: props.active.nodes ? _legend2.default.nodeButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showNodes' },
-            'Nodes'
-          ),
-          _react2.default.createElement(
-            'button',
-            { className: props.active.nodeLabels ? _legend2.default.nodeButtonDown : _legend2.default.button, onClick: props.onChange, value: 'showNodeLabels' },
-            'Show IDs'
-          )
-        )
-      )
-    )
-  );
+  return _react["default"].createElement("div", {
+    className: _legend["default"].container
+  }, _react["default"].createElement("div", null, _react["default"].createElement("h2", null, "Areas"), _react["default"].createElement("section", {
+    className: _legend["default"].section
+  }, _react["default"].createElement("div", {
+    className: _legend["default"].column
+  }, _react["default"].createElement("button", {
+    className: props.active.cells ? _legend["default"].cellButtonDown : _legend["default"].button,
+    onClick: props.onChange,
+    value: "showCells"
+  }, "Cells"), _react["default"].createElement("button", {
+    className: props.active.cellLabels ? _legend["default"].cellButtonDown : _legend["default"].button,
+    onClick: props.onChange,
+    value: "showCellLabels"
+  }, "Show IDs")), _react["default"].createElement("div", {
+    className: _legend["default"].column
+  }, _react["default"].createElement("button", {
+    className: props.active.patches ? _legend["default"].patchButtonDown : _legend["default"].button,
+    onClick: props.onChange,
+    value: "showPatches"
+  }, "Patches"), _react["default"].createElement("button", {
+    className: props.active.patchLabels ? _legend["default"].patchButtonDown : _legend["default"].button,
+    onClick: props.onChange,
+    value: "showPatchLabels"
+  }, "Show IDs")))), _react["default"].createElement("div", null, _react["default"].createElement("h2", null, "Vectors"), _react["default"].createElement("section", {
+    className: _legend["default"].section
+  }, _react["default"].createElement("div", {
+    className: _legend["default"].column
+  }, _react["default"].createElement("button", {
+    className: props.active.faces ? _legend["default"].faceButtonDown : _legend["default"].button,
+    onClick: props.onChange,
+    value: "showFaces"
+  }, "Faces"), _react["default"].createElement("button", {
+    className: props.active.faceLabels ? _legend["default"].faceButtonDown : _legend["default"].button,
+    onClick: props.onChange,
+    value: "showFaceLabels"
+  }, "Show IDs")), _react["default"].createElement("div", {
+    className: _legend["default"].column
+  }, _react["default"].createElement("button", {
+    className: props.active.links ? _legend["default"].linkButtonDown : _legend["default"].button,
+    onClick: props.onChange,
+    value: "showLinks"
+  }, "Links"), _react["default"].createElement("button", {
+    className: props.active.linkLabels ? _legend["default"].linkButtonDown : _legend["default"].button,
+    onClick: props.onChange,
+    value: "showLinkLabels"
+  }, "Show IDs")))), _react["default"].createElement("div", null, _react["default"].createElement("h2", null, "Points"), _react["default"].createElement("section", {
+    className: _legend["default"].section
+  }, _react["default"].createElement("div", {
+    className: _legend["default"].column
+  }, _react["default"].createElement("button", {
+    className: props.active.corners ? _legend["default"].cornerButtonDown : _legend["default"].button,
+    onClick: props.onChange,
+    value: "showCorners"
+  }, "Corners"), _react["default"].createElement("button", {
+    className: props.active.cornerLabels ? _legend["default"].cornerButtonDown : _legend["default"].button,
+    onClick: props.onChange,
+    value: "showCornerLabels"
+  }, "Show IDs")), _react["default"].createElement("div", {
+    className: _legend["default"].column
+  }, _react["default"].createElement("button", {
+    className: props.active.nodes ? _legend["default"].nodeButtonDown : _legend["default"].button,
+    onClick: props.onChange,
+    value: "showNodes"
+  }, "Nodes"), _react["default"].createElement("button", {
+    className: props.active.nodeLabels ? _legend["default"].nodeButtonDown : _legend["default"].button,
+    onClick: props.onChange,
+    value: "showNodeLabels"
+  }, "Show IDs")))));
 };
 
-exports.default = Legend;
-
-
+var _default = Legend;
+exports["default"] = _default;
 Legend.propTypes = {
-  onChange: _react2.default.PropTypes.func.isRequired,
-  active: _react2.default.PropTypes.shape({
-    cells: _react2.default.PropTypes.bool,
-    cellLabels: _react2.default.PropTypes.bool,
-    patches: _react2.default.PropTypes.bool,
-    patchLabels: _react2.default.PropTypes.bool,
-    links: _react2.default.PropTypes.bool,
-    linkLabels: _react2.default.PropTypes.bool,
-    faces: _react2.default.PropTypes.bool,
-    faceLabels: _react2.default.PropTypes.bool,
-    nodes: _react2.default.PropTypes.bool,
-    nodeLabels: _react2.default.PropTypes.bool,
-    corners: _react2.default.PropTypes.bool,
-    cornerLabels: _react2.default.PropTypes.bool
+  onChange: _react["default"].PropTypes.func.isRequired,
+  active: _react["default"].PropTypes.shape({
+    cells: _react["default"].PropTypes.bool,
+    cellLabels: _react["default"].PropTypes.bool,
+    patches: _react["default"].PropTypes.bool,
+    patchLabels: _react["default"].PropTypes.bool,
+    links: _react["default"].PropTypes.bool,
+    linkLabels: _react["default"].PropTypes.bool,
+    faces: _react["default"].PropTypes.bool,
+    faceLabels: _react["default"].PropTypes.bool,
+    nodes: _react["default"].PropTypes.bool,
+    nodeLabels: _react["default"].PropTypes.bool,
+    corners: _react["default"].PropTypes.bool,
+    cornerLabels: _react["default"].PropTypes.bool
   }).isRequired
 };
 });
 
 require.register("initialize.jsx", function(exports, require, module) {
-'use strict';
+"use strict";
 
-var _react = require('react');
+var _react = _interopRequireDefault(require("react"));
 
-var _react2 = _interopRequireDefault(_react);
+var _reactDom = _interopRequireDefault(require("react-dom"));
 
-var _reactDom = require('react-dom');
+var _app = _interopRequireDefault(require("./components/app"));
 
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _app = require('./components/app');
-
-var _app2 = _interopRequireDefault(_app);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 document.addEventListener('DOMContentLoaded', function () {
-  var root = _react2.default.createElement(_app2.default, null);
-  _reactDom2.default.render(root, document.getElementById('app'));
+  var root = _react["default"].createElement(_app["default"], null);
+
+  _reactDom["default"].render(root, document.getElementById('app'));
 });
 });
 
@@ -3148,15 +3023,7 @@ module.exports = {};
 });
 
 require.alias("buffer/index.js", "buffer");
-require.alias("events/events.js", "events");
-require.alias("stream-http/index.js", "http");
-require.alias("https-browserify/index.js", "https");
-require.alias("process/browser.js", "process");
-require.alias("punycode/punycode.js", "punycode");
-require.alias("querystring-es3/index.js", "querystring");
-require.alias("stream-browserify/index.js", "stream");
-require.alias("string_decoder/index.js", "string_decoder");
-require.alias("url/url.js", "url");process = require('process');require.register("___globals___", function(exports, require, module) {
+require.alias("process/browser.js", "process");process = require('process');require.register("___globals___", function(exports, require, module) {
   
 
 // Auto-loaded modules from config.npm.globals.
