@@ -21,7 +21,7 @@ const Inputs = (props) => {
             <option disabled value="" />
             <option value="raster">raster</option>
             <option value="hex">hex</option>
-            <option disabled value="radial">radial</option>
+            <option value="radial">radial</option>
           </select>
         </label>
         { grid === 'radial' ?
@@ -53,7 +53,7 @@ const Inputs = (props) => {
               <select className={inputs.select} name="orientation" value={orientation} onChange={onChange} >
                 <option disabled value="" />
                 <option value="horizontal">horizontal</option>
-                <option disabled value="vertical">vertical</option>
+                <option value="vertical">vertical</option>
               </select>
             </label>
           </div>
