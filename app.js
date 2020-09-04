@@ -784,7 +784,6 @@ var Inputs = function Inputs(props) {
   }, "raster"), _react["default"].createElement("option", {
     value: "hex"
   }, "hex"), _react["default"].createElement("option", {
-    disabled: true,
     value: "radial"
   }, "radial"))), grid === 'radial' ? _react["default"].createElement("label", {
     className: _inputs["default"].label,
@@ -853,7 +852,6 @@ var Inputs = function Inputs(props) {
   }), _react["default"].createElement("option", {
     value: "horizontal"
   }, "horizontal"), _react["default"].createElement("option", {
-    disabled: true,
     value: "vertical"
   }, "vertical"))))));
 };
@@ -3022,8 +3020,8 @@ require.register("theme/shared.scss", function(exports, require, module) {
 module.exports = {};
 });
 
-require.alias("buffer/index.js", "buffer");
-require.alias("process/browser.js", "process");process = require('process');require.register("___globals___", function(exports, require, module) {
+require.alias("brunch/node_modules/buffer/index.js", "buffer");
+require.alias("brunch/node_modules/process/browser.js", "process");process = require('process');require.register("___globals___", function(exports, require, module) {
   
 
 // Auto-loaded modules from config.npm.globals.
