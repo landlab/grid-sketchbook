@@ -148,6 +148,10 @@ var __makeRelativeRequire = function(require, mappings, pref) {
     return require(name);
   }
 };
+require.register("app.scss", function(exports, require, module) {
+module.exports = {};
+});
+
 require.register("components/app.jsx", function(exports, require, module) {
 "use strict";
 
@@ -235,6 +239,9 @@ function (_React$Component) {
       var APIurl = "".concat(apiBase, "/graphs/").concat(this.state.grid, "?shape=").concat(this.state.rows, ",").concat(this.state.cols, "&spacing=").concat(this.state.spacing);
 
       _axios["default"].get(APIurl).then(function (response) {
+        // eslint-disable-next-line no-console
+        console.log('hello', response.data.graph);
+
         _this2.setState({
           graph: response.data.graph
         });
@@ -293,7 +300,9 @@ function (_React$Component) {
         nodeLabels: this.state.showNodeLabels,
         corners: this.state.showCorners,
         cornerLabels: this.state.showCornerLabels
-      };
+      }; // eslint-disable-next-line no-console
+
+      console.log('graph', this.state.graph.data_vars);
       return this.state.graph.data_vars ? _react["default"].createElement("div", {
         className: _app["default"].chart
       }, _react["default"].createElement(_inputs["default"], {
@@ -2965,6 +2974,54 @@ module.exports = {
   "href": "/graph/raster?shape=3%2C4&spacing=10.%2C10."
 }
 ;
+});
+
+require.register("theme/app.scss", function(exports, require, module) {
+module.exports = {"chart":"_chart_5lvh9_8"};
+});
+
+require.register("theme/cell.scss", function(exports, require, module) {
+module.exports = {"cell":"_cell_1w11x_1","none":"_none_1w11x_6","highlight":"_highlight_1w11x_9","activeLabel":"_activeLabel_1w11x_14"};
+});
+
+require.register("theme/colors.scss", function(exports, require, module) {
+module.exports = {};
+});
+
+require.register("theme/corner.scss", function(exports, require, module) {
+module.exports = {"corner":"_corner_1r834_1","none":"_none_1r834_6","highlight":"_highlight_1r834_9","activeLabel":"_activeLabel_1r834_12"};
+});
+
+require.register("theme/face.scss", function(exports, require, module) {
+module.exports = {"face":"_face_1oscw_1","none":"_none_1oscw_7","highlight":"_highlight_1oscw_10","activeLabel":"_activeLabel_1oscw_13","arrow":"_arrow_1oscw_18","vertical":"_vertical_1oscw_22"};
+});
+
+require.register("theme/grid.scss", function(exports, require, module) {
+module.exports = {"chart":"_chart_3y0hp_1"};
+});
+
+require.register("theme/inputs.scss", function(exports, require, module) {
+module.exports = {"input":"_input_1mckk_1","form":"_form_1mckk_15","hexOptions":"_hexOptions_1mckk_21","label":"_label_1mckk_25","select":"_select_1mckk_32"};
+});
+
+require.register("theme/legend.scss", function(exports, require, module) {
+module.exports = {"button":"_button_vnpo2_1","cellButtonDown":"_cellButtonDown_vnpo2_1","patchButtonDown":"_patchButtonDown_vnpo2_1","linkButtonDown":"_linkButtonDown_vnpo2_1","faceButtonDown":"_faceButtonDown_vnpo2_1","nodeButtonDown":"_nodeButtonDown_vnpo2_1","cornerButtonDown":"_cornerButtonDown_vnpo2_1","container":"_container_vnpo2_12","section":"_section_vnpo2_21","column":"_column_vnpo2_28"};
+});
+
+require.register("theme/link.scss", function(exports, require, module) {
+module.exports = {"link":"_link_11tkv_1","none":"_none_11tkv_7","highlight":"_highlight_11tkv_10","activeLabel":"_activeLabel_11tkv_14","arrow":"_arrow_11tkv_19","vertical":"_vertical_11tkv_23"};
+});
+
+require.register("theme/node.scss", function(exports, require, module) {
+module.exports = {"node":"_node_1krq3_1","none":"_none_1krq3_6","highlight":"_highlight_1krq3_9","activeLabel":"_activeLabel_1krq3_12"};
+});
+
+require.register("theme/patch.scss", function(exports, require, module) {
+module.exports = {"patch":"_patch_1mb2f_1","none":"_none_1mb2f_6","highlight":"_highlight_1mb2f_9","activeLabel":"_activeLabel_1mb2f_14"};
+});
+
+require.register("theme/shared.scss", function(exports, require, module) {
+module.exports = {};
 });
 
 require.alias("buffer/index.js", "buffer");
