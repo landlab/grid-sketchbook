@@ -6,7 +6,7 @@ import Inputs from './inputs';
 
 import app from '../theme/app.scss';
 
-const apiBase = 'https://sketchbook.openearthscape.org:8000';
+const apiBase = 'https://csdms.io:2083';
 
 class App extends React.Component {
   constructor() {
