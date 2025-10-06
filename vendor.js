@@ -1812,6 +1812,23 @@ module.exports = {
   })();
 });
 
+require.register("axios/node_modules/is-buffer/index.js", function(exports, require, module) {
+  require = __makeRelativeRequire(require, {}, "axios/node_modules/is-buffer");
+  (function() {
+    /*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+
+module.exports = function isBuffer (obj) {
+  return obj != null && obj.constructor != null &&
+    typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
+}
+  })();
+});
+
 require.register("backo2/index.js", function(exports, require, module) {
   require = __makeRelativeRequire(require, {}, "backo2");
   (function() {
